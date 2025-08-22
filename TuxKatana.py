@@ -9,7 +9,7 @@ import sys
 class MainWindow(Gtk.Window):
     def __init__(self, app):
         super().__init__(application=app)
-        self.set_default_size(400, 200)
+        #self.set_default_size(400, 200)
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.set_child(box)
 
@@ -32,6 +32,8 @@ class MainWindow(Gtk.Window):
             if msg.type == 'control_change' and msg.control == 20:  # Bass
                 # Mettre à jour slider dans le thread principal
                 GLib.idle_add(self.bass_slider.set_value, msg.value)
+            if msg:
+                print(f"{msg=}")
 
 class TuxKatana(Gtk.Application):
     def __init__(self):
@@ -40,7 +42,7 @@ class TuxKatana(Gtk.Application):
     def do_activate(self):
         win = MainWindow(self)
         win.set_title("Tux Katana")
-        win.set_default_size(800,600)
+        #win.set_default_size(800,600)
         win.set_resizable(True)
         #win.maximize()
 
