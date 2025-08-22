@@ -27,7 +27,7 @@ class MainWindow(Gtk.Window):
         # Ici : envoi MIDI CC vers Katana
 
     def listen_midi(self):
-        inport = mido.open_input("BOSS KATANA MIDI 1")
+        inport = mido.open_input("KATANA:KATANA MIDI 1 28:0")
         for msg in inport:
             if msg.type == 'control_change' and msg.control == 20:  # Bass
                 # Mettre à jour slider dans le thread principal
