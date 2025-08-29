@@ -5,6 +5,8 @@ from gi.repository import Gtk, GLib, Gdk
 import mido
 from threading import Thread
 import sys
+import controller
+import yaml
 
 class MainWindow(Gtk.Window):
     def __init__(self, app):

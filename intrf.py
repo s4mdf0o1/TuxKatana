@@ -93,6 +93,7 @@ class KatanaDebug(Gtk.Application):
         super().__init__(application_id="org.domosys.KatanaDebug")
         with open("params.yml", 'r') as f:
             self.params = yaml.safe_load(f)
+        self.controller = controller.KatanaController()
 
     def do_activate(self):
         win = MainWindow(self)

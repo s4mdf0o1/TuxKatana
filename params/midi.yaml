@@ -1,0 +1,51 @@
+Program_Change:
+  BANK_A:
+    CH_1: 0x00
+    CH_2: 0x01
+    CH_3: 0x02
+    CH_4: 0x03
+  PANEL:  0x04
+  BANK_B: 
+    CH_1: 0x05
+    CH_2: 0x06
+    CH_3: 0x07
+    CH_4: 0x08
+
+Control_Change:
+  BOOSTER_ON:               # CC #16
+    start:  0x00
+    end:    0x3F    # 63
+  BOOSTER_OFF:
+    start:  0x40    # 64
+    end:    0x7F    # 127
+  MOD:          CC_17
+  FX:           CC_18
+  DELAY:        CC_19
+  REVERB:       CC_20
+  EFFECT_LOOP:  CC_21 
+
+GA-FC:
+  Expr_FX_Pedal_1:  CC_80
+  Expr_Vol_Pedal_2: CC_81
+  Expr_Gen_Pedal:   CC_82
+  Expr_FS1_Switch:
+    start:  0x00
+    end:    0x7F
+  Expr_FS_Multi:
+    start:  0x00
+    end:    0x7F
+
+MIDX:
+  Global_Volume:          # CC #7
+    start:  0x00
+    end:    0x7F
+  Store_Current_Preset:   # CC #8
+    val:    0x7f
+  Store_To_Preset:        # CC #9
+    start:  0x01
+    end:    0x08
+  Tap_Tempo: "variations" # CC #14-#42-#43
+# CC #21 - Double l'effet précédent
+  Amp:
+    Amp_Variation:  CC_38
+
