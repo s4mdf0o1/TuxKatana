@@ -1,7 +1,7 @@
 .*.swp
 tests/
 params/
-tests/
+tmp/
 __pycache__
 
 
