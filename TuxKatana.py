@@ -5,7 +5,7 @@ from gi.repository import Gtk, GLib, Gdk
 import mido
 from threading import Thread
 import sys
-import controller
+from controller import KatanaController
 import yaml
 
 class MainWindow(Gtk.Window):
@@ -56,6 +56,7 @@ class TuxKatana(Gtk.Application):
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
+        self.controller = KatanaController()
 
         win.present()
 
