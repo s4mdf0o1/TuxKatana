@@ -1,6 +1,6 @@
 import mido
 from time import sleep
-from threading import Thread
+from threading import Queue, Thread
 from gi.repository import GLib
 from ruamel.yaml import YAML
 yaml = YAML(typ="rt")
@@ -9,11 +9,23 @@ yaml = YAML(typ="rt")
 from ruamel.yaml.scalarstring import SingleQuotedScalarString as sq
 from collections import UserDict
 from lib import Config
+import logging
+from datetime import datetime
 
 DEBUG = True
 def debug( txt ):
     if DEBUG:
         print(txt)
+
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+logfile = f"logs/{timestamp}.log"
+handler = logging.FileHandler(logfile, mode="a")#, encoding="utf-8")
+fmt = logging.Formatter("[%(levelname)s] %(message)s")
+handler.setFormatter(fmt)
+
+logger = logging.getLogger("TuxKatana")
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
 
 class KatanaPort:
     def __init__(self):
@@ -22,7 +34,7 @@ class KatanaPort:
         self.index = 0
         self.name = None
 
-        #GLib.timeout_add_seconds(3, self.check_online)
+        GLib.timeout_add_seconds(10, self.check_online)
 
     def check_online( self ):
         debug("KatanaPort.check_online")
@@ -149,8 +161,15 @@ class KatanaController:
         self.sysex = mido.Message('sysex')
         self.message = SysExMessage()
         self.listener_callback = None
+        self.msg_queue = Queue()
+        self.thread_watch = Thread(target=self.queue_watcher, daemon=True).start()
 
         GLib.timeout_add_seconds(1, self.wait_device)
+
+    def queue_watcher(self):
+        while True:
+            msg = self.msg_queue.get()
+            GLib.idle_add(self.port.decode, msg)
 
     def wait_device(self):
         debug("KatanaController.wait_device")
@@ -166,12 +185,14 @@ class KatanaController:
 
     def listener(self, msg):
         #debug(f"listener({msg})")
+        logger.info(msg.hex())
         if msg.type == 'sysex':
             try:
                 if self.listener_callback:
                     #debug(self.listener_callback)
                     self.listener_callback(msg)
                 else:
+                    self.ms_queue.put(msg)
                     print("No callback")
                     self.message.decode(msg)
                 #self.listener_callback = None
