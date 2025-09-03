@@ -1,0 +1,2 @@
+ACTION=="add", ATTRS{idVendor}=="0582", ATTRS{idProduct}=="01d8", TAG+="systemd", ENV{SYSTEMD_USER_WANTS}="tux_katana.service"
+

@@ -5,47 +5,76 @@ from gi.repository import Gtk, GLib, Gdk
 import mido
 from threading import Thread
 import sys
-from controller import KatanaController
-import yaml
+from KatanaController import KatanaController
+from ruamel.yaml import YAML
+yaml = YAML(typ="safe")
+from time import sleep
+from widgets import KatanaEffectSwitcher, KatanaSettings
+
+class ConnectWait(Gtk.Dialog):
+    def __init__(self, app, parent):
+        super().__init__(title="Connexion", transient_for=parent, modal=True)
+        self.set_default_size(300, 100)
+        self.set_decorated(False)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.get_style_context().add_class("bordered")
+
+        label = Gtk.Label(label="Appareil Déconnecté...")
+        spinner = Gtk.Spinner()
+        spinner.start()
+        button=Gtk.Button(label="Quitter")
+        button.connect("clicked", lambda *_: app.quit())
+
+        box.append(label)
+        box.append(spinner)
+        box.append(button)
+        self.set_child(box)
 
 class MainWindow(Gtk.Window):
-    def __init__(self, app):
+    def __init__(self, app, config):
         super().__init__(application=app)
-        #self.set_default_size(400, 200)
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.set_child(box)
 
-        # Slider Bass
-        self.bass_slider = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 127, 1)
-        self.bass_slider.connect("value-changed", self.on_bass_changed)
-        box.append(self.bass_slider)
+        self.ks = KatanaSettings( "SETTINGS", config['SETTINGS'], app.katana)
+        box.append(self.ks)
+        self.kes = KatanaEffectSwitcher( config['KES'], app.katana)
+        box.append(self.kes)
 
-        # Thread pour recevoir les messages MIDI
-        Thread(target=self.listen_midi, daemon=True).start()
+        self.wait_dialog = ConnectWait( app, self )
+        self.set_sensitive(False)
+        self.wait_dialog.present()
+        GLib.timeout_add_seconds(1, self.check_connection)
 
-    def on_bass_changed(self, slider):
-        value = int(slider.get_value())
-        print("Bass changed:", value)
-        # Ici : envoi MIDI CC vers Katana
+    def check_connection( self ):
+        print("check_connection")
+        if app.katana.port.has_device:
+            self.wait_dialog.set_visible(False)
+            self.set_sensitive(True)
+            return False
+        #else:
+            #self.set_sensitive(False)
+            #self.wait_dialog.set_visible(True)
+        return True
 
-    def listen_midi(self):
-        inport = mido.open_input("KATANA:KATANA MIDI 1 28:0")
-        for msg in inport:
-            if msg.type == 'control_change' and msg.control == 20:  # Bass
-                # Mettre à jour slider dans le thread principal
-                GLib.idle_add(self.bass_slider.set_value, msg.value)
-            if msg:
-                print(f"{msg=}")
+    def set_device_name( self, name ):
+        pass
 
 class TuxKatana(Gtk.Application):
     def __init__(self):
         super().__init__(application_id="org.domosys.TuxKatana")
 
     def do_activate(self):
-        win = MainWindow(self)
-        win.set_title("Tux Katana")
-        #win.set_default_size(800,600)
-        win.set_resizable(True)
+        config = {}
+        with open("params/config.yaml", "r") as f:
+            config = yaml.load(f)
+        self.dots=config['DOTS']
+        self.katana = KatanaController(self)
+        self.win = MainWindow(self, config)
+        self.win.set_default_size(550, 650)
+        self.win.set_title("Tux Katana")
+        self.win.set_resizable(True)
         #win.maximize()
 
         css_provider = Gtk.CssProvider()
@@ -56,13 +85,18 @@ class TuxKatana(Gtk.Application):
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-        self.controller = KatanaController()
+        display = Gdk.Display.get_default()
+        monitor = display.get_primary_monitor()
+        geometry = monitor.get_geometry()
 
-        win.present()
+        x = (geometry.width - 800) // 2
+        y = (geometry.height - 600) // 2
+        #self.move(x, y)
+        self.win.present()
 
 
 if __name__ == "__main__":
     app = TuxKatana()
-    sys.exit(app.run(sys.argv))
+    app.run(sys.argv)
 
 

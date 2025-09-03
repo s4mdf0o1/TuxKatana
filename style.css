@@ -1,0 +1,50 @@
+button {
+  border: 1px solid black;
+  /*border-radius: 6px;*/
+}
+button.toggle:checked{
+  padding: 5px;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.6),
+              inset -1px -1px 1px rgba(255,255,255,0.4);
+}
+button.toggle:not(:checked) {
+  padding: 5px;
+
+  box-shadow:  inset 1px 1px 1px rgba(255,255,255,0.4),
+               inset -1px -1px 1px rgba(0,0,0,0.6);
+
+}
+
+.inner {
+  /*border: 1px solid black;
+  border-radius: 6px;*/
+
+  padding: 5px;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.6),
+              inset -1px -1px 1px rgba(255,255,255,0.4);
+      }
+.outer {
+  /*border: 1px solid black;
+  border-radius: 6px;*/
+  padding: 5px;
+
+  box-shadow:  inset 1px 1px 1px rgba(255,255,255,0.4),
+               inset -1px -1px 1px rgba(0,0,0,0.6);
+   }
+
+.bordered {
+  border: 1px solid black;
+  border-radius: 6px;
+  margin: 10px;
+  padding: 20px;
+  /*box-shadow: inset 1px 1px 1px rgba(0,0,0,0.6),
+              inset -1px -1px 1px rgba(255,255,255,0.4);*/
+   box-shadow:  inset 1px 1px 1px rgba(255,255,255,0.4),
+               inset -1px -1px 1px rgba(0,0,0,0.6);
+
+}
+stacksidebar.button {
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+}

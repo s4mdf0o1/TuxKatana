@@ -1,0 +1,34 @@
+DOTS:
+  BLACK:  ⚫
+  GREEN:  🟢
+  RED:    🔴
+  YELLOW: 🟡
+
+KES:
+  #PANEL: "Program_Change:PANEL"
+  BANK_A:
+    CH_1:  "Program_Change:BANK_A:CH_1"
+    CH_2:  "Program_Change:BANK_A:CH_2"
+    CH_3:  "Program_Change:BANK_A:CH_3"
+    CH_4:  "Program_Change:BANK_A:CH_4"
+  BANK_B:
+    CH_5:  "Program_Change:BANK_B:CH_1"
+    CH_6:  "Program_Change:BANK_B:CH_2"
+    CH_7:  "Program_Change:BANK_B:CH_3"
+    CH_8:  "Program_Change:BANK_B:CH_4"
+  #EFFECTS:  "Control_Change:EFFECTS"
+  BOOSTER:  "Control_Change:BOOSTER_SWITCH"
+  MOD:      "Control_Change:MOD_SWITCH"
+  FX:       "Control_Change:FX_SWITCH"
+  DELAY:    "Control_Change:DELAY_SWITCH"
+  REVERB:   "Control_Change:REVERB_SWITCH"
+
+SETTINGS:
+  EFFECTS:
+    BOOSTER:
+      SELECT: "Control_Change:BOOSTER_SELECT"
+
+  
+
+SLIDER:
+  GLOBAL_VOLUME: "Control_Change:GLOBAL_VOLUME"

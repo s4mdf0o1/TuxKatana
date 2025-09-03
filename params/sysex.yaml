@@ -1,0 +1,28 @@
+universal:
+  SCAN_REQ: "7E 00 06 01"
+  SCAN_REP: "7E 00 06 02"
+
+device:   # rempli après SCAN
+  manufacturer: null
+  device: null
+  model: null
+  version: null
+
+infos:
+  NAME:  '10 00 00 00'
+  PRESET_1:     '10 01 00 00'
+  PRESET_2:     '10 02 00 00'
+  PRESET_3:     '10 03 00 00'
+  PRESET_4:     '10 04 00 00'
+  PRESET_5:     '10 05 00 00'
+  PRESET_6:     '10 06 00 00'
+  PRESET_7:     '10 07 00 00'
+  PRESET_8:     '10 08 00 00'
+addresses:
+  BOOSTER: "00 00 04 27"
+  MASTER: "00 00 04 40"
+
+command:
+  GET: "11"
+  SET: "12"
+

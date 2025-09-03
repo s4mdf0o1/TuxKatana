@@ -6,7 +6,27 @@ import mido
 from threading import Thread
 import sys
 import yaml
-import controller
+#import controller
+
+#class Controller:
+#    def __init__(self):
+
+class CommandCombo(Gtk.ComboBoxText):
+    def __init__(self, items=None):
+        super().__init__()
+        #self.set_vexpand(False)
+        self.entries = items
+        print(items)
+        if items:
+            for item in items:
+                self.append_text(item)
+        self.connect("changed", self.on_changed)
+
+
+    def on_changed(self, combo):
+        text = combo.get_active_text()
+        if text is not None:
+            print(f"Sélection: {text}", f"value: {self.entries[text]}")
 
 class LogBox(Gtk.Box):
     def __init__(self):
@@ -70,9 +90,12 @@ class MainWindow(Gtk.Window):
         v_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.set_child(v_box)
         h_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        self.command = CommandCombo(app.params["Command"])
+        self.command.set_active(0)
         entries_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         v_box.append(h_box)
         h_box.append(entries_box)
+        h_box.append(self.command)
         self.entries={}
         for p in app.params:
             if type(app.params[p]) == list:
@@ -91,9 +114,9 @@ class MainWindow(Gtk.Window):
 class KatanaDebug(Gtk.Application):
     def __init__(self):
         super().__init__(application_id="org.domosys.KatanaDebug")
-        with open("params.yml", 'r') as f:
+        with open("params/params.yaml", 'r') as f:
             self.params = yaml.safe_load(f)
-        self.controller = controller.KatanaController()
+        #self.controller = controller.KatanaController()
 
     def do_activate(self):
         win = MainWindow(self)

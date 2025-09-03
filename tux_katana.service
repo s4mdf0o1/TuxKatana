@@ -1,0 +1,13 @@
+[Unit]
+Description=TuxKatana
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/src/TuxKatana/TuxKatana.py
+Restart=on-failure
+WorkingDirectory=/usr/local/src/TuxKatana/
+
+[Install]
+WantedBy=graphical-session.target
+
