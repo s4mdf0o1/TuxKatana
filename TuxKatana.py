@@ -10,9 +10,10 @@ from ruamel.yaml import YAML
 yaml = YAML(typ="safe")
 from time import sleep
 
-from KatanaController import KatanaController
-from widgets import KatanaEffectSwitcher, KatanaSettings
 from lib.log_setup import setup_logger
+from lib import KatanaController
+
+from widgets import KatanaEffectSwitcher, KatanaSettings
 logger = setup_logger("logs/katana_session.log")
 
 class ConnectWait(Gtk.Dialog):

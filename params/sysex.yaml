@@ -2,12 +2,6 @@ universal:
   SCAN_REQ: "7E 00 06 01"
   SCAN_REP: "7E 00 06 02"
 
-device:   # rempli après SCAN
-  manufacturer: null
-  device: null
-  model: null
-  version: null
-
 infos:
   NAME:  '10 00 00 00'
   PRESET_1:     '10 01 00 00'
@@ -19,7 +13,7 @@ infos:
   PRESET_7:     '10 07 00 00'
   PRESET_8:     '10 08 00 00'
 addresses:
-  BOOSTER: "00 00 04 27"
+  BOOSTER: "60 00 06 39"
   MASTER: "00 00 04 40"
 
 command:
