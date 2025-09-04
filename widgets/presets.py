@@ -3,10 +3,8 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk
 from time import sleep
 
-DEBUG = True
-def debug( txt ):
-    if DEBUG:
-        print(txt)
+import logging
+dbg=logging.getLogger("debug")
 
 class Presets(Gtk.Box):
     def __init__(self, ctrl):
@@ -30,7 +28,7 @@ class Presets(Gtk.Box):
 
 
     def decode_msg( self, msg ):
-        debug(f"debug_msg: {msg.hex()}")
+        dbg.debug(f"debug_msg: {msg.hex()}")
         data = list(msg.data)
         if data[0:6] == self.ctrl.message.header:
             command = data[6]

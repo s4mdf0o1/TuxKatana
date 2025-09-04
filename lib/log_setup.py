@@ -14,7 +14,12 @@ LOGGER_NAME = "TuxKatana"
 #logger = logging.getLogger("TuxKatana")
 #logger.setLevel(logging.DEBUG)
 #logger.addHandler(handler)
-def setup_logger(logfile: str = "logs/katana.log") -> logging.Logger:
+def setup_debug() -> logging.Logger:
+    handler = logging.FileHandler("logs/TuxKatana.log", mode="w")#, encoding="utf-8")
+    logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
+    return logging.getLogger("debug")
+
+def setup_logger(logfile: str = "logs/sysex_messages.log") -> logging.Logger:
     handler = logging.FileHandler(logfile, mode="w")#, encoding="utf-8")
     fmt = logging.Formatter("[%(levelname)s] %(message)s")
     handler.setFormatter(fmt)

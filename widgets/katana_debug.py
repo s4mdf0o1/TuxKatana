@@ -4,7 +4,8 @@ from gi.repository import Gtk, GLib, Gdk
 
 import logging
 from lib.log_setup import LOGGER_NAME, rotate_log
-logger = logging.getLogger(LOGGER_NAME)
+log_sysex = logging.getLogger(LOGGER_NAME)
+dbg=logging.getLogger("debug")
 
 from ruamel.yaml import YAML
 yaml = YAML(typ="safe")
@@ -79,12 +80,12 @@ class KatanaDebug(Gtk.Box):
 
     def add_log_note(self, button):
         note = self.log_note.get_text()
-        logger.info(note)
+        log_sysex.info(note)
 
     def store_log(self, button):
         filename = self.log_file.get_text()
         archived = rotate_log(filename)
-        print(f"Archived: {archived}")
+        dbg.info(f"Archived: {archived}")
 
     def switch_mode( self, button ):
         header = self.ctrl.message.header
@@ -114,8 +115,6 @@ class KatanaDebug(Gtk.Box):
 	        #msg = [int(v, 16) for v in txt.split(' ')]
             cks = msg_obj.checksum(addr + val)
             data = header + cmd + addr + val + [cks]
-	        #dbg = self.ctrl.message.addrs.to_str(data)
-	        #print(f"{dbg=}")
             self.ctrl.sysex.data = data
             self.ctrl.send(self.ctrl.sysex, self.debug_msg)
         elif mode == "Program_Change":
@@ -123,7 +122,7 @@ class KatanaDebug(Gtk.Box):
             self.ctrl.pc.program = program
             self.ctrl.port.send(self.ctrl.pc)
         elif mode == "Control_Change":
-            #debug("Control")
+            #dbg.debug("Control")
             address = int(self.address.get_text())
             value = int(self.value.get_text())
             self.ctrl.cc.control = address
@@ -132,7 +131,7 @@ class KatanaDebug(Gtk.Box):
 
     def debug_msg(self, msg):
         #self.ctrl.listener_callback = None
-        print(f"debug_msg: {msg.hex()}")
+        dbg.debug(f"debug_msg: {msg.hex()}")
 
     def set_config(self, button):
         self.cmd.set_active(0)

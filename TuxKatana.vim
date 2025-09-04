@@ -34,6 +34,7 @@ badd +1 lib/log_tool.py
 badd +11 logs/compare_logs3.py
 badd +0 lib/sysex.py
 badd +0 lib/katana_controller.py
+badd +0 lib/midi_port.py
 argglobal
 %argdel
 $argadd TuxKatana.py
@@ -52,7 +53,10 @@ vsplit
 wincmd w
 wincmd _ | wincmd |
 split
-1wincmd k
+wincmd _ | wincmd |
+split
+2wincmd k
+wincmd w
 wincmd w
 wincmd w
 wincmd _ | wincmd |
@@ -71,17 +75,20 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 34 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 83 + 119) / 239)
-exe '2resize ' . ((&lines * 16 + 18) / 37)
+exe '2resize ' . ((&lines * 5 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 99 + 119) / 239)
-exe '3resize ' . ((&lines * 17 + 18) / 37)
+exe '3resize ' . ((&lines * 15 + 21) / 42)
 exe 'vert 3resize ' . ((&columns * 99 + 119) / 239)
-exe '4resize ' . ((&lines * 13 + 18) / 37)
-exe 'vert 4resize ' . ((&columns * 55 + 119) / 239)
-exe '5resize ' . ((&lines * 13 + 18) / 37)
+exe '4resize ' . ((&lines * 12 + 21) / 42)
+exe 'vert 4resize ' . ((&columns * 99 + 119) / 239)
+exe '5resize ' . ((&lines * 13 + 21) / 42)
 exe 'vert 5resize ' . ((&columns * 55 + 119) / 239)
-exe '6resize ' . ((&lines * 6 + 18) / 37)
+exe '6resize ' . ((&lines * 13 + 21) / 42)
 exe 'vert 6resize ' . ((&columns * 55 + 119) / 239)
+exe '7resize ' . ((&lines * 6 + 21) / 42)
+exe 'vert 7resize ' . ((&columns * 55 + 119) / 239)
 argglobal
 balt widgets/katana_switcher.py
 let s:cpo_save=&cpo
@@ -234,12 +241,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 18 - ((14 * winheight(0) + 17) / 34)
+let s:l = 23 - ((19 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 18
-normal! 0
+keepjumps 23
+normal! 039|
 wincmd w
 argglobal
 if bufexists(fnamemodify("lib/sysex.py", ":p")) | buffer lib/sysex.py | else | edit lib/sysex.py | endif
@@ -397,16 +404,16 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 5 - ((4 * winheight(0) + 8) / 16)
+let s:l = 66 - ((0 * winheight(0) + 2) / 5)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 5
+keepjumps 66
 normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("lib/katana_controller.py", ":p")) | buffer lib/katana_controller.py | else | edit lib/katana_controller.py | endif
-balt KatanaController.py
+if bufexists(fnamemodify("lib/midi_port.py", ":p")) | buffer lib/midi_port.py | else | edit lib/midi_port.py | endif
+balt lib/katana_controller.py
 let s:cpo_save=&cpo
 set cpo&vim
 imap <buffer> <silent> <C-G>g <Plug>delimitMateJumpMany
@@ -560,12 +567,175 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 21 - ((7 * winheight(0) + 8) / 17)
+let s:l = 53 - ((8 * winheight(0) + 7) / 15)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 21
-normal! 017|
+keepjumps 53
+normal! 046|
+wincmd w
+argglobal
+if bufexists(fnamemodify("lib/katana_controller.py", ":p")) | buffer lib/katana_controller.py | else | edit lib/katana_controller.py | endif
+balt lib/midi_port.py
+let s:cpo_save=&cpo
+set cpo&vim
+imap <buffer> <silent> <C-G>g <Plug>delimitMateJumpMany
+imap <buffer> <S-Tab> <Plug>delimitMateS-Tab
+imap <buffer> <S-BS> <Plug>delimitMateS-BS
+imap <buffer> <C-H> <Plug>delimitMateBS
+imap <buffer> <BS> <Plug>delimitMateBS
+imap <buffer> <silent> g <Plug>delimitMateJumpMany
+imap <buffer>  <Plug>delimitMateBS
+imap <buffer> " <Plug>delimitMate"
+imap <buffer> ' <Plug>delimitMate'
+imap <buffer> ( <Plug>delimitMate(
+imap <buffer> ) <Plug>delimitMate)
+imap <buffer> [ <Plug>delimitMate[
+imap <buffer> ] <Plug>delimitMate]
+imap <buffer> ` <Plug>delimitMate`
+imap <buffer> { <Plug>delimitMate{
+imap <buffer> } <Plug>delimitMate}
+let &cpo=s:cpo_save
+unlet s:cpo_save
+setlocal keymap=
+setlocal noarabic
+setlocal autoindent
+setlocal backupcopy=
+setlocal balloonexpr=
+setlocal nobinary
+setlocal nobreakindent
+setlocal breakindentopt=
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal nocindent
+setlocal cinkeys=0{,0},0),0],:,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinscopedecls=public,protected,private
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=b:#,fb:-
+setlocal commentstring=#\ %s
+setlocal complete=.,w,b,u,t,i
+setlocal completefunc=
+setlocal completeopt=
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal cursorlineopt=both
+setlocal define=^\\s*\\(\\(async\\s\\+\\)\\?def\\|class\\)
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal eventignorewin=
+setlocal expandtab
+if &filetype != 'python'
+setlocal filetype=python
+endif
+setlocal fillchars=
+setlocal findfunc=
+setlocal fixendofline
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+setlocal foldmethod=manual
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal formatoptions=tcq
+setlocal formatprg=
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=-1
+setlocal include=^\\s*\\(from\\|import\\)
+setlocal includeexpr=substitute(substitute(substitute(v:fname,b:grandparent_match,b:grandparent_sub,''),b:parent_match,b:parent_sub,''),b:child_match,b:child_sub,'g')
+setlocal indentexpr=python#GetIndent(v:lnum)
+setlocal indentkeys=0{,0},0),0],:,!^F,o,O,e,<:>,=elif,=except
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=python3\ -m\ pydoc
+setlocal nolinebreak
+setlocal nolisp
+setlocal lispoptions=
+setlocal lispwords=
+setlocal nolist
+setlocal listchars=
+setlocal makeencoding=
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=bin,octal,hex
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal scrolloff=-1
+setlocal shiftwidth=4
+setlocal noshortname
+setlocal showbreak=
+setlocal sidescrolloff=-1
+setlocal signcolumn=auto
+setlocal nosmartindent
+setlocal nosmoothscroll
+setlocal softtabstop=4
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal spelloptions=
+setlocal statusline=%!airline#statusline(4)
+setlocal suffixesadd=.py
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'python'
+setlocal syntax=python
+endif
+setlocal tabstop=4
+setlocal tagcase=
+setlocal tagfunc=
+setlocal tags=
+setlocal termwinkey=
+setlocal termwinscroll=10000
+setlocal termwinsize=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal thesaurusfunc=
+setlocal noundofile
+setlocal undolevels=-123456
+setlocal varsofttabstop=
+setlocal vartabstop=
+setlocal virtualedit=
+setlocal wincolor=
+setlocal nowinfixbuf
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+let s:l = 20 - ((0 * winheight(0) + 6) / 12)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 20
+normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("params/midi.yaml", ":p")) | buffer params/midi.yaml | else | edit params/midi.yaml | endif
@@ -692,7 +862,7 @@ setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
 setlocal spellfile=
 setlocal spelllang=en
 setlocal spelloptions=
-setlocal statusline=%!airline#statusline(4)
+setlocal statusline=%!airline#statusline(5)
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
@@ -855,7 +1025,7 @@ setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
 setlocal spellfile=
 setlocal spelllang=en
 setlocal spelloptions=
-setlocal statusline=%!airline#statusline(5)
+setlocal statusline=%!airline#statusline(6)
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
@@ -1015,7 +1185,7 @@ setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
 setlocal spellfile=
 setlocal spelllang=en
 setlocal spelloptions=
-setlocal statusline=%!airline#statusline(6)
+setlocal statusline=%!airline#statusline(7)
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
@@ -1050,18 +1220,20 @@ normal! zt
 keepjumps 9
 normal! 09|
 wincmd w
-3wincmd w
+exe '1resize ' . ((&lines * 34 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 83 + 119) / 239)
-exe '2resize ' . ((&lines * 16 + 18) / 37)
+exe '2resize ' . ((&lines * 5 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 99 + 119) / 239)
-exe '3resize ' . ((&lines * 17 + 18) / 37)
+exe '3resize ' . ((&lines * 15 + 21) / 42)
 exe 'vert 3resize ' . ((&columns * 99 + 119) / 239)
-exe '4resize ' . ((&lines * 13 + 18) / 37)
-exe 'vert 4resize ' . ((&columns * 55 + 119) / 239)
-exe '5resize ' . ((&lines * 13 + 18) / 37)
+exe '4resize ' . ((&lines * 12 + 21) / 42)
+exe 'vert 4resize ' . ((&columns * 99 + 119) / 239)
+exe '5resize ' . ((&lines * 13 + 21) / 42)
 exe 'vert 5resize ' . ((&columns * 55 + 119) / 239)
-exe '6resize ' . ((&lines * 6 + 18) / 37)
+exe '6resize ' . ((&lines * 13 + 21) / 42)
 exe 'vert 6resize ' . ((&columns * 55 + 119) / 239)
+exe '7resize ' . ((&lines * 6 + 21) / 42)
+exe 'vert 7resize ' . ((&columns * 55 + 119) / 239)
 tabnext
 edit widgets/katana_settings.py
 let s:save_splitbelow = &splitbelow
@@ -1095,15 +1267,15 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 exe 'vert 1resize ' . ((&columns * 90 + 119) / 239)
-exe '2resize ' . ((&lines * 16 + 18) / 37)
+exe '2resize ' . ((&lines * 4 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 98 + 119) / 239)
-exe '3resize ' . ((&lines * 15 + 18) / 37)
+exe '3resize ' . ((&lines * 21 + 21) / 42)
 exe 'vert 3resize ' . ((&columns * 98 + 119) / 239)
-exe '4resize ' . ((&lines * 1 + 18) / 37)
+exe '4resize ' . ((&lines * 12 + 21) / 42)
 exe 'vert 4resize ' . ((&columns * 98 + 119) / 239)
-exe '5resize ' . ((&lines * 25 + 18) / 37)
+exe '5resize ' . ((&lines * 25 + 21) / 42)
 exe 'vert 5resize ' . ((&columns * 49 + 119) / 239)
-exe '6resize ' . ((&lines * 8 + 18) / 37)
+exe '6resize ' . ((&lines * 13 + 21) / 42)
 exe 'vert 6resize ' . ((&columns * 49 + 119) / 239)
 argglobal
 balt widgets/katana_switcher.py
@@ -1257,12 +1429,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 19 - ((15 * winheight(0) + 17) / 34)
+let s:l = 66 - ((28 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 19
-normal! 0
+keepjumps 66
+normal! 048|
 wincmd w
 argglobal
 if bufexists(fnamemodify("widgets/presets.py", ":p")) | buffer widgets/presets.py | else | edit widgets/presets.py | endif
@@ -1420,12 +1592,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 12 - ((11 * winheight(0) + 8) / 16)
+let s:l = 10 - ((2 * winheight(0) + 2) / 4)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 12
-normal! 029|
+keepjumps 10
+normal! 025|
 wincmd w
 argglobal
 if bufexists(fnamemodify("widgets/katana_debug.py", ":p")) | buffer widgets/katana_debug.py | else | edit widgets/katana_debug.py | endif
@@ -1583,12 +1755,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 70 - ((14 * winheight(0) + 7) / 15)
+let s:l = 13 - ((12 * winheight(0) + 10) / 21)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 70
-normal! 030|
+keepjumps 13
+normal! 042|
 wincmd w
 argglobal
 if bufexists(fnamemodify("widgets/katana_switcher.py", ":p")) | buffer widgets/katana_switcher.py | else | edit widgets/katana_switcher.py | endif
@@ -1743,12 +1915,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 14 - ((0 * winheight(0) + 0) / 1)
+let s:l = 110 - ((4 * winheight(0) + 6) / 12)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 14
-normal! 039|
+keepjumps 110
+normal! 032|
 wincmd w
 argglobal
 if bufexists(fnamemodify("style.css", ":p")) | buffer style.css | else | edit style.css | endif
@@ -2063,23 +2235,24 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 3 - ((2 * winheight(0) + 4) / 8)
+let s:l = 3 - ((2 * winheight(0) + 6) / 13)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 3
 normal! 021|
 wincmd w
+3wincmd w
 exe 'vert 1resize ' . ((&columns * 90 + 119) / 239)
-exe '2resize ' . ((&lines * 16 + 18) / 37)
+exe '2resize ' . ((&lines * 4 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 98 + 119) / 239)
-exe '3resize ' . ((&lines * 15 + 18) / 37)
+exe '3resize ' . ((&lines * 21 + 21) / 42)
 exe 'vert 3resize ' . ((&columns * 98 + 119) / 239)
-exe '4resize ' . ((&lines * 1 + 18) / 37)
+exe '4resize ' . ((&lines * 12 + 21) / 42)
 exe 'vert 4resize ' . ((&columns * 98 + 119) / 239)
-exe '5resize ' . ((&lines * 25 + 18) / 37)
+exe '5resize ' . ((&lines * 25 + 21) / 42)
 exe 'vert 5resize ' . ((&columns * 49 + 119) / 239)
-exe '6resize ' . ((&lines * 8 + 18) / 37)
+exe '6resize ' . ((&lines * 13 + 21) / 42)
 exe 'vert 6resize ' . ((&columns * 49 + 119) / 239)
 tabnext
 edit lib/log_setup.py
@@ -2099,7 +2272,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 34 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 119 + 119) / 239)
+exe '2resize ' . ((&lines * 34 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 119 + 119) / 239)
 argglobal
 balt lib/log_tool.py
@@ -2256,12 +2431,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 25 - ((6 * winheight(0) + 20) / 41)
+let s:l = 24 - ((14 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 25
-normal! 016|
+keepjumps 24
+normal! 030|
 wincmd w
 argglobal
 if bufexists(fnamemodify("lib/__init__.py", ":p")) | buffer lib/__init__.py | else | edit lib/__init__.py | endif
@@ -2419,16 +2594,18 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 3 - ((2 * winheight(0) + 20) / 41)
+let s:l = 3 - ((2 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 3
 normal! 0
 wincmd w
+exe '1resize ' . ((&lines * 34 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 119 + 119) / 239)
+exe '2resize ' . ((&lines * 34 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 119 + 119) / 239)
-tabnext 1
+tabnext 2
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
@@ -2442,7 +2619,6 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
-nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

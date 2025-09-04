@@ -3,11 +3,8 @@ from ruamel.yaml import YAML
 yaml = YAML(typ="rt")
 from collections import UserDict
 
-DEBUG = True
-def debug( txt ):
-    if DEBUG:
-        print(txt)
-
+import logging
+dbg = logging.getLogger("debug")
 
 class SysExML(UserDict):
     def __init__(self, filepath):
@@ -31,13 +28,13 @@ class SysExML(UserDict):
         raise TypeError(f"Argument must be a list, got {type(d).__name__}")
 
     def save(self):
-        debug(f"save: {self.data}")
+        dbg.debug(f"save: {self.data}")
         with open(self.filepath, 'w') as f:
             yaml.dump(self.data, f)
 
 class SysExMessage:
     def __init__( self ):
-        debug("SysExMessage.__init__")
+        dbg.debug("SysExMessage.__init__")
         self.addrs = SysExML("params/sysex.yaml")
         self.header = [int(v, 16) for v in "41 00 00 00 00 33".split(' ')]
 
@@ -59,12 +56,12 @@ class SysExMessage:
         return mlst[:4], mlst[4:]
 
     def decode(self, msg):
-        debug(f"SysExMessage.decode({msg.hex()})")
+        dbg.debug(f"SysExMessage.decode({msg.hex()})")
         addr, data =  self.get_addr_data(msg.hex())
-        debug(f"{self.addrs.to_str(addr)}: {self.addrs.to_str(data)}")
+        dbg.debug(f"{self.addrs.to_str(addr)}: {self.addrs.to_str(data)}")
 
     def decode_ident( self, data ):
-        debug(f"decode_ident({[hex(i) for i in data]})")
+        dbg.debug(f"decode_ident({[hex(i) for i in data]})")
         #print(app.katana)
 
     def checksum( self, data ):
