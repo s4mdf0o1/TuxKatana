@@ -76,7 +76,9 @@ class TuxKatana(Gtk.Application):
         with open("params/config.yaml", "r") as f:
             config = yaml.load(f)
         self.dots=config['DOTS']
+
         self.katana = KatanaController(self)
+
         self.win = MainWindow(self, config)
         self.win.set_default_size(550, 650)
         self.win.set_title("Tux Katana")

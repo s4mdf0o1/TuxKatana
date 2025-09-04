@@ -1,6 +1,6 @@
 import gi
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib, Gdk, GObject
 import mido
 
 from ruamel.yaml import YAML
@@ -10,7 +10,12 @@ with open("params/config.yaml", "r") as f:
     config = yaml.load(f)
 dots = config['DOTS']
 
+import logging
+dbg=logging.getLogger("debug")
+
 from .katana_debug import KatanaDebug
+from .slider import Slider
+from .amplifier import Amplifier
 from .presets import Presets
 
 class KS_TabbedPanel(Gtk.Box):
@@ -33,33 +38,6 @@ class KS_TabbedPanel(Gtk.Box):
     def set_active_tab(self, name):
         self.stack.set_visible_child_name(name)
 
-class KS_Slider(Gtk.Box):
-    def __init__(self, name, value=0):
-        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        adjustment = Gtk.Adjustment(
-            value=value,
-            lower=0,
-            upper=127,
-            step_increment=1,
-            page_increment=8
-        )
-        self.scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=adjustment)
-        self.scale.set_digits(0)
-        self.scale.set_draw_value(True)
-        self.scale.set_value_pos(Gtk.PositionType.RIGHT)
-        self.scale.set_hexpand(True)
-        self.scale.connect("value-changed", self.on_value_changed)
-        label = Gtk.Label(label=name)
-        self.append(label)
-        self.append(self.scale)
-
-    def on_value_changed(self, slider):
-        value = int(slider.get_value())
-        print(f"Valeur sélectionnée: {value}")
-
-    # Méthode pratique
-    def get_int_value(self):
-        return int(self.scale.get_value())
 
 class KS_Settings(Gtk.Box):
     def __init__(self, name, cfg, ctrl):
@@ -68,8 +46,11 @@ class KS_Settings(Gtk.Box):
         if name == "DEBUG":
             debug = KatanaDebug(ctrl)
             self.append(debug)
+        elif name == "AMP":
+            self.amplifier = Amplifier(ctrl)
+            self.append(self.amplifier) 
         else:
-            self.slider = KS_Slider( "Level", 50)
+            self.slider = Slider( "Level", 50)
             self.append(self.slider)
 
 class KatanaSettings(Gtk.Box):
@@ -79,6 +60,8 @@ class KatanaSettings(Gtk.Box):
         self.ctrl = ctrl
         self.title = Gtk.Label(label=label)
         self.append(self.title)
+        ctrl.device.bind_property("name", self.title, \
+                "label", GObject.BindingFlags.DEFAULT)
         #box=Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         tabs = KS_TabbedPanel()
@@ -92,9 +75,6 @@ class KatanaSettings(Gtk.Box):
                 ks_settings = KS_Settings( name, config, ctrl)
                 page.append(ks_settings)
 
-        #page1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        #tabs.add_tab(page1, "tab1", "BOOSTER")
-
         #page2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         #page2.append(Gtk.Label(label="Contenu de l’onglet 2"))
         #tabs.add_tab(page2, "tab2", "MOB")
@@ -103,7 +83,7 @@ class KatanaSettings(Gtk.Box):
         #box.append(tabs)
         self.append(tabs)
         
-        #self.booster = KS_Slider( "Level", 50)
+        #self.booster = Slider( "Level", 50)
         #Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 127, 1)
         #self.bass_slider.connect("value-changed", self.on_bass_changed)
         #page1.append(self.booster)

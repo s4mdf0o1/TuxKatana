@@ -131,7 +131,8 @@ class KatanaDebug(Gtk.Box):
 
     def debug_msg(self, msg):
         #self.ctrl.listener_callback = None
-        dbg.debug(f"debug_msg: {msg.hex()}")
+        #dbg.debug(f"debug_msg: {msg.hex()}")
+        pass
 
     def set_config(self, button):
         self.cmd.set_active(0)

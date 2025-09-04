@@ -1,5 +1,5 @@
 import mido
-from gi.repository import GLib
+from gi.repository import GLib, GObject
 
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import SingleQuotedScalarString as sq
@@ -12,33 +12,18 @@ from queue import Queue
 
 from .sysex import SysExML, SysExMessage
 from .midi_port import KatanaPort
+from .device import Device
 
 import logging
 from lib.log_setup import LOGGER_NAME
 log_sysex = logging.getLogger(LOGGER_NAME)
 dbg = logging.getLogger("debug")
 
-class AmpStatus:
-    def __init__(self, addr_start ):
-        self.addr = addr_start
-        self.data = []
-    def get_data_by_addr( self, addr ):
-        pass
-    def get_data_by_offset( sefl, offset ):
-        pass
-    def base128(addr, offset):
-        b = addr[:]
-        b[3] += offset
-        for i in range(3,0,-1):
-            if b[i] > 127:
-                carry = b[i] // 128
-                b[i] %= 128
-                b[i-1] += carry
-        return b
- 
+
 class KatanaController:
     def __init__(self, parent):
         self.parent = parent
+        self.device = Device(self, [0x60,0,0,0])
         self.port = KatanaPort()
         with open("params/midi.yaml", "r") as f:
             self.midi= yaml.load(f)
@@ -64,6 +49,10 @@ class KatanaController:
             self.port.connect(self.listener)
             sleep(.1)
             self.scan_devices()
+            self.device.set_param("amp_gain", 87.0)
+            self.device.set_param("amp_type", 3)
+            #self.device.notify("amp_type")
+
             self.parent.win.ks.presets.get_presets()
             return False
         else:
@@ -123,12 +112,10 @@ class KatanaController:
             dev = [0]
             mod = [0,0,0,infos[1]]
             num = [infos[2]]
-            self.device = {
-                "manufacturer": to_str(man),
-                "device": to_str(dev),
-                "model": sq(to_str(mod)), # Forced string to write YAML
-                "number": to_str(num)
-                }
+            self.device.manufacturer = to_str(man)
+            self.device.device = to_str(dev)
+            self.device.model = sq(to_str(mod))
+            self.device.number = to_str(num)
             self.message.header = man + dev + mod
             #dbg.debug(f"{self.device=}")
             dbg.debug(f"message.header= {to_str(self.message.header)}")
@@ -147,12 +134,19 @@ class KatanaController:
         if not devices:
             devices = {}
         if name:
-            devices[name] = self.device
+            devices[name] = {
+                    "manufacturer": self.device.manufacturer,
+                    "device": self.device.device,
+                    "model": self.device.model,
+                    "number": self.device.number
+                    }
         dbg.debug(f"{devices=}")
         with open("params/devices.yaml", "w") as f:
             devices = yaml.dump(devices, f)
 
-        self.parent.win.ks.title.set_label(name)
+        #self.parent.win.ks.title.set_label(name)
+        self.device.set_name(name)
+        self.device.amp_type = 1
         
     def get_path_val(self, path):
         m = path.split(':')
