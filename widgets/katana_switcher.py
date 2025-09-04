@@ -9,6 +9,10 @@ with open("params/config.yaml", "r") as f:
     config = yaml.load(f)
 dots = config['DOTS']
 
+import logging
+from lib.log_setup import LOGGER_NAME
+logger = logging.getLogger(LOGGER_NAME)
+
 class KatanaEffectSwitcher(Gtk.Box):
     def __init__(self, config, katana):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -46,6 +50,7 @@ class KES_Effects(Gtk.Box):
             label = colors[effects.index(name)%4] + "  " + name
             #but = Gtk.Button(label= config['DOTS']['BLACK'] + "  " +name)
             but = Gtk.Button(label= label)
+            but.name = name
             but.get_style_context().add_class("outer")
             but.path = cfg[name]
             but.is_active = False
@@ -57,6 +62,7 @@ class KES_Effects(Gtk.Box):
 
     def on_click( self, button ):
         if button.is_active:
+            logger.debug(button.name)
             self.katana.set_on(button.path)
             button.is_active = False
         else:

@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
+import sys
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk
+
 import mido
 from threading import Thread
-import sys
-from KatanaController import KatanaController
 from ruamel.yaml import YAML
 yaml = YAML(typ="safe")
 from time import sleep
+
+from KatanaController import KatanaController
 from widgets import KatanaEffectSwitcher, KatanaSettings
+from lib.log_setup import setup_logger
+logger = setup_logger("logs/katana_session.log")
 
 class ConnectWait(Gtk.Dialog):
     def __init__(self, app, parent):
@@ -48,10 +52,10 @@ class MainWindow(Gtk.Window):
         GLib.timeout_add_seconds(1, self.check_connection)
 
     def check_connection( self ):
-        print("check_connection")
+        print("MainWindow.check_connection")
         if app.katana.port.has_device:
-            self.wait_dialog.set_visible(False)
             self.set_sensitive(True)
+            self.wait_dialog.set_visible(False)
             return False
         #else:
             #self.set_sensitive(False)

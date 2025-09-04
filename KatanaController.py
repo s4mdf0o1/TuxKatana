@@ -1,31 +1,25 @@
 import mido
 from time import sleep
-from threading import Queue, Thread
 from gi.repository import GLib
+
 from ruamel.yaml import YAML
-yaml = YAML(typ="rt")
-#from ruamel.yaml.comments import CommentedSeq
-#from ruamel.yaml.scalarint import HexInt
 from ruamel.yaml.scalarstring import SingleQuotedScalarString as sq
+yaml = YAML(typ="rt")
+
+import re
 from collections import UserDict
-from lib import Config
+from threading import Thread
+from queue import Queue
+
+#from lib import Config
 import logging
-from datetime import datetime
+from lib.log_setup import LOGGER_NAME
+logger = logging.getLogger(LOGGER_NAME)
 
 DEBUG = True
 def debug( txt ):
     if DEBUG:
         print(txt)
-
-timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-logfile = f"logs/{timestamp}.log"
-handler = logging.FileHandler(logfile, mode="a")#, encoding="utf-8")
-fmt = logging.Formatter("[%(levelname)s] %(message)s")
-handler.setFormatter(fmt)
-
-logger = logging.getLogger("TuxKatana")
-logger.setLevel(logging.INFO)
-logger.addHandler(handler)
 
 class KatanaPort:
     def __init__(self):
@@ -34,7 +28,7 @@ class KatanaPort:
         self.index = 0
         self.name = None
 
-        GLib.timeout_add_seconds(10, self.check_online)
+        #GLib.timeout_add_seconds(10, self.check_online)
 
     def check_online( self ):
         debug("KatanaPort.check_online")
@@ -124,18 +118,20 @@ class SysExMessage:
         cks = [self.checksum(data)]
         return self.header + command + data + cks
 
+    def get_addr_data( self, msg ):
+        for t in ["F0 ", self.addrs.to_str(self.header)+" ", " F7"]:
+            msg = msg.replace( t, "" )
+        mlst = self.addrs.from_str(msg)
+        cmd = mlst.pop(0)
+        cks = mlst.pop(-1)
+        if cks != self.checksum(mlst):
+            raise ValueError("Checksum Error in {msg} ")
+        return mlst[:4], mlst[4:]
 
     def decode(self, msg):
-        debug(f"decode({msg.hex()})")
-        data = list(msg.data)
-        if data[0:4] == self.addrs['SCAN_REP']:
-            self.decode_ident(data[4:])
-            return {"type": "identity", }
-        elif data[0:6] == self.header:
-            command = data[6]
-            function = data[7:11]
-            if command == 0x12 and function[0] == 0x10:
-                debug(f"Chars: {''.join([chr(v) for v in data[11:27]])}")
+        debug(f"SysExMessage.decode({msg.hex()})")
+        addr, data =  self.get_addr_data(msg.hex())
+        debug(f"{self.addrs.to_str(addr)}: {self.addrs.to_str(data)}")
 
     def decode_ident( self, data ):
         debug(f"decode_ident({[hex(i) for i in data]})")
@@ -169,7 +165,7 @@ class KatanaController:
     def queue_watcher(self):
         while True:
             msg = self.msg_queue.get()
-            GLib.idle_add(self.port.decode, msg)
+            GLib.idle_add(self.message.decode, msg)
 
     def wait_device(self):
         debug("KatanaController.wait_device")
@@ -185,14 +181,14 @@ class KatanaController:
 
     def listener(self, msg):
         #debug(f"listener({msg})")
-        logger.info(msg.hex())
+        logger.debug(msg.hex())
         if msg.type == 'sysex':
             try:
                 if self.listener_callback:
                     #debug(self.listener_callback)
                     self.listener_callback(msg)
                 else:
-                    self.ms_queue.put(msg)
+                    self.msg_queue.put(msg)
                     print("No callback")
                     self.message.decode(msg)
                 #self.listener_callback = None
@@ -208,7 +204,8 @@ class KatanaController:
         self.listener_callback = None
 
     def send( self, message, callback=None ):
-        debug(f"send: {message.hex()}")
+        #debug(f"send: {message.hex()}")
+        logger.debug(f"SEND: {message.hex()}")
         if callback:
             self.listener_callback = callback
         self.port.output.send( message )
