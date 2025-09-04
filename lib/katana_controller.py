@@ -49,8 +49,8 @@ class KatanaController:
             self.port.connect(self.listener)
             sleep(.1)
             self.scan_devices()
-            self.device.set_param("amp_gain", 87.0)
-            self.device.set_param("amp_type", 3)
+            self.device.set_param("amp_gain", 37.0)
+            self.device.set_param("amp_type", 2)
             #self.device.notify("amp_type")
 
             self.parent.win.ks.presets.get_presets()

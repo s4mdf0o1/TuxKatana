@@ -13,6 +13,8 @@ import logging
 from lib.log_setup import LOGGER_NAME
 logger = logging.getLogger(LOGGER_NAME)
 
+from .toggle import Toggle
+
 class KatanaEffectSwitcher(Gtk.Box):
     def __init__(self, config, katana):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -80,7 +82,7 @@ class KES_Bank(Gtk.Box):
         self.katana = katana
         self.presets = []
         for b in buttons:
-            preset = KES_Toggle( b, buttons[b]) #, katana )
+            preset = Toggle( b, buttons[b] )
             preset.handler_id = preset.connect("toggled", self.on_toggled)
             self.presets.append(preset)
             box.append( preset )
@@ -96,31 +98,5 @@ class KES_Bank(Gtk.Box):
                 button.handler_block(button.handler_id)
                 button.set_active(False)
                 button.handler_unblock(button.handler_id)
-
-class KES_Toggle(Gtk.ToggleButton):
-    def __init__(self, label, path): #, katana=None):
-        self._label_on = dots['RED'] + "  " + label
-        self._label_off = dots['BLACK'] + "  " + label
-        super().__init__(label=self._label_off)
-        #self.get_style_context().add_class("outer")
-        self.set_hexpand(True)
-        self.set_halign(Gtk.Align.FILL)
-
-        self.path = path
-        self.midi_type = path.split(':')[0].lower()
-        self.connect("notify::active", self.on_active_changed)
-
-    def on_active_changed(self, button, param): #is_active: bool):
-        is_active = button.get_active()
-        self.set_label(self._label_on if is_active else self._label_off)
-        #ctx = self.get_style_context()
-        #ctx.remove_class( "outer" if is_active else "inner")
-        #ctx.add_class( "inner" if is_active else "outer")
-    #def on_toggled( self, button ):
-    #    print(self.grouped)
-    #    if self.midi_type == "control_change" and not button.get_active():
-    #        self.katana.off(self.path)
-    #    else:
-    #        self.katana.on(self.path)
 
 
