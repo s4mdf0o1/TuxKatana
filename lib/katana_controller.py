@@ -23,6 +23,7 @@ dbg = logging.getLogger("debug")
 class KatanaController:
     def __init__(self, parent):
         self.parent = parent
+        self.message = SysExMessage()
         self.device = Device(self, [0x60,0,0,0])
         self.port = KatanaPort()
         with open("params/midi.yaml", "r") as f:
@@ -30,7 +31,6 @@ class KatanaController:
         self.pc = mido.Message('program_change')
         self.cc = mido.Message('control_change')
         self.sysex = mido.Message('sysex')
-        self.message = SysExMessage()
         self.listener_callback = None
         self.msg_queue = Queue()
         self.thread_watch = Thread(target=self.queue_watcher, daemon=True).start()
@@ -40,7 +40,12 @@ class KatanaController:
     def queue_watcher(self):
         while True:
             msg = self.msg_queue.get()
-            GLib.idle_add(self.message.decode, msg)
+            #GLib.idle_add(self.message.decode, msg)
+            dbg.debug(f"{self.listener_callback=}")
+            if not self.listener_callback:
+                GLib.idle_add(self.device.got_message, msg)
+            else:
+                GLib.idle_add(self.listener_callback, msg)
 
     def wait_device(self):
         dbg.debug("KatanaController.wait_device")
@@ -49,11 +54,8 @@ class KatanaController:
             self.port.connect(self.listener)
             sleep(.1)
             self.scan_devices()
-            self.device.set_param("amp_gain", 37.0)
-            self.device.set_param("amp_type", 2)
-            #self.device.notify("amp_type")
 
-            self.parent.win.ks.presets.get_presets()
+            #self.parent.win.ks.presets.get_presets()
             return False
         else:
             return True
@@ -62,25 +64,25 @@ class KatanaController:
         #dbg.debug(f"listener({msg})")
         log_sysex.debug(msg.hex())
         if msg.type == 'sysex':
-            try:
-                if self.listener_callback:
-                    #dbg.debug(self.listener_callback)
-                    self.listener_callback(msg)
-                else:
-                    self.msg_queue.put(msg)
-                    print("No callback")
-                    self.message.decode(msg)
-                #self.listener_callback = None
-            except:
-                import traceback
-                traceback.print_exc()
-        else:
-            try:
-                dbg.debug(msg)
-            except:
-                import traceback
-                traceback.print_exc()
-        self.listener_callback = None
+            self.msg_queue.put(msg)
+#            try:
+#                if self.listener_callback:
+#                    #dbg.debug(self.listener_callback)
+#                    self.listener_callback(msg)
+#                else:
+#                    self.msg_queue.put(msg)
+#                    #print("No callback")
+#                    #self.message.decode(msg)
+#            except:
+#                import traceback
+#                traceback.print_exc()
+#        else:
+#            try:
+#                dbg.debug(msg)
+#            except:
+#                import traceback
+#                traceback.print_exc()
+        #self.listener_callback = None
 
     def send( self, message, callback=None ):
         #dbg.debug(f"send: {message.hex()}")
@@ -97,10 +99,8 @@ class KatanaController:
         self.sysex.data = self.message.addrs['SCAN_REQ']
         self.send(self.sysex, self.set_device)
         #self.listener_callback = self.set_name
-        msg = self.message.get( 'GET', 'NAME', [0,0,0,0x10])
+        #msg = self.message.get( 'GET', 'NAME', [0,0,0,0x10])
         #dbg.debug(f"{self.message.addrs.to_str(msg)}")
-        self.sysex.data = msg
-        self.send(self.sysex, self.set_name)
 
     def set_device(self, msg):
         dbg.debug(f"set_device({msg.hex()})")
@@ -117,36 +117,38 @@ class KatanaController:
             self.device.model = sq(to_str(mod))
             self.device.number = to_str(num)
             self.message.header = man + dev + mod
-            #dbg.debug(f"{self.device=}")
+            dbg.debug(f"{self.device=}")
             dbg.debug(f"message.header= {to_str(self.message.header)}")
+        self.device.get_name()
+        self.device.get_presets()
 
-    def set_name( self, msg ):
-        data = list(msg.data)
-        name=""
-        if data[0:6] == self.message.header:
-            command = data[6]
-            function = data[7:11]
-            if command == 0x12 and function[0] == 0x10:
-                name = ''.join([chr(v) for v in data[11:27]])
-                name = name.strip()
-        with open("params/devices.yaml", "r") as f:
-            devices = yaml.load(f)
-        if not devices:
-            devices = {}
-        if name:
-            devices[name] = {
-                    "manufacturer": self.device.manufacturer,
-                    "device": self.device.device,
-                    "model": self.device.model,
-                    "number": self.device.number
-                    }
-        dbg.debug(f"{devices=}")
-        with open("params/devices.yaml", "w") as f:
-            devices = yaml.dump(devices, f)
-
-        #self.parent.win.ks.title.set_label(name)
-        self.device.set_name(name)
-        self.device.amp_type = 1
+#    def set_name( self, msg ):
+#        data = list(msg.data)
+#        name=""
+#        if data[0:6] == self.message.header:
+#            command = data[6]
+#            function = data[7:11]
+#            if command == 0x12 and function[0] == 0x10:
+#                name = ''.join([chr(v) for v in data[11:27]])
+#                name = name.strip()
+#        with open("params/devices.yaml", "r") as f:
+#            devices = yaml.load(f)
+#        if not devices:
+#            devices = {}
+#        if name:
+#            devices[name] = {
+#                    "manufacturer": self.device.manufacturer,
+#                    "device": self.device.device,
+#                    "model": self.device.model,
+#                    "number": self.device.number
+#                    }
+#        dbg.debug(f"{devices=}")
+#        with open("params/devices.yaml", "w") as f:
+#            devices = yaml.dump(devices, f)
+#
+#        #self.parent.win.ks.title.set_label(name)
+#        self.device.set_name(name)
+#        self.device.amp_type = 1
         
     def get_path_val(self, path):
         m = path.split(':')
@@ -172,14 +174,5 @@ class KatanaController:
         self.cc.control = val['CC']
         self.cc.value = val['OFF']
         self.port.send(self.cc)
-
-
-if __name__ == "__main__":
-    from ast import literal_eval
-    katana = KatanaController()
-    try:
-        katana.send("send", "Amp_type", "Lead")
-    except KeyboardInterrupt:
-        katana.port.close()
 
 

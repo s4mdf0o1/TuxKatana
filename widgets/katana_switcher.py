@@ -48,22 +48,23 @@ class KES_Effects(Gtk.Box):
         self.katana = katana
         effects = ["BOOSTER", "MOD", "FX", "DELAY", "REVERB"]
         for name in effects:
-            colors = [c for n,c in dots.items()]
-            label = colors[effects.index(name)%4] + "  " + name
+            but = Toggle(name, cfg[name], status_id=1)
+            #colors = [c for n,c in dots.items()]
+            #label = colors[effects.index(name)%4] + "  " + name
             #but = Gtk.Button(label= config['DOTS']['BLACK'] + "  " +name)
-            but = Gtk.Button(label= label)
-            but.name = name
-            but.get_style_context().add_class("outer")
-            but.path = cfg[name]
-            but.is_active = False
+            #but = Gtk.Button(label= label)
+            #but.name = name
+            #but.get_style_context().add_class("outer")
+            #but.path = cfg[name]
+            #but.is_active = False
             but.connect("clicked", self.on_click)
-            but.set_hexpand(True)
-            but.set_halign(Gtk.Align.FILL)
+            #but.set_hexpand(True)
+            #but.set_halign(Gtk.Align.FILL)
 
             box.append(but)
 
     def on_click( self, button ):
-        if button.is_active:
+        if button.get_active():
             logger.debug(button.name)
             self.katana.set_on(button.path)
             button.is_active = False

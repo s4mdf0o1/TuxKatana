@@ -2,7 +2,8 @@ import argparse
 from itertools import zip_longest
 from termcolor import colored
 
-SEQUENCES_KNOWN = [["F0","41","00","00","00","00","33"]]  # exemple
+SEQUENCES_KNOWN = [["F0","41","00","00","00","00","33"],
+                   "43 6C 65 61 6E 20 72 65 76 65 72 62 20 20 20 20".split(' ')]  # exemple
 
 def to_tokens(line: str):
     return [t.upper() for t in line.strip().split()]

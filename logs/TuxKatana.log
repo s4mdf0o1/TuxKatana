@@ -1,2 +1,29 @@
-Device
 SysExMessage.__init__
+Device
+Presets: ctrl.device.presets={}
+KatanaController.wait_device
+KatanaPort.list
+scan_devices()
+self.listener_callback=<bound method KatanaController.set_device of <lib.katana_controller.KatanaController object at 0x7fec7ffbecf0>>
+set_device(F0 7E 00 06 02 41 33 03 00 00 06 00 00 00 F7)
+self.device=<device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>
+message.header= 41 00 00 00 00 33
+self.listener_callback=<bound method Device.set_name_from_data of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+self.listener_callback=<bound method Device.set_preset of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+self.listener_callback=<bound method Device.set_preset of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+self.listener_callback=<bound method Device.set_preset of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+self.listener_callback=<bound method Device.set_preset of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+self.listener_callback=<bound method Device.set_preset of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+self.listener_callback=<bound method Device.set_preset of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+self.listener_callback=<bound method Device.set_preset of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+self.listener_callback=<bound method Device.set_preset of <device.Device object at 0x7fec8ac0eac0 (lib+device+Device at 0x3b603f40)>>
+data=[75, 65, 84, 65, 78, 65, 32, 77, 107, 50, 32, 32, 32, 32, 32, 32]
+data=[67, 108, 101, 97, 110, 32, 114, 101, 118, 101, 114, 98, 32, 32, 32, 32]
+data=[68, 106, 97, 110, 103, 111, 32, 97, 99, 99, 111, 109, 112, 32, 32, 32]
+data=[71, 111, 111, 100, 32, 99, 104, 111, 114, 117, 115, 32, 115, 108, 97, 109]
+data=[80, 117, 114, 112, 108, 101, 32, 82, 97, 105, 110, 32, 32, 32, 32, 32]
+data=[80, 105, 110, 107, 32, 70, 108, 111, 121, 100, 32, 67, 108, 101, 97, 110]
+data=[77, 111, 100, 101, 114, 110, 32, 76, 101, 97, 100, 32, 32, 32, 32, 32]
+data=[75, 97, 116, 97, 110, 97, 32, 67, 108, 101, 97, 110, 32, 32, 32, 32]
+data=[77, 111, 100, 101, 114, 110, 32, 80, 111, 119, 101, 114, 32, 32, 32, 32]
+name=KATANA Mk2

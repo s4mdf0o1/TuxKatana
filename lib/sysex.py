@@ -42,22 +42,36 @@ class SysExMessage:
         command = self.addrs[cmd]
         addr = self.addrs[name]
         data = addr + value
-        cks = [self.checksum(data)]
+        cks = self.checksum(data)
         return self.header + command + data + cks
 
     def get_addr_data( self, msg ):
+        msg = msg.hex()
         for t in ["F0 ", self.addrs.to_str(self.header)+" ", " F7"]:
             msg = msg.replace( t, "" )
         mlst = self.addrs.from_str(msg)
         cmd = mlst.pop(0)
         cks = mlst.pop(-1)
-        if cks != self.checksum(mlst):
-            raise ValueError("Checksum Error in {msg} ")
+        #dbg.debug(f"{cmd=} {cks=} {self.checksum(mlst)=}")
+        #dbg.debug([hex(v) for v in mlst])
+        if cks != self.checksum(mlst)[0]:
+            raise ValueError(f"Checksum Error in {msg} ")
         return mlst[:4], mlst[4:]
+
+    def get_str(self, msg):
+        addr, data = self.get_addr_data(msg)
+        dbg.debug(f"{data=}")
+        return ''.join([chr(v) for v in data])
+
+    def build(self, cmd, addr, data):
+        cmd = self.addrs[cmd]
+        cks = self.checksum( addr + data )
+        msg = self.header + cmd + addr + data + cks
+        return msg
 
     def decode(self, msg):
         dbg.debug(f"SysExMessage.decode({msg.hex()})")
-        addr, data =  self.get_addr_data(msg.hex())
+        addr, data =  self.get_addr_data(msg)
         dbg.debug(f"{self.addrs.to_str(addr)}: {self.addrs.to_str(data)}")
 
     def decode_ident( self, data ):
@@ -65,10 +79,6 @@ class SysExMessage:
         #print(app.katana)
 
     def checksum( self, data ):
-        return (128 - (sum(data) % 128)) % 128
+        return [(128 - (sum(data) % 128)) % 128]
     
-    def create( self, cmd, addr, val ):
-        data=addr + val
-        return mido.Message('sysex', self.header + cmd + data + self.checksum(data))
-
 
