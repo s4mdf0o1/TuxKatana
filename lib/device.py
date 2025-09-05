@@ -1,17 +1,57 @@
 
-from gi.repository import GLib, GObject
+from gi.repository import GLib, GObject, Gio
 import logging
 from lib.log_setup import LOGGER_NAME
 log_sysex = logging.getLogger(LOGGER_NAME)
 dbg = logging.getLogger("debug")
 
+class Preset(GObject.GObject):
+    name = GObject.Property(type=str)
+    label = GObject.Property(type=str)
+    num = GObject.Property(type=int)
+
+class Amplifier(GObject.GObject):
+    amp_name = GObject.Property(type=str, default="")
+    amp_num = GObject.Property(type=int, default=-1)
+    amp_gain = GObject.Property(type=float, default=50.0)
+    amp_volume = GObject.Property(type=float, default=50.0)
+    amp_variation = GObject.Property(type=bool, default=False)
+    def __init__(self, device):
+        super().__init__()
+        self.device = device
+        self._pending = {}
+        self._flush_id = None
+        self.connect("notify", self._on_any_property_changed)
+
+    def on_param_changed(self, name, value):
+        dbg.debug(f"{name}={value}")
+
+    def set_param( self, name, value):
+        self.set_property(name, value)
+       
+    def _on_any_property_changed(self, obj, pspec):
+        name = pspec.name
+        value = self.get_property(name)
+        self._pending[name] = value
+        self._schedule_flush()
+
+    def _schedule_flush(self):
+        if self._flush_id is None:
+            self._flush_id = GLib.timeout_add(100, self._flush)
+
+    def _flush(self):
+        for name, value in self._pending.items():
+            self.on_param_changed(name, value)
+
+        self._pending.clear()
+        self._flush_id = None
+        return False
+
+
 class Device(GObject.GObject):
     name = GObject.Property(type=str, default="SETTINGS")
-    presets = GObject.Property(type=object)
-    amp_type = GObject.Property(type=int, default=0)
-    amp_gain = GObject.Property(type=float, default=0.0)
-    amp_volume = GObject.Property(type=float, default=0.0)
-    amp_variation = GObject.Property(type=bool, default=False)
+    presets = GObject.Property(type=Gio.ListStore)
+    amplifier = GObject.Property(type=object)
 
     def __init__(self, ctrl, addr_start ):
         super().__init__()
@@ -19,7 +59,8 @@ class Device(GObject.GObject):
         self.ctrl = ctrl
         self.sysex = ctrl.message
 
-        self.presets = {}
+        self.presets = Gio.ListStore(item_type=Preset)
+        self.amplifier=Amplifier(self)
 
         self.addr = addr_start
         self.data = []
@@ -52,18 +93,15 @@ class Device(GObject.GObject):
             msg = self.sysex.get('GET', 'PRESET_'+str(i), size)
             self.ctrl.sysex.data = msg
             self.ctrl.send(self.ctrl.sysex, self.set_preset)
-
-            #addr = self.message.addrs['PRESET_'+str(i)]
-            #data = [0,0,0,0x10]
-            #msg = self.sysex.build('GET', addr, data)
-            #self.ctrl.send(msg, self.receive_preset)
+        self.ctrl.listener_callback= None
 
     def set_preset(self, msg):
         addr, data = self.sysex.get_addr_data(msg)
-        name = self.sysex.get_str(msg).strip()
-        self.presets[addr[1]] = {'name': name, 'addr': addr}
-
-        #dbg.debug(f"set_preset: {self.presets=}")
+        num = addr[1]
+        name = "PRESET_"+str(num)
+        label = self.sysex.get_str(msg).strip()
+        #addr = self.sysex.addrs.to_str(addr)
+        self.presets.append(Preset(name=name, label=label, num=num))
 
 
     def on_param_changed(self, name, value):
@@ -86,7 +124,6 @@ class Device(GObject.GObject):
 
     def set_param( self, name, value):
         self.set_property(name, value)
-   
  
     def _on_any_property_changed(self, obj, pspec):
         name = pspec.name

@@ -16,7 +16,7 @@ dbg=logging.getLogger("debug")
 from .katana_debug import KatanaDebug
 from .slider import Slider
 from .amplifier import Amplifier
-from .presets import Presets
+from .presets import PresetsView
 
 class KS_TabbedPanel(Gtk.Box):
     def __init__(self):
@@ -69,7 +69,7 @@ class KatanaSettings(Gtk.Box):
             page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
             tabs.add_tab(page, name.lower(), name)
             if name == "PRESETS":
-                self.presets = Presets(ctrl)
+                self.presets = PresetsView(ctrl)
                 page.append(self.presets)
             else:
                 ks_settings = KS_Settings( name, config, ctrl)

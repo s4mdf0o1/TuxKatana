@@ -52,8 +52,6 @@ class SysExMessage:
         mlst = self.addrs.from_str(msg)
         cmd = mlst.pop(0)
         cks = mlst.pop(-1)
-        #dbg.debug(f"{cmd=} {cks=} {self.checksum(mlst)=}")
-        #dbg.debug([hex(v) for v in mlst])
         if cks != self.checksum(mlst)[0]:
             raise ValueError(f"Checksum Error in {msg} ")
         return mlst[:4], mlst[4:]

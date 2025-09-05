@@ -20,6 +20,7 @@ class Slider(Gtk.Box):
         self.scale.set_hexpand(True)
         self.scale.name = ""
         label = Gtk.Label(label=name)
+        label.set_size_request(80, -1)
         self.append(label)
         self.append(self.scale)
 

@@ -41,7 +41,7 @@ class KatanaController:
         while True:
             msg = self.msg_queue.get()
             #GLib.idle_add(self.message.decode, msg)
-            dbg.debug(f"{self.listener_callback=}")
+            #dbg.debug(f"{self.listener_callback=}")
             if not self.listener_callback:
                 GLib.idle_add(self.device.got_message, msg)
             else:
@@ -54,35 +54,15 @@ class KatanaController:
             self.port.connect(self.listener)
             sleep(.1)
             self.scan_devices()
-
-            #self.parent.win.ks.presets.get_presets()
             return False
         else:
             return True
 
     def listener(self, msg):
         #dbg.debug(f"listener({msg})")
-        log_sysex.debug(msg.hex())
+        #log_sysex.debug(msg.hex())
         if msg.type == 'sysex':
             self.msg_queue.put(msg)
-#            try:
-#                if self.listener_callback:
-#                    #dbg.debug(self.listener_callback)
-#                    self.listener_callback(msg)
-#                else:
-#                    self.msg_queue.put(msg)
-#                    #print("No callback")
-#                    #self.message.decode(msg)
-#            except:
-#                import traceback
-#                traceback.print_exc()
-#        else:
-#            try:
-#                dbg.debug(msg)
-#            except:
-#                import traceback
-#                traceback.print_exc()
-        #self.listener_callback = None
 
     def send( self, message, callback=None ):
         #dbg.debug(f"send: {message.hex()}")
@@ -95,15 +75,11 @@ class KatanaController:
 
     def scan_devices(self):
         dbg.debug(f"scan_devices()")
-        #self.listener_callback = self.set_device
         self.sysex.data = self.message.addrs['SCAN_REQ']
         self.send(self.sysex, self.set_device)
-        #self.listener_callback = self.set_name
-        #msg = self.message.get( 'GET', 'NAME', [0,0,0,0x10])
-        #dbg.debug(f"{self.message.addrs.to_str(msg)}")
 
     def set_device(self, msg):
-        dbg.debug(f"set_device({msg.hex()})")
+        #dbg.debug(f"set_device({msg.hex()})")
         data = list(msg.data)
         to_str = self.message.addrs.to_str
         if data[0:4] == self.message.addrs['SCAN_REP']:
@@ -117,8 +93,8 @@ class KatanaController:
             self.device.model = sq(to_str(mod))
             self.device.number = to_str(num)
             self.message.header = man + dev + mod
-            dbg.debug(f"{self.device=}")
-            dbg.debug(f"message.header= {to_str(self.message.header)}")
+            #dbg.debug(f"{self.device=}")
+            #dbg.debug(f"message.header= {to_str(self.message.header)}")
         self.device.get_name()
         self.device.get_presets()
 

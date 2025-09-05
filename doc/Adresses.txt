@@ -1,7 +1,7 @@
 AMP:
-   SWITCH:
-      60 00 06 50 -> [00|01|02|03|04] [Acoustic|Clean|Crunsh|Lead|Brown]
-      60 00 00 21 -> [01|08|0B|18|17]
+   TYPE:
+      60 00 06 50 -> [00|01|02|03|04] 
+      60 00 00 21 -> [01|08|0B|18|17] [Acoustic|Clean|Crunsh|Lead|Brown]
       + Variation :  [1C|1D|1E|1F|20]
    GAIN:
       60 00 00 22 
