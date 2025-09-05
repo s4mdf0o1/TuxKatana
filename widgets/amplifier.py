@@ -6,6 +6,10 @@ from .slider import Slider
 import logging
 dbg=logging.getLogger("debug")
 
+from ruamel.yaml import YAML
+yaml = YAML(typ="rt")
+with open("params/amplifier.yaml", 'r') as f:
+    params = yaml.load(f)
 from .toggle import Toggle
 
 class Amplifier(Gtk.Box):

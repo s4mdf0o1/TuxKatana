@@ -91,6 +91,7 @@ class KatanaDebug(Gtk.Box):
         header = self.ctrl.message.header
         self.midi.set_active(0)
         if button.get_active():
+            dbg.debug(f"Set Edit mode: active: 1")
             self.send(None, 'SET', '7F 00 00 01', '01')
         else:
             self.send(None, 'SET', '7F 00 00 01', '00')

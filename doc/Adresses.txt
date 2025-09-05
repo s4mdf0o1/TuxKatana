@@ -1,13 +1,18 @@
 AMP:
    TYPE:
-      60 00 06 50 -> [00|01|02|03|04] 
       60 00 00 21 -> [01|08|0B|18|17] [Acoustic|Clean|Crunsh|Lead|Brown]
       + Variation :  [1C|1D|1E|1F|20]
+      - Natural Clean
+      - Clean Twin
+      - Combo Crunch
+      - 
+
+      60 00 06 50 -> [00|01|02|03|04] 
    GAIN:
-      60 00 00 22 
-      60 00 06 51
+      60 00 00 22 -> write value
+      60 00 06 51 <- read status
    VOLUME:
-      60 00 00 28
+      60 00 00 28 -> write
       60 00 06 52
    Variation:
       60 00 06 5C: [00|01] ???
@@ -24,6 +29,17 @@ EQ:
       60 00 06 55
 
 BOOSTER:
+   Sniff Send:
+      Drive:
+         60 00 00 12 
+      Level:
+         60 00 00 17
+      Types:
+         60 00 00 11:
+            - Mid Boost
+            - Clean Boost
+
+
    60 00 00 10 -> [00|01]
    60 00 06 5D
    Colors:

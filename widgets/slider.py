@@ -8,7 +8,7 @@ class Slider(Gtk.Box):
         adjustment = Gtk.Adjustment(
             value=value,
             lower=0,
-            upper=127,
+            upper=100,
             step_increment=1,
             page_increment=8
         )

@@ -38,12 +38,20 @@ class SysExMessage:
         self.addrs = SysExML("params/sysex.yaml")
         self.header = [int(v, 16) for v in "41 00 00 00 00 33".split(' ')]
 
-    def get( self, cmd, name, value ):
+    def get_from_name( self, cmd, name, value ):
         command = self.addrs[cmd]
         addr = self.addrs[name]
         data = addr + value
         cks = self.checksum(data)
         return self.header + command + data + cks
+
+    def get_with_addr( self, cmd, addr, value ):
+        command = self.addrs[cmd]
+        #addr = self.addrs[name]
+        data = addr + value
+        cks = self.checksum(data)
+        return self.header + command + data + cks
+
 
     def get_addr_data( self, msg ):
         msg = msg.hex()
@@ -58,7 +66,7 @@ class SysExMessage:
 
     def get_str(self, msg):
         addr, data = self.get_addr_data(msg)
-        dbg.debug(f"{data=}")
+        #dbg.debug(f"{data=}")
         return ''.join([chr(v) for v in data])
 
     def build(self, cmd, addr, data):

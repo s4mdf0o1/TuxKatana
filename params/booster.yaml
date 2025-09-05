@@ -1,0 +1,49 @@
+Types:
+  name: "booster_type"
+  type: "combo"
+  ADDR: "60 00 00 11"
+  Values:
+    'Mid Boost':    '00'
+    'Clean Boost':  '01'
+    'Treble Boost': '02'
+    'Crunch OD':    '03'
+    'Natural OD':   '04'
+    'Warm OD':      '05'
+    'Fat DS':       '06'
+    'Metal DS':     '08'
+    'Oct Fuzz':     '09'
+    'Blues Drive':  '0a'
+    'Over Drive':   '0b'
+    'TubeScreamer': '0c'
+    'Turbo OD':     '0d'
+    'Distortion':   '0e'
+    'Rat':          '0f'
+    'GuV DS':       '10'
+    'DTS+':         '11'
+    'Metal Zone':   '12'
+    '60s Fuzz':     '13'
+    'Muff Fuzz':    '14'
+    'HM-2':         '15'
+    'Metal Core':   '16'
+    'Centa OD':     '17'
+Colors:
+  name: "booster_color"
+  type: "combo"
+  ADDR: "60 00 06 39"
+  Values:
+    BLACK:  ⚫
+    GREEN:  🟢
+    RED:    🔴
+    YELLOW: 🟡
+Switch:
+  name: "booster_switch"
+  type: "toggle"
+  ADDR: "60 00 00 10"
+  Values:
+    ON:   '01'
+    OFF:  '00'
+Drive:
+  name: "booster_drive"
+  type: "slider"
+  ADDR: "60 00 00 12"
+
