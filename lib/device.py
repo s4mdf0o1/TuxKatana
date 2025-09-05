@@ -11,9 +11,14 @@ def to_str(d):
     elif isinstance(d, int):
         return f"{d:02x}"
 
-class MemoryMap:
+class MemoryMap(GObject.GObject):
+    __gsignals__ = {
+        "mry-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
     def __init__(self):
+        super().__init__()
         self.memory = []
+        self.loading = False
         self.base_addr = None
 
     def incr_base128(self, addr, n=1):
@@ -48,6 +53,7 @@ class MemoryMap:
     def add_block(self, addr_start, data):
         dbg.debug(f"{len(data)=}")
         if addr_start == [0x60, 0x00, 0x00, 0x00]:
+            self.loading = True
             self.memory = []
             self.base_addr = addr_start[:]
 
@@ -58,6 +64,7 @@ class MemoryMap:
         #block_offset = self.addr_to_offset(addr_start)
         expected_next = self.incr_base128(self.base_addr, len(self.memory))
         if addr_start != expected_next:
+            self.loading = False
             expn = to_str(expected_next)
             adst = to_str(addr_start)
             dbg.warn(f"Unintended Block: {expn=}, recvd: {adst=}")
@@ -68,13 +75,20 @@ class MemoryMap:
         #gap = block_offset - len(self.memory)
         #if gap > 0:
         #    self.memory.extend([0x00] * gap)
-
+    def read_from_str(self, saddr, size=1):
+        addr = [int(v, 16) for v in saddr.split(' ')]
+        return self.read(addr, size)
 
     def read(self, addr, size=1):
         if not self.base_addr:
             raise RuntimeError("Empty Memory")
         offset = self.addr_to_offset(addr)
-        return self.memory[offset:offset+size]
+        value = self.memory[offset:offset+size]
+        if len(value)==size and size==1:
+            value = value[0]
+        else:
+            value=None
+        return value
 
 class Preset(GObject.GObject):
     name = GObject.Property(type=str)
@@ -93,6 +107,15 @@ class Amplifier(GObject.GObject):
         self._pending = {}
         self._flush_id = None
         self.handler_id = self.connect("notify", self._on_any_property_changed)
+        self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
+
+    def load_from_mry(self, mry):
+        self.handler_block(self.handler_id)
+        amp_num = mry.read_from_str("60 00 06 50")
+        dbg.debug(f"Amplifier.load_from_mry: {amp_num=}")
+        if amp_num and self.amp_num != amp_num:
+            self.set_property("amp_num", amp_num)
+        self.handler_unblock(self.handler_id)
 
     def encode_type_variation(self):
         t = self.amp_num
@@ -137,19 +160,20 @@ class Device(GObject.GObject):
     name = GObject.Property(type=str, default="SETTINGS")
     presets = GObject.Property(type=Gio.ListStore)
     amplifier = GObject.Property(type=object)
-
     def __init__(self, ctrl, addr_start ):
         super().__init__()
         dbg.debug(self.__class__.__name__)
         self.ctrl = ctrl
         self.sysex = ctrl.message
 
+        self.mry = MemoryMap()
         self.presets = Gio.ListStore(item_type=Preset)
         self.amplifier=Amplifier(self)
 
+        self.is_loading_params = False
+
         self.addr = addr_start
         self.data = []
-        self.mry = MemoryMap()
         self.sysex_map = {
             "60 00 06 50": {  # réception type_num
             "obj": self.amplifier,
@@ -189,6 +213,9 @@ class Device(GObject.GObject):
         addr, data =  self.sysex.get_addr_data(msg)
         #dbg.debug(f"{to_str(addr)=} {to_str(data)=} {len(data)=}")
         if len(data) > 63:
+            if not self.mry.loading and not self.is_loading_params:
+                self.is_loading_params = True
+                GLib.timeout_add_seconds(.8, self.load_params)
             self.mry.add_block(addr, data)
         else:
             saddr = to_str(addr)
@@ -214,6 +241,15 @@ class Device(GObject.GObject):
 #            else:
 #                dbg.debug(f"{to_str(addr)=} {to_str(data)=} {len(data)=}")
 
+    def load_params(self):
+        #self.amplifier.amp_variation = self.mry.read([0x60,0,6,0x5c])[0]
+        #self.amplifier.amp_num = self.mry.read([0x60,0,6,0x50])[0]
+        #self.amplifier.amp_gain = self.mry.read([0x60,0,6,0x51])[0]
+        #dbg.debug(f"Gain: {self.mry.read([0x60,0,6,0x51])}")
+        #self.amplifier.amp_volume = self.mry.read([0x60,0,6,0x52])[0]
+        dbg.debug("LOAD_PARAMS")
+        self.mry.emit("mry-loaded")
+        self.is_loading_params = False
 
     def get_name(self):
         addr = self.sysex.addrs['NAME']

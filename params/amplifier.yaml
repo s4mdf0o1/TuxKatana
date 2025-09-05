@@ -3,7 +3,7 @@ Types:
   type: "combo"
   ADDR: "60 00 00 21"
   Values:
-    'Acoustic:      '01'
+    'Acoustic':      '01'
     'Clean':        '08'
     'Crunch':       '0b'
     'Lead':         '18'
