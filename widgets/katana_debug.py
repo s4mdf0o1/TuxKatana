@@ -47,6 +47,9 @@ class KatanaDebug(Gtk.Box):
         but_send = Gtk.Button(label="SEND")
         but_send.connect("clicked", self.send)
 
+        but_var = Gtk.Button(label="VARIATION")
+        but_var.connect("clicked", self.variation)
+
         but_cfg = Gtk.Button(label="Get_Config")
         but_cfg.connect("clicked", self.set_config)
 
@@ -77,6 +80,11 @@ class KatanaDebug(Gtk.Box):
         self.append(but_cfg)
         self.append(h_box3)
         self.append(h_box4)
+        self.append(but_var)
+
+    def variation(self, but):
+        val=self.ctrl.device.mry.read_from_str("60 00 06 5c")
+        dbg.debug(f"VAL: {val}")
 
     def add_log_note(self, button):
         note = self.log_note.get_text()

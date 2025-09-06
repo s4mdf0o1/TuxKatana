@@ -41,7 +41,7 @@ class Amplifier(Gtk.Box):
         self.amp_variation.name = "amp_variation"
         self.ctrl.device.amplifier.bind_property(
                 "amp_variation", self.amp_variation,
-                "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+                "active", GObject.BindingFlags.SYNC_CREATE)# | GObject.BindingFlags.BIDIRECTIONAL)
         self.amp_variation.connect("toggled", self.on_toggle_changed)
         self.append(self.amp_variation)
 

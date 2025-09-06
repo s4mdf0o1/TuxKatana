@@ -7,11 +7,6 @@ dbg = logging.getLogger("debug")
 from .tools import *
 import numpy as np
 
-#from ruamel.yaml import YAML
-#yaml = YAML(typ="rt")
-#with open("params/amplifier.yaml", 'r') as f:
-#    raw = yaml.load(f)
-#amp_map = raw
 from .map import Map
 
 class Amplifier(GObject.GObject):
@@ -33,7 +28,6 @@ class Amplifier(GObject.GObject):
         self._flush_id = None
         self.handler_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-changed", self.load_from_mry)
-        #device.mry.connect("mry-changed", self.load_from_mry)
         self.set_mry_map()
 
     def set_mry_map(self):
@@ -65,33 +59,20 @@ class Amplifier(GObject.GObject):
     def on_param_changed(self, name, value):
         dbg.debug(f"Amplifier.on_param_changed: {name}={value}")
         if name in ["amp-variation", "amp-num"]:
-            if int(value) < 10:# self.amp_num < 10:
+            if int(value) < 10:
                 dbg.debug("CHANGED")
                 val = self.encode_type_variation()
                 addr = from_str(self.map.send["amp_type"])
                 self.device.send(addr, val)
-                #msg=self.device.sysex.get_with_addr('SET', addr, val)
-                #self.device.ctrl.sysex.data=msg
-                #self.device.ctrl.send(self.device.ctrl.sysex)
         elif name == "amp-gain":
             addr = from_str(self.map.send["amp_gain"])
-            val = [int(value)] #[np.int16(value)] #[int(value, 16)]
-            #val = [int(100+np.log10(int(value)/100)*50)]
+            val = [int(value)]
             dbg.debug(val)
             self.device.send(addr, val)
-            #msg=self.device.sysex.get_with_addr('SET', addr, val)
-            #self.device.ctrl.sysex.data=msg
-            #self.device.ctrl.send(self.device.ctrl.sysex)
         elif name == "amp-volume":
             addr = from_str(self.map.send["amp_volume"])
-            val = [np.int16(value)] #int(value, 16)]
+            val = [np.int16(value)]
             self.device.send(addr, val)
-            #msg=self.device.sysex.get_with_addr('SET', addr, val)
-            #self.device.ctrl.sysex.data=msg
-            #self.device.ctrl.send(self.device.ctrl.sysex)
-
-
-            #dbg.debug(f"amp: {to_str(msg)=}")
 
     def set_param( self, name, value):
         self.set_property(name, value)
@@ -100,11 +81,10 @@ class Amplifier(GObject.GObject):
         dbg.debug(f"set_amp_type({amp_name=}, {amp_code=} )")
         mtype = self.map['Type']
         addr = from_str(mtype['SEND'])
-        val = from_str(amp_code) #mtype['Values'][amp_name])
+        val = from_str(amp_code)
         msg = self.fsem.get_with_addr('SET', addr, val)
         self.ctrl.sysex.data=msg
         self.ctrl.send(self.device.ctrl.sysex)
-        #dbg.debug(f"set_amp_type({to_str(addr)}, {to_str(val)})")
         
        
     def _on_any_property_changed(self, obj, pspec):

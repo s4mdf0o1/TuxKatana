@@ -47,23 +47,76 @@ len(data)=241
 len(data)=241
 len(data)=241
 load_from_mry()
-set_amp_type(amp_name='Crunch', amp_code='0b' )
-DATA: 60 00 00 21 0b
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88bfd590>
+set_amp_type(amp_name='Lead', amp_code='18' )
+DATA: 60 00 00 21 18
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982c0d590>
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
+len(data)=139
+load_from_mry()
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
+Amplifier.on_param_changed: amp-num=3
+CHANGED
+DATA: 60 00 00 21 1f
+Amplifier.on_param_changed: amp-variation=True
+CHANGED
+DATA: 60 00 00 21 1f
+Amplifier.on_param_changed: amp-gain=78.0
+[78]
+DATA: 60 00 06 51 4e
+Amplifier.on_param_changed: amp-volume=40.0
+DATA: 60 00 00 28 28
+VAL: 1
+send: C0 06
+send: C0 05
+saddr='00 01 00 00': sdata='00 05'
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+load_from_mry()
+set_amp_type(amp_name='Clean', amp_code='08' )
+DATA: 60 00 00 21 08
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982dcd810>
 Amplifier.amp_variation: 60 00 06 5c empty value
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
 len(data)=139
 load_from_mry()
 Amplifier.amp_variation: 60 00 06 5c empty value
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
-Amplifier.on_param_changed: amp-num=2
+saddr='60 00 06 50': sdata='01'
+CHANGE AMP
+saddr='60 00 06 51': sdata='4b'
+saddr='60 00 06 52': sdata='50'
+Amplifier.on_param_changed: amp-num=1
 CHANGED
-DATA: 60 00 00 21 0b
-Amplifier.on_param_changed: amp-gain=55.0
-[55]
-DATA: 60 00 06 51 37
-Amplifier.on_param_changed: amp-volume=46.0
-DATA: 60 00 00 28 2e
+DATA: 60 00 00 21 1d
+Amplifier.on_param_changed: amp-gain=75.0
+[75]
+DATA: 60 00 06 51 4b
+Amplifier.on_param_changed: amp-volume=80.0
+DATA: 60 00 00 28 50
+saddr='60 00 06 53': sdata='2e'
+saddr='60 00 06 54': sdata='38'
+saddr='60 00 06 55': sdata='46'
+saddr='60 00 06 56': sdata='2d'
+saddr='60 00 06 57': sdata='00'
+saddr='60 00 06 58': sdata='33'
+saddr='60 00 06 59': sdata='00'
+saddr='60 00 06 5a': sdata='1f'
+saddr='60 00 06 5b': sdata='34'
+saddr='60 00 06 5d': sdata='00'
+saddr='60 00 06 5e': sdata='01'
+saddr='60 00 06 5f': sdata='00'
+saddr='60 00 06 60': sdata='01'
+saddr='60 00 06 61': sdata='01'
+saddr='60 00 06 5c': sdata='00'
+saddr='60 00 06 5c': sdata='01'
+Amplifier.on_param_changed: amp-variation=False
+CHANGED
+DATA: 60 00 00 21 08
+saddr='60 00 06 5c': sdata='00'
+VAL: 0
 send: C0 07
 saddr='00 01 00 00': sdata='00 07'
 len(data)=241
@@ -72,6 +125,9 @@ len(data)=241
 len(data)=241
 len(data)=241
 load_from_mry()
+set_amp_type(amp_name='Crunch', amp_code='0b' )
+DATA: 60 00 00 21 0b
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982d872f0>
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
 len(data)=139
 load_from_mry()
@@ -111,7 +167,7 @@ len(data)=241
 load_from_mry()
 set_amp_type(amp_name='Lead', amp_code='18' )
 DATA: 60 00 00 21 18
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88bbd810>
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982daa140>
 Amplifier.amp_variation: 60 00 06 5c empty value
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
 len(data)=139
@@ -129,6 +185,8 @@ DATA: 60 00 06 51 4e
 Amplifier.on_param_changed: amp-volume=40.0
 DATA: 60 00 00 28 28
 saddr='60 00 06 5c': sdata='01'
+VAL: 0
+VAL: 0
 send: C0 00
 saddr='00 01 00 00': sdata='00 01'
 len(data)=241
@@ -139,7 +197,7 @@ len(data)=241
 load_from_mry()
 set_amp_type(amp_name='Clean', amp_code='08' )
 DATA: 60 00 00 21 08
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88b731d0>
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982d27b50>
 Amplifier.amp_variation: 60 00 06 5c empty value
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
 len(data)=139
@@ -158,6 +216,200 @@ DATA: 60 00 06 51 2d
 Amplifier.on_param_changed: amp-volume=46.0
 DATA: 60 00 00 28 2e
 saddr='60 00 06 5c': sdata='01'
+send: C0 07
+saddr='00 01 00 00': sdata='00 07'
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+load_from_mry()
+set_amp_type(amp_name='Crunch', amp_code='0b' )
+DATA: 60 00 00 21 0b
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982d3f2f0>
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
+len(data)=139
+load_from_mry()
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
+saddr='60 00 06 50': sdata='02'
+CHANGE AMP
+saddr='60 00 06 51': sdata='15'
+saddr='60 00 06 52': sdata='32'
+Amplifier.on_param_changed: amp-num=2
+CHANGED
+DATA: 60 00 00 21 1e
+Amplifier.on_param_changed: amp-variation=True
+CHANGED
+DATA: 60 00 00 21 1e
+Amplifier.on_param_changed: amp-gain=21.0
+[21]
+DATA: 60 00 06 51 15
+Amplifier.on_param_changed: amp-volume=50.0
+DATA: 60 00 00 28 32
+saddr='60 00 06 53': sdata='32'
+saddr='60 00 06 54': sdata='32'
+saddr='60 00 06 55': sdata='32'
+saddr='60 00 06 56': sdata='32'
+saddr='60 00 06 57': sdata='00'
+saddr='60 00 06 58': sdata='27'
+saddr='60 00 06 59': sdata='00'
+saddr='60 00 06 5a': sdata='00'
+saddr='60 00 06 5b': sdata='00'
+saddr='60 00 06 5e': sdata='01'
+send: C0 06
+saddr='00 01 00 00': sdata='00 06'
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+load_from_mry()
+set_amp_type(amp_name='Lead', amp_code='18' )
+DATA: 60 00 00 21 18
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982dd2510>
+Amplifier.amp_variation: 60 00 06 5c empty value
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
+len(data)=139
+load_from_mry()
+Amplifier.amp_variation: 60 00 06 5c empty value
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
+saddr='60 00 06 58': sdata='00'
+saddr='60 00 06 59': sdata='00'
+Amplifier.on_param_changed: amp-num=3
+CHANGED
+DATA: 60 00 00 21 1f
+Amplifier.on_param_changed: amp-gain=78.0
+[78]
+DATA: 60 00 06 51 4e
+Amplifier.on_param_changed: amp-volume=40.0
+DATA: 60 00 00 28 28
+saddr='60 00 06 5c': sdata='01'
+Amplifier.on_param_changed: amp-variation=False
+CHANGED
+DATA: 60 00 00 21 18
+saddr='60 00 06 5c': sdata='00'
+send: C0 07
+saddr='00 01 00 00': sdata='00 07'
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+load_from_mry()
+set_amp_type(amp_name='Crunch', amp_code='0b' )
+DATA: 60 00 00 21 0b
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982d23d10>
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
+len(data)=139
+load_from_mry()
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
+saddr='60 00 06 50': sdata='02'
+CHANGE AMP
+saddr='60 00 06 51': sdata='15'
+saddr='60 00 06 52': sdata='32'
+Amplifier.on_param_changed: amp-num=2
+CHANGED
+DATA: 60 00 00 21 1e
+Amplifier.on_param_changed: amp-variation=True
+CHANGED
+DATA: 60 00 00 21 1e
+Amplifier.on_param_changed: amp-gain=21.0
+[21]
+DATA: 60 00 06 51 15
+Amplifier.on_param_changed: amp-volume=50.0
+DATA: 60 00 00 28 32
+saddr='60 00 06 53': sdata='32'
+saddr='60 00 06 54': sdata='32'
+saddr='60 00 06 55': sdata='32'
+saddr='60 00 06 56': sdata='32'
+saddr='60 00 06 57': sdata='00'
+saddr='60 00 06 58': sdata='27'
+saddr='60 00 06 59': sdata='00'
+saddr='60 00 06 5a': sdata='00'
+saddr='60 00 06 5b': sdata='00'
+saddr='60 00 06 5e': sdata='01'
+send: C0 06
+saddr='00 01 00 00': sdata='00 06'
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+load_from_mry()
+set_amp_type(amp_name='Lead', amp_code='18' )
+DATA: 60 00 00 21 18
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982c1c7e0>
+Amplifier.amp_variation: 60 00 06 5c empty value
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
+len(data)=139
+load_from_mry()
+Amplifier.amp_variation: 60 00 06 5c empty value
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
+saddr='60 00 06 58': sdata='00'
+saddr='60 00 06 59': sdata='00'
+Amplifier.on_param_changed: amp-num=3
+CHANGED
+DATA: 60 00 00 21 1f
+Amplifier.on_param_changed: amp-gain=78.0
+[78]
+DATA: 60 00 06 51 4e
+Amplifier.on_param_changed: amp-volume=40.0
+DATA: 60 00 00 28 28
+saddr='60 00 06 5c': sdata='01'
+Amplifier.on_param_changed: amp-variation=False
+CHANGED
+DATA: 60 00 00 21 18
+saddr='60 00 06 5c': sdata='00'
+send: C0 05
+saddr='00 01 00 00': sdata='00 05'
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+load_from_mry()
+set_amp_type(amp_name='Clean', amp_code='08' )
+DATA: 60 00 00 21 08
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982c262b0>
+Amplifier.amp_variation: 60 00 06 5c empty value
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
+len(data)=139
+load_from_mry()
+Amplifier.amp_variation: 60 00 06 5c empty value
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
+saddr='60 00 06 51': sdata='2d'
+saddr='00 01 00 00': sdata='00 01'
+Amplifier.on_param_changed: amp-num=1
+CHANGED
+DATA: 60 00 00 21 08
+Amplifier.on_param_changed: amp-gain=45.0
+[45]
+DATA: 60 00 06 51 2d
+Amplifier.on_param_changed: amp-volume=46.0
+DATA: 60 00 00 28 2e
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+len(data)=241
+load_from_mry()
+Amplifier.amp_variation: 60 00 06 5c empty value
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
+len(data)=139
+load_from_mry()
+Amplifier.amp_variation: 60 00 06 5c empty value
+Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
+saddr='60 00 06 57': sdata='49'
+saddr='60 00 06 5d': sdata='01'
+Amplifier.on_param_changed: amp-num=1
+CHANGED
+DATA: 60 00 00 21 08
+Amplifier.on_param_changed: amp-gain=45.0
+[45]
+DATA: 60 00 06 51 2d
+Amplifier.on_param_changed: amp-volume=46.0
+DATA: 60 00 00 28 2e
+send: C0 00
 send: C0 01
 saddr='00 01 00 00': sdata='00 02'
 len(data)=241
@@ -174,127 +426,12 @@ Amplifier.amp_variation: 60 00 06 5c empty value
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
 Amplifier.on_param_changed: amp-num=1
 CHANGED
-DATA: 60 00 00 21 1d
+DATA: 60 00 00 21 08
 Amplifier.on_param_changed: amp-gain=27.0
 [27]
 DATA: 60 00 06 51 1b
 Amplifier.on_param_changed: amp-volume=58.0
 DATA: 60 00 00 28 3a
-saddr='60 00 06 5c': sdata='01'
-send: C0 02
-saddr='00 01 00 00': sdata='00 03'
-len(data)=241
-len(data)=241
-len(data)=241
-len(data)=241
-len(data)=241
-load_from_mry()
-Amplifier.amp_num: 60 00 06 50 empty value
-Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
-len(data)=139
-load_from_mry()
-Amplifier.amp_num: 60 00 06 50 empty value
-Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
-saddr='60 00 06 50': sdata='00'
-CHANGE AMP
-set_amp_type(amp_name='Acoustic', amp_code='01' )
-DATA: 60 00 00 21 01
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88b9a250>
-Amplifier.on_param_changed: amp-variation=True
-CHANGED
-DATA: 60 00 00 21 1c
-Amplifier.on_param_changed: amp-gain=98.0
-[98]
-DATA: 60 00 06 51 62
-Amplifier.on_param_changed: amp-volume=60.0
-DATA: 60 00 00 28 3c
-saddr='60 00 06 51': sdata='62'
-saddr='60 00 06 52': sdata='3c'
-saddr='60 00 06 53': sdata='18'
-saddr='60 00 06 54': sdata='27'
-saddr='60 00 06 55': sdata='3d'
-saddr='60 00 06 56': sdata='32'
-saddr='60 00 06 58': sdata='43'
-saddr='60 00 06 59': sdata='10'
-saddr='60 00 06 5b': sdata='2e'
-saddr='60 00 06 5e': sdata='03'
-saddr='60 00 06 5f': sdata='02'
-saddr='60 00 06 61': sdata='03'
-saddr='60 00 06 5c': sdata='01'
-send: C0 03
-saddr='00 01 00 00': sdata='00 04'
-len(data)=241
-len(data)=241
-len(data)=241
-len(data)=241
-len(data)=241
-load_from_mry()
-set_amp_type(amp_name='Clean', amp_code='08' )
-DATA: 60 00 00 21 08
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88b17b50>
-Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
-len(data)=139
-load_from_mry()
-Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
-saddr='60 00 06 50': sdata='01'
-CHANGE AMP
-saddr='60 00 06 51': sdata='2b'
-saddr='60 00 06 52': sdata='36'
-Amplifier.on_param_changed: amp-num=1
-CHANGED
-DATA: 60 00 00 21 1d
-Amplifier.on_param_changed: amp-variation=True
-CHANGED
-DATA: 60 00 00 21 1d
-Amplifier.on_param_changed: amp-gain=43.0
-[43]
-DATA: 60 00 06 51 2b
-Amplifier.on_param_changed: amp-volume=54.0
-DATA: 60 00 00 28 36
-saddr='60 00 06 53': sdata='56'
-saddr='60 00 06 54': sdata='3e'
-saddr='60 00 06 55': sdata='3d'
-saddr='60 00 06 56': sdata='37'
-saddr='60 00 06 57': sdata='00'
-saddr='60 00 06 58': sdata='31'
-saddr='60 00 06 59': sdata='00'
-saddr='60 00 06 5a': sdata='25'
-saddr='60 00 06 5b': sdata='31'
-saddr='60 00 06 5e': sdata='01'
-saddr='60 00 06 61': sdata='01'
-send: C0 08
-saddr='00 01 00 00': sdata='00 08'
-len(data)=241
-len(data)=241
-len(data)=241
-len(data)=241
-len(data)=241
-load_from_mry()
-set_amp_type(amp_name='Brown', amp_code='17' )
-DATA: 60 00 00 21 17
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88b2b4d0>
-Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
-len(data)=139
-load_from_mry()
-Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
-saddr='60 00 06 59': sdata='00'
-saddr='60 00 06 5a': sdata='00'
-saddr='60 00 06 5b': sdata='00'
-Amplifier.on_param_changed: amp-num=4
-CHANGED
-DATA: 60 00 00 21 20
-Amplifier.on_param_changed: amp-variation=True
-CHANGED
-DATA: 60 00 00 21 20
-Amplifier.on_param_changed: amp-gain=58.0
-[58]
-DATA: 60 00 06 51 3a
-Amplifier.on_param_changed: amp-volume=41.0
-DATA: 60 00 00 28 29
-Amplifier.on_param_changed: amp-variation=False
-CHANGED
-DATA: 60 00 00 21 17
-saddr='60 00 06 5c': sdata='00'
 send: C0 00
 saddr='00 01 00 00': sdata='00 01'
 len(data)=241
@@ -303,9 +440,6 @@ len(data)=241
 len(data)=241
 len(data)=241
 load_from_mry()
-set_amp_type(amp_name='Clean', amp_code='08' )
-DATA: 60 00 00 21 08
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88bc6970>
 Amplifier.amp_variation: 60 00 06 5c empty value
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
 len(data)=139
@@ -323,33 +457,6 @@ Amplifier.on_param_changed: amp-gain=45.0
 DATA: 60 00 06 51 2d
 Amplifier.on_param_changed: amp-volume=46.0
 DATA: 60 00 00 28 2e
-send: C0 06
-saddr='00 01 00 00': sdata='00 06'
-len(data)=241
-len(data)=241
-len(data)=241
-len(data)=241
-len(data)=241
-load_from_mry()
-set_amp_type(amp_name='Lead', amp_code='18' )
-DATA: 60 00 00 21 18
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88b13e90>
-Amplifier.amp_variation: 60 00 06 5c empty value
-Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
-len(data)=139
-load_from_mry()
-Amplifier.amp_variation: 60 00 06 5c empty value
-Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
-saddr='60 00 06 58': sdata='00'
-saddr='60 00 06 59': sdata='00'
-Amplifier.on_param_changed: amp-num=3
-CHANGED
-DATA: 60 00 00 21 18
-Amplifier.on_param_changed: amp-gain=78.0
-[78]
-DATA: 60 00 06 51 4e
-Amplifier.on_param_changed: amp-volume=40.0
-DATA: 60 00 00 28 28
 send: C0 07
 saddr='00 01 00 00': sdata='00 07'
 len(data)=241
@@ -360,7 +467,7 @@ len(data)=241
 load_from_mry()
 set_amp_type(amp_name='Crunch', amp_code='0b' )
 DATA: 60 00 00 21 0b
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88a0c520>
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982d79eb0>
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
 len(data)=139
 load_from_mry()
@@ -390,35 +497,32 @@ saddr='60 00 06 59': sdata='00'
 saddr='60 00 06 5a': sdata='00'
 saddr='60 00 06 5b': sdata='00'
 saddr='60 00 06 5e': sdata='01'
-send: C0 06
-saddr='00 01 00 00': sdata='00 06'
+send: C0 00
+saddr='00 01 00 00': sdata='00 01'
 len(data)=241
 len(data)=241
 len(data)=241
 len(data)=241
 len(data)=241
 load_from_mry()
-set_amp_type(amp_name='Lead', amp_code='18' )
-DATA: 60 00 00 21 18
-on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7f1c88a16210>
+set_amp_type(amp_name='Clean', amp_code='08' )
+DATA: 60 00 00 21 08
+on_combo_changed: <gi.overrides.Gtk.TreeModelRow object at 0x7fa982c13ad0>
 Amplifier.amp_variation: 60 00 06 5c empty value
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 08 00', skipped: 241
 len(data)=139
 load_from_mry()
 Amplifier.amp_variation: 60 00 06 5c empty value
 Unintended Block: expn='60 00 07 44', recvd: adst='60 00 09 71', skipped: 139
-saddr='60 00 06 58': sdata='00'
-saddr='60 00 06 59': sdata='00'
-Amplifier.on_param_changed: amp-num=3
+saddr='60 00 06 51': sdata='2d'
+saddr='60 00 06 57': sdata='49'
+saddr='60 00 06 5d': sdata='01'
+Amplifier.on_param_changed: amp-num=1
 CHANGED
-DATA: 60 00 00 21 1f
-Amplifier.on_param_changed: amp-gain=78.0
-[78]
-DATA: 60 00 06 51 4e
-Amplifier.on_param_changed: amp-volume=40.0
-DATA: 60 00 00 28 28
+DATA: 60 00 00 21 1d
+Amplifier.on_param_changed: amp-gain=45.0
+[45]
+DATA: 60 00 06 51 2d
+Amplifier.on_param_changed: amp-volume=46.0
+DATA: 60 00 00 28 2e
 saddr='60 00 06 5c': sdata='01'
-Amplifier.on_param_changed: amp-variation=False
-CHANGED
-DATA: 60 00 00 21 18
-saddr='60 00 06 5c': sdata='00'
