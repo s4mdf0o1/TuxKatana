@@ -114,10 +114,11 @@ class KatanaDebug(Gtk.Box):
 	            val = from_str( val )
 	
 	        #msg = [int(v, 16) for v in txt.split(' ')]
+
             cks = msg_obj.checksum(addr + val)
             data = header + cmd + addr + val + cks
             self.ctrl.sysex.data = data
-            self.ctrl.send(self.ctrl.sysex, self.debug_msg)
+            self.ctrl.send(self.ctrl.sysex)#, self.debug_msg)
         elif mode == "Program_Change":
             program = int(self.address.get_text())
             self.ctrl.pc.program = program

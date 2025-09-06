@@ -1,8 +1,8 @@
 Types:
   name: "booster_type"
   type: "combo"
-  ADDR: "60 00 00 11"
-  Values:
+  SEND: "60 00 00 11"
+  values:
     'Mid Boost':    '00'
     'Clean Boost':  '01'
     'Treble Boost': '02'
@@ -29,7 +29,7 @@ Types:
 Colors:
   name: "booster_color"
   type: "combo"
-  ADDR: "60 00 06 39"
+  SEND: "60 00 06 39"
   Values:
     BLACK:  ⚫
     GREEN:  🟢
@@ -38,12 +38,12 @@ Colors:
 Switch:
   name: "booster_switch"
   type: "toggle"
-  ADDR: "60 00 00 10"
+  SEND: "60 00 00 10"
   Values:
     ON:   '01'
     OFF:  '00'
 Drive:
   name: "booster_drive"
   type: "slider"
-  ADDR: "60 00 00 12"
+  SEND: "60 00 00 12"
 

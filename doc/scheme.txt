@@ -1,0 +1,19 @@
+TuxKatana
+   |
+   -> MainWindow
+         |
+         -> Controller
+               |
+               -> Port
+               -> SysExMessage
+               |     |
+               |     -> SysExML
+               -> Device
+                     |
+                     -> Memory
+                     |     |
+                     |     -> MemoryMap
+                     -> Presets
+                     -> Amplifier
+                     -> Booster
+

@@ -1,7 +1,11 @@
-Types:
-  name: "amp_type"
+Num:
+  prop_name: "amp_num"
+  RECV: "60 00 06 50"
+  type: int
+Type:
+  prop_name: "amp_type"
   type: "combo"
-  ADDR: "60 00 00 21"
+  SEND: "60 00 00 21"
   Values:
     'Acoustic':      '01'
     'Clean':        '08'
@@ -33,17 +37,18 @@ Types:
     'Fier Modern':  '15'
     'Core Metal':   '07'
 Variation:
-  name: "amp_variation"
+  prop_name: "amp_variation"
   type: "toggle"
   RECV: "60 00 06 5c"
 Gain:
-  name: "amp_gain"
+  prop_name: "amp_gain"
   type: "slider"
-  ADDR: "60 00 00 22"
+  #SEND: "60 00 00 22"
+  SEND: "60 00 06 51"
   RECV: "60 00 06 51"
 Volume:
-  name: "amp_volume"
+  prop_name: "amp_volume"
   type: "slider"
-  ADDR: "60 00 00 28"
+  SEND: "60 00 00 28"
   RECV: "60 00 06 52"
 

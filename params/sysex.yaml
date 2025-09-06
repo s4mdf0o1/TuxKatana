@@ -1,22 +1,13 @@
-universal:
-  SCAN_REQ: "7E 00 06 01"
-  SCAN_REP: "7E 00 06 02"
+SCAN_REQ: "7E 00 06 01"
+SCAN_REP: "7E 00 06 02"
 
-infos:
-  NAME:  '10 00 00 00'
-  PRESET_1:     '10 01 00 00'
-  PRESET_2:     '10 02 00 00'
-  PRESET_3:     '10 03 00 00'
-  PRESET_4:     '10 04 00 00'
-  PRESET_5:     '10 05 00 00'
-  PRESET_6:     '10 06 00 00'
-  PRESET_7:     '10 07 00 00'
-  PRESET_8:     '10 08 00 00'
-addresses:
-  BOOSTER: "60 00 06 39"
-  MASTER: "00 00 04 40"
+NAME:  '10 00 00 00'
 
-command:
-  GET: "11"
-  SET: "12"
+GET: "11"
+SET: "12"
+ 
+PRESET_:     '10 0X 00 00'
+
+MEMORY:    '60 00 00 00'
+
 

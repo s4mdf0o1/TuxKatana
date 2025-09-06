@@ -10,9 +10,10 @@ from time import sleep
 from threading import Thread
 from queue import Queue
 
-from .sysex import SysExML, SysExMessage
+from .message import FormatMessage
 from .midi_port import KatanaPort
 from .device import Device
+from .tools import to_str, from_str
 
 import logging
 from lib.log_setup import LOGGER_NAME
@@ -20,11 +21,14 @@ log_sysex = logging.getLogger(LOGGER_NAME)
 dbg = logging.getLogger("debug")
 
 
-class KatanaController:
+class KatanaController(GObject.GObject):
+    __gsignals__ = {
+        "recvd-sysex": (GObject.SignalFlags.RUN_FIRST, None, (object, object)),
+    }
     def __init__(self, parent):
         self.parent = parent
-        self.message = SysExMessage()
-        self.device = Device(self, [0x60,0,0,0])
+        self.fsem = FormatMessage()
+        self.device = Device(self)
         self.port = KatanaPort()
         with open("params/midi.yaml", "r") as f:
             self.midi= yaml.load(f)
@@ -40,10 +44,8 @@ class KatanaController:
     def queue_watcher(self):
         while True:
             msg = self.msg_queue.get()
-            #GLib.idle_add(self.message.decode, msg)
-            #dbg.debug(f"{self.listener_callback=}")
             if not self.listener_callback:
-                GLib.idle_add(self.device.got_message, msg)
+                GLib.idle_add(self.device.mry.received_msg, msg)
             else:
                 GLib.idle_add(self.listener_callback, msg)
 
@@ -64,25 +66,25 @@ class KatanaController:
         if msg.type == 'sysex':
             self.msg_queue.put(msg)
 
-    def send( self, message, callback=None ):
+    def send( self, msg, callback=None ):
         #dbg.debug(f"send: {message.hex()}")
-        log_sysex.debug(f"SEND: {message.hex()}")
+        log_sysex.debug(f"SEND: {msg.hex()}")
         if callback:
             self.listener_callback = callback
-        self.port.output.send( message )
+        self.port.output.send( msg )
         sleep(.05)
 
 
     def scan_devices(self):
         dbg.debug(f"scan_devices()")
-        self.sysex.data = self.message.addrs['SCAN_REQ']
+        self.sysex.data = from_str(self.fsem.addrs['SCAN_REQ'])
         self.send(self.sysex, self.set_device)
 
     def set_device(self, msg):
         #dbg.debug(f"set_device({msg.hex()})")
         data = list(msg.data)
-        to_str = self.message.addrs.to_str
-        if data[0:4] == self.message.addrs['SCAN_REP']:
+        #to_str = self.message.addrs.to_str
+        if data[0:4] == from_str(self.fsem.addrs['SCAN_REP']):
             infos = data[4:]
             man = [infos[0]]
             dev = [0]
@@ -92,40 +94,13 @@ class KatanaController:
             self.device.device = to_str(dev)
             self.device.model = sq(to_str(mod))
             self.device.number = to_str(num)
-            self.message.header = man + dev + mod
+            self.fsem.header = man + dev + mod
             #dbg.debug(f"{self.device=}")
             #dbg.debug(f"message.header= {to_str(self.message.header)}")
         self.device.get_name()
         self.device.get_presets()
+        self.device.get_memory()
 
-#    def set_name( self, msg ):
-#        data = list(msg.data)
-#        name=""
-#        if data[0:6] == self.message.header:
-#            command = data[6]
-#            function = data[7:11]
-#            if command == 0x12 and function[0] == 0x10:
-#                name = ''.join([chr(v) for v in data[11:27]])
-#                name = name.strip()
-#        with open("params/devices.yaml", "r") as f:
-#            devices = yaml.load(f)
-#        if not devices:
-#            devices = {}
-#        if name:
-#            devices[name] = {
-#                    "manufacturer": self.device.manufacturer,
-#                    "device": self.device.device,
-#                    "model": self.device.model,
-#                    "number": self.device.number
-#                    }
-#        dbg.debug(f"{devices=}")
-#        with open("params/devices.yaml", "w") as f:
-#            devices = yaml.dump(devices, f)
-#
-#        #self.parent.win.ks.title.set_label(name)
-#        self.device.set_name(name)
-#        self.device.amp_type = 1
-        
     def get_path_val(self, path):
         m = path.split(':')
         val = self.midi
