@@ -4,7 +4,7 @@ DOTS:
   RED:    🔴
   YELLOW: 🟡
 
-KES:
+SWITCHER:
   #PANEL: "Program_Change:PANEL"
   BANK_A:
     CH_1:  "Program_Change:BANK_A:CH_1"
@@ -16,12 +16,12 @@ KES:
     CH_6:  "Program_Change:BANK_B:CH_2"
     CH_7:  "Program_Change:BANK_B:CH_3"
     CH_8:  "Program_Change:BANK_B:CH_4"
-  #EFFECTS:  "Control_Change:EFFECTS"
-  BOOSTER:  "Control_Change:BOOSTER_SWITCH"
-  MOD:      "Control_Change:MOD_SWITCH"
-  FX:       "Control_Change:FX_SWITCH"
-  DELAY:    "Control_Change:DELAY_SWITCH"
-  REVERB:   "Control_Change:REVERB_SWITCH"
+  EFFECTS: #  "Control_Change:EFFECTS"
+    BOOSTER:  "Control_Change:BOOSTER_SWITCH"
+    MOD:      "Control_Change:MOD_SWITCH"
+    FX:       "Control_Change:FX_SWITCH"
+    DELAY:    "Control_Change:DELAY_SWITCH"
+    REVERB:   "Control_Change:REVERB_SWITCH"
 
 SETTINGS:
   EFFECTS:

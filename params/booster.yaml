@@ -1,8 +1,9 @@
 Types:
-  name: "booster_type"
+  prop_name: "booster_type"
   type: "combo"
   SEND: "60 00 00 11"
-  values:
+  RECV: "60 00 00 11"
+  Codes:
     'Mid Boost':    '00'
     'Clean Boost':  '01'
     'Treble Boost': '02'
@@ -27,23 +28,25 @@ Types:
     'Metal Core':   '16'
     'Centa OD':     '17'
 Colors:
-  name: "booster_color"
+  prop_name: "booster_bank"
   type: "combo"
   SEND: "60 00 06 39"
+  RECV: "60 00 06 39"
   Values:
     BLACK:  ⚫
     GREEN:  🟢
     RED:    🔴
     YELLOW: 🟡
+Status:
+  prop_name: "booster_status"
+  RECV: "60 00 06 5d"
 Switch:
-  name: "booster_switch"
+  prop_name: "booster_switch"
   type: "toggle"
-  SEND: "60 00 00 10"
-  Values:
-    ON:   '01'
-    OFF:  '00'
+  RECV: "60 00 00 10"
 Drive:
-  name: "booster_drive"
+  prop_name: "booster_driver"
   type: "slider"
   SEND: "60 00 00 12"
+  RECV: "60 00 00 12"
 

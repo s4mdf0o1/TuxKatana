@@ -1,7 +1,6 @@
 from collections import UserDict
 
 from ruamel.yaml import YAML
-#from ruamel.yaml.scalarstring import SingleQuotedScalarString as sq
 yaml = YAML(typ="rt")
 
 import logging
@@ -19,12 +18,9 @@ class Map(UserDict):
         self.send = {}
         for param in self.data.values():
             if 'RECV' in param:
-                #log.debug((param['RECV'], param['prop_name']))
                 self.recv[param['RECV']] = param['prop_name']
             if 'SEND' in param:
                 self.send[param['prop_name']] = param['SEND']
-        #log.debug(f"{self.recv=}")
-        #log.debug(f"{self.send=}")
 
     def save(self):
         with open(self.filepath, 'w') as f:

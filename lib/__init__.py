@@ -1,3 +1,4 @@
 #from .config import Confi 
-from .katana_controller import KatanaController
-#from .sysex import SysExML, SysExMessage
+from .controller import Controller
+#from .sysex import SysExML, SysExMessageA
+

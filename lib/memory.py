@@ -21,7 +21,6 @@ class Memory(GObject.GObject):
         self.map = {}
 
     def add_block(self, addr_start, data):
-        #log.debug(f"{len(data)=}")
         if addr_start == from_str(self.sysex.addrs['MEMORY']):
             self.loading = True
             self.memory = []
@@ -33,17 +32,15 @@ class Memory(GObject.GObject):
             return
         expected_next = self.incr_base128(self.base_addr, len(self.memory))
         if addr_start != expected_next:
-            log.debug("mry-changed")
+            #log.debug("mry-changed")
             self.emit("mry-changed")
             self.loading = False
             expn = to_str(expected_next)
             adst = to_str(addr_start)
-            #log.warn(f"Unintended Block: {expn=}, recvd: {adst=}, skipped: {len(data)}")
         else:
             self.memory.extend(data)
 
     def read_from_str(self, saddr, size=1):
-        #addr = [int(v, 16) for v in saddr.split(' ')]
         return self.read(from_str(saddr), size)
     def read(self, addr, size=1):
         if not self.base_addr:
@@ -80,31 +77,16 @@ class Memory(GObject.GObject):
             log.debug(f"{saddr=}: {sdata=}")
             if saddr in self.map:
                 mapping = self.map[saddr]
-                #log.debug(f"{mapping=}")
                 obj = mapping["obj"]
                 prop = mapping["prop"]
-                #obj.handler_block(obj.notify_id)
-                #with obj.provenance("sysex"):
                 value = None
                 if isinstance(getattr(obj, prop), bool):
                     value = bool(data[0])
-                    #setattr(obj, prop, bool(data[0]))
                 else:
                     value = int(data[0])
-                    #setattr(obj, prop, int(data[0]))
-
-                #if hasattr(obj, "set_with_source"):
-                #    obj.set_with_source(prop, value, "sysex")
-                #else:
-                #    setattr(obj, prop, value)
                 setattr(obj, prop, value)
-                #log.debug(f"write: {self.map[saddr]=}")
-                #log.debug(f"{obj.map.recv=}")
-                #log.debug(f"write: {obj.map.recv[saddr]=}")
                 if saddr in obj.map.recv:
                     self.write(addr, data)
-                #self.write( addr, data )
-                #obj.handler_unblock(obj.notify_id)
             elif saddr == '00 01 00 00':
                 log.debug(f"emit channel-changed {data}")
                 self.emit("channel-changed", data[1])

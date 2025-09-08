@@ -1,7 +1,7 @@
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk, GObject
-import mido
+#import mido
 
 from ruamel.yaml import YAML
 yaml = YAML(typ="safe")
@@ -13,10 +13,12 @@ dots = config['DOTS']
 import logging
 dbg=logging.getLogger("debug")
 
-from .katana_debug import KatanaDebug
 from .slider import Slider
-from .amplifier import Amplifier
+
 from .presets import PresetsView
+from .amplifier import Amplifier
+from .booster import Booster
+from .debug import Debug
 
 class KS_TabbedPanel(Gtk.Box):
     def __init__(self):
@@ -44,16 +46,19 @@ class KS_Settings(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
         if name == "DEBUG":
-            debug = KatanaDebug(ctrl)
+            debug = Debug(ctrl)
             self.append(debug)
         elif name == "AMP":
             self.amplifier = Amplifier(ctrl)
             self.append(self.amplifier) 
+        elif name == "BOOSTER":
+            self.booster = Booster(ctrl)
+            self.append(self.booster)
         else:
             self.slider = Slider( "Level", 50)
             self.append(self.slider)
 
-class KatanaSettings(Gtk.Box):
+class Settings(Gtk.Box):
     def __init__(self, label, cfg, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.get_style_context().add_class("inner")

@@ -10,32 +10,12 @@ from ruamel.yaml import YAML
 yaml = YAML(typ="safe")
 from time import sleep
 
-from lib import KatanaController
+from lib import Controller
 
-from widgets import KatanaEffectSwitcher, KatanaSettings
+from widgets import Switcher, Settings, ConnectWait
 
 from lib.log_setup import setup_logger
 log = setup_logger()
-
-class ConnectWait(Gtk.Dialog):
-    def __init__(self, app, parent):
-        super().__init__(title="Connexion", transient_for=parent, modal=True)
-        self.set_default_size(300, 100)
-        self.set_decorated(False)
-
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        box.get_style_context().add_class("bordered")
-
-        label = Gtk.Label(label="Appareil Déconnecté...")
-        spinner = Gtk.Spinner()
-        spinner.start()
-        button=Gtk.Button(label="Quitter")
-        button.connect("clicked", lambda *_: app.quit())
-
-        box.append(label)
-        box.append(spinner)
-        box.append(button)
-        self.set_child(box)
 
 class MainWindow(Gtk.Window):
     def __init__(self, app, config):
@@ -43,10 +23,10 @@ class MainWindow(Gtk.Window):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.set_child(box)
 
-        self.ks = KatanaSettings( "SETTINGS", config['SETTINGS'], app.ctrl)
-        box.append(self.ks)
-        self.kes = KatanaEffectSwitcher( config['KES'], app.ctrl)
-        box.append(self.kes)
+        self.settings = Settings( "SETTINGS", config['SETTINGS'], app.ctrl)
+        box.append(self.settings)
+        self.switcher = Switcher( config['SWITCHER'], app.ctrl)
+        box.append(self.switcher)
 
         self.wait_dialog = ConnectWait( app, self )
         self.set_sensitive(False)
@@ -55,14 +35,10 @@ class MainWindow(Gtk.Window):
 
     def check_connection( self ):
         log.info("check_connection")
-        #print("MainWindow.check_connection")
         if app.ctrl.port.has_device:
             self.set_sensitive(True)
             self.wait_dialog.set_visible(False)
             return False
-        #else:
-            #self.set_sensitive(False)
-            #self.wait_dialog.set_visible(True)
         return True
 
     def set_device_name( self, name ):
@@ -78,13 +54,12 @@ class TuxKatana(Gtk.Application):
             config = yaml.load(f)
         self.dots=config['DOTS']
 
-        self.ctrl = KatanaController(self)
+        self.ctrl = Controller(self)
 
         self.win = MainWindow(self, config)
         self.win.set_default_size(550, 650)
         self.win.set_title("Tux Katana")
         self.win.set_resizable(True)
-        #win.maximize()
 
         css_provider = Gtk.CssProvider()
         css_provider.load_from_path("style.css")
@@ -94,14 +69,14 @@ class TuxKatana(Gtk.Application):
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-        display = Gdk.Display.get_default()
-        monitor = display.get_primary_monitor()
-        geometry = monitor.get_geometry()
+        #display = Gdk.Display.get_default()
+        #monitor = display.get_primary_monitor()
+        #geometry = monitor.get_geometry()
 
-        x = (geometry.width - 800) // 2
-        y = (geometry.height - 600) // 2
-        #self.move(x, y)
+        #x = (geometry.width - 600) // 2
+        #y = (geometry.height - 650) // 2
         self.win.present()
+        #self.move(x, y)
 
 
 if __name__ == "__main__":

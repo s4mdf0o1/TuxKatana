@@ -10,7 +10,6 @@ log = logging.getLogger(LOGGER_NAME)
 
 class FormatMessage:
     def __init__( self ):
-        #log.debug("FormatMessage")
         with open("params/sysex.yaml", 'r') as f:
             raw = yaml.load(f)
         self.addrs = raw
@@ -27,7 +26,6 @@ class FormatMessage:
     def get_with_addr( self, cmd, addr, value ):
         command = from_str(self.addrs[cmd])
         data = addr + value
-        #log.debug(f"DATA: {to_str(data)}")
         cks = self.checksum(data)
         return self.header + command + data + cks
 

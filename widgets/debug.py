@@ -15,7 +15,7 @@ with open("params/config.yaml", "r") as f:
 from lib.tools import from_str, to_str
 dots = config['DOTS']
 
-class KatanaDebug(Gtk.Box):
+class Debug(Gtk.Box):
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
@@ -84,11 +84,7 @@ class KatanaDebug(Gtk.Box):
         self.append(but_test)
 
     def test(self, but):
-        #for addr in ["60 00 06 50", "60 00 00 21"]:
-        #    val=self.ctrl.device.mry.read_from_str(addr)
-        #    log.debug(f"MEMORY: ADDR:{addr}, VAL: {to_str(val)}")
         self.ctrl.device.amplifier.amp_type = 12
-
 
     def add_log_note(self, button):
         note = self.log_note.get_text()
@@ -111,7 +107,6 @@ class KatanaDebug(Gtk.Box):
     def send(self, button, cmd=None, addr=None, val=None):
         mode = self.midi.get_active_text()
         msg_obj = self.ctrl.fsem
-        #from_str = msg_obj.addrs.from_str
         if mode == "SysEx":
             header = msg_obj.header
             if not cmd:
@@ -125,29 +120,21 @@ class KatanaDebug(Gtk.Box):
 	            addr = from_str( addr )
 	            val = from_str( val )
 	
-	        #msg = [int(v, 16) for v in txt.split(' ')]
-
             cks = msg_obj.checksum(addr + val)
             data = header + [int(cmd, 16)] + addr + val + cks
             log.debug(data)
             self.ctrl.sysex.data = data
-            self.ctrl.send(self.ctrl.sysex)#, self.debug_msg)
+            self.ctrl.send(self.ctrl.sysex)
         elif mode == "Program_Change":
             program = int(self.address.get_text())
             self.ctrl.pc.program = program
             self.ctrl.port.send(self.ctrl.pc)
         elif mode == "Control_Change":
-            #log.debug("Control")
             address = int(self.address.get_text())
             value = int(self.value.get_text())
             self.ctrl.cc.control = address
             self.ctrl.cc.value = value
             self.ctrl.port.send(self.ctrl.cc)
-
-    def debug_msg(self, msg):
-        #self.ctrl.listener_callback = None
-        #log.debug(f"debug_msg: {msg.hex()}")
-        pass
 
     def set_config(self, button):
         self.cmd.set_active(0)

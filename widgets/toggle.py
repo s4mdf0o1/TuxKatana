@@ -3,7 +3,9 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GObject#, GLib, Gdk
 
 import logging
-dbg=logging.getLogger("debug")
+from lib.log_setup import LOGGER_NAME
+log = logging.getLogger(LOGGER_NAME)
+
 dots = [ "⚫", "🟢", "🔴", "🟡" ]
 
 class Toggle(Gtk.ToggleButton):
@@ -32,8 +34,9 @@ class Toggle(Gtk.ToggleButton):
         return self.label_on if active else self.label_off
 
     def set_status_id(self, status_id):
+        log.debug(f"{self.name}: {status_id=}")
         self.status_id=status_id
         self.label_on = dots[status_id]+ "  " + self.name
-        self._active_to_label(self, self.get_active())
+        self.set_label(self._active_to_label(self, self.get_active()))
 
 

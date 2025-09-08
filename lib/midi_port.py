@@ -12,8 +12,6 @@ class KatanaPort:
         self.index = 0
         self.name = None
 
-        #GLib.timeout_add_seconds(10, self.check_online)
-
     def check_online( self ):
         log.debug("check_online")
         ports = mido.get_output_names()
@@ -21,7 +19,6 @@ class KatanaPort:
         return True
 
     def list(self):
-        #log.debug("list")
         midi_ports = mido.get_output_names()
         self.ports = [p for p in midi_ports if 'katana' in p.lower() or 'boss' in p.lower()] or None
         if self.ports:
@@ -49,11 +46,8 @@ class KatanaPort:
             self.is_connected = False
             raise Exception(f"Impossible de se connecter au port {self.name}: {e}")
 
-    def send( self, message):#, callback=None ):
+    def send( self, message):
         log.debug(f"send: {message.hex()}")
-        #if callback:
-        #    self.listener_callback = callback
-        #cks = self.checksum( message )
         self.output.send( message )
 
     def close( self ):

@@ -11,7 +11,7 @@ def sysex(self, message, *args, **kwargs):
     #if self.isEnabledFor(SYSEX):
     self._log(SYSEX, message, args, **kwargs)
 
-logging.Logger.sysex = sysex   # ajouté une seule fois, globalement
+logging.Logger.sysex = sysex
 
 
 # --- 2. Formatter par niveau ---
@@ -22,7 +22,7 @@ class LevelFormatter(logging.Formatter):
         logging.WARNING:  "⚠️ WARNING: %(message)s",
         logging.ERROR:    "❌ ERROR: %(message)s",
         logging.CRITICAL: "🔥 CRITICAL: %(message)s",
-        SYSEX:            ">>> %(message)s",   # tu peux aussi mettre ton format SYSEX ici
+        SYSEX:            ">>> %(message)s",
     }
 
     def format(self, record):
@@ -86,7 +86,7 @@ def setup_logger() -> logging.Logger:
         logger.addHandler(sh)
 
         logger.propagate = False
-        logger.setLevel(logging.DEBUG)   # DEBUG capte tout >=5
+        logger.setLevel(logging.DEBUG)
 
     return logger
 if __name__ == "__main__":
