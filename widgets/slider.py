@@ -26,11 +26,11 @@ class Slider(Gtk.Box):
 
     @GObject.Property(type=float, default=0.0)
     def value(self):
-        return self.scale.get_value()
+        return int(self.scale.get_value())
 
     @value.setter
     def value(self, val):
-        self.scale.set_value(val)
+        self.scale.set_value(float(val))
 
     @GObject.Property(type=str, default="")
     def name(self):

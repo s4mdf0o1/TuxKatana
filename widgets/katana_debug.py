@@ -3,15 +3,16 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk
 
 import logging
-from lib.log_setup import LOGGER_NAME, rotate_log
-log_sysex = logging.getLogger(LOGGER_NAME)
-dbg=logging.getLogger("debug")
+from lib.log_setup import LOGGER_NAME
+log = logging.getLogger(LOGGER_NAME)
 
 from ruamel.yaml import YAML
 yaml = YAML(typ="safe")
 config = ""
 with open("params/config.yaml", "r") as f:
     config = yaml.load(f)
+
+from lib.tools import from_str, to_str
 dots = config['DOTS']
 
 class KatanaDebug(Gtk.Box):
@@ -47,8 +48,8 @@ class KatanaDebug(Gtk.Box):
         but_send = Gtk.Button(label="SEND")
         but_send.connect("clicked", self.send)
 
-        but_var = Gtk.Button(label="VARIATION")
-        but_var.connect("clicked", self.variation)
+        but_test = Gtk.Button(label="TEST")
+        but_test.connect("clicked", self.test)
 
         but_cfg = Gtk.Button(label="Get_Config")
         but_cfg.connect("clicked", self.set_config)
@@ -80,11 +81,14 @@ class KatanaDebug(Gtk.Box):
         self.append(but_cfg)
         self.append(h_box3)
         self.append(h_box4)
-        self.append(but_var)
+        self.append(but_test)
 
-    def variation(self, but):
-        val=self.ctrl.device.mry.read_from_str("60 00 06 5c")
-        dbg.debug(f"VAL: {val}")
+    def test(self, but):
+        #for addr in ["60 00 06 50", "60 00 00 21"]:
+        #    val=self.ctrl.device.mry.read_from_str(addr)
+        #    log.debug(f"MEMORY: ADDR:{addr}, VAL: {to_str(val)}")
+        self.ctrl.device.amplifier.amp_type = 12
+
 
     def add_log_note(self, button):
         note = self.log_note.get_text()
@@ -93,21 +97,21 @@ class KatanaDebug(Gtk.Box):
     def store_log(self, button):
         filename = self.log_file.get_text()
         archived = rotate_log(filename)
-        dbg.info(f"Archived: {archived}")
+        log.info(f"Archived: {archived}")
 
     def switch_mode( self, button ):
-        header = self.ctrl.message.header
+        header = self.ctrl.fsem.header
         self.midi.set_active(0)
         if button.get_active():
-            dbg.debug(f"Set Edit mode: active: 1")
+            log.debug(f"Set Edit mode: active: 1")
             self.send(None, 'SET', '7F 00 00 01', '01')
         else:
             self.send(None, 'SET', '7F 00 00 01', '00')
 
     def send(self, button, cmd=None, addr=None, val=None):
         mode = self.midi.get_active_text()
-        msg_obj = self.ctrl.message
-        from_str = msg_obj.addrs.from_str
+        msg_obj = self.ctrl.fsem
+        #from_str = msg_obj.addrs.from_str
         if mode == "SysEx":
             header = msg_obj.header
             if not cmd:
@@ -124,7 +128,8 @@ class KatanaDebug(Gtk.Box):
 	        #msg = [int(v, 16) for v in txt.split(' ')]
 
             cks = msg_obj.checksum(addr + val)
-            data = header + cmd + addr + val + cks
+            data = header + [int(cmd, 16)] + addr + val + cks
+            log.debug(data)
             self.ctrl.sysex.data = data
             self.ctrl.send(self.ctrl.sysex)#, self.debug_msg)
         elif mode == "Program_Change":
@@ -132,7 +137,7 @@ class KatanaDebug(Gtk.Box):
             self.ctrl.pc.program = program
             self.ctrl.port.send(self.ctrl.pc)
         elif mode == "Control_Change":
-            #dbg.debug("Control")
+            #log.debug("Control")
             address = int(self.address.get_text())
             value = int(self.value.get_text())
             self.ctrl.cc.control = address
@@ -141,7 +146,7 @@ class KatanaDebug(Gtk.Box):
 
     def debug_msg(self, msg):
         #self.ctrl.listener_callback = None
-        #dbg.debug(f"debug_msg: {msg.hex()}")
+        #log.debug(f"debug_msg: {msg.hex()}")
         pass
 
     def set_config(self, button):

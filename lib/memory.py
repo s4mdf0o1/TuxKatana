@@ -3,14 +3,15 @@ from gi.repository import GLib, GObject, Gio
 from lib.tools import to_str, from_str
 
 import logging
-dbg = logging.getLogger("debug")
 from lib.log_setup import LOGGER_NAME
-log_sysex = logging.getLogger(LOGGER_NAME)
+log = logging.getLogger(LOGGER_NAME)
 
 class Memory(GObject.GObject):
     __gsignals__ = {
         "mry-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
     }
+
     def __init__(self, sysex):
         super().__init__()
         self.sysex = sysex
@@ -20,7 +21,7 @@ class Memory(GObject.GObject):
         self.map = {}
 
     def add_block(self, addr_start, data):
-        dbg.debug(f"{len(data)=}")
+        #log.debug(f"{len(data)=}")
         if addr_start == from_str(self.sysex.addrs['MEMORY']):
             self.loading = True
             self.memory = []
@@ -32,18 +33,18 @@ class Memory(GObject.GObject):
             return
         expected_next = self.incr_base128(self.base_addr, len(self.memory))
         if addr_start != expected_next:
+            log.debug("mry-changed")
             self.emit("mry-changed")
             self.loading = False
             expn = to_str(expected_next)
             adst = to_str(addr_start)
-            dbg.warn(f"Unintended Block: {expn=}, recvd: {adst=}, skipped: {len(data)}")
+            #log.warn(f"Unintended Block: {expn=}, recvd: {adst=}, skipped: {len(data)}")
         else:
             self.memory.extend(data)
 
     def read_from_str(self, saddr, size=1):
-        addr = [int(v, 16) for v in saddr.split(' ')]
-        return self.read(addr, size)
-
+        #addr = [int(v, 16) for v in saddr.split(' ')]
+        return self.read(from_str(saddr), size)
     def read(self, addr, size=1):
         if not self.base_addr:
             raise RuntimeError("Empty Memory")
@@ -55,27 +56,60 @@ class Memory(GObject.GObject):
             value=None
         return value
 
+    def write_from_str(self, saddr, data):
+        self.write( from_str(saddr), data)
+    def write(self, addr, data):
+        if not self.base_addr:
+            raise RuntimeError("Empty Memory")
+        offset = self.addr_to_offset(addr)
+        if isinstance(data, int):
+            data = [data]
+        if offset + len(data) > len(self.memory):
+            raise IndexError("Write exceeds memory size")
+        self.memory[offset:offset + len(data)] = data
+
+
     def received_msg(self, msg):
-        log_sysex.debug(f"{msg.hex()}")
+        log.sysex(f"{msg.hex()}")
         addr, data =  self.sysex.get_addr_data(msg)
         if len(data) > 63:
             self.add_block(addr, data)
         else:
             saddr = to_str(addr)
             sdata = to_str(data)
-            dbg.debug(f"{saddr=}: {sdata=}")
+            log.debug(f"{saddr=}: {sdata=}")
             if saddr in self.map:
                 mapping = self.map[saddr]
-                if saddr == "60 00 06 50":
-                    dbg.debug("CHANGE AMP")
+                #log.debug(f"{mapping=}")
                 obj = mapping["obj"]
                 prop = mapping["prop"]
-                obj.handler_block(obj.handler_id)
+                #obj.handler_block(obj.notify_id)
+                #with obj.provenance("sysex"):
+                value = None
                 if isinstance(getattr(obj, prop), bool):
-                    setattr(obj, prop, bool(data[0]))
+                    value = bool(data[0])
+                    #setattr(obj, prop, bool(data[0]))
                 else:
-                    setattr(obj, prop, int(data[0]))
-                obj.handler_unblock(obj.handler_id)
+                    value = int(data[0])
+                    #setattr(obj, prop, int(data[0]))
+
+                #if hasattr(obj, "set_with_source"):
+                #    obj.set_with_source(prop, value, "sysex")
+                #else:
+                #    setattr(obj, prop, value)
+                setattr(obj, prop, value)
+                #log.debug(f"write: {self.map[saddr]=}")
+                #log.debug(f"{obj.map.recv=}")
+                #log.debug(f"write: {obj.map.recv[saddr]=}")
+                if saddr in obj.map.recv:
+                    self.write(addr, data)
+                #self.write( addr, data )
+                #obj.handler_unblock(obj.notify_id)
+            elif saddr == '00 01 00 00':
+                log.debug(f"emit channel-changed {data}")
+                self.emit("channel-changed", data[1])
+            else:
+                log.warning(f"Memory.received_msg: {saddr=}: not implemented")
 
 
     def addr_to_offset(self, addr):

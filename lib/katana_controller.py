@@ -17,8 +17,8 @@ from .tools import to_str, from_str
 
 import logging
 from lib.log_setup import LOGGER_NAME
-log_sysex = logging.getLogger(LOGGER_NAME)
-dbg = logging.getLogger("debug")
+log = logging.getLogger(LOGGER_NAME)
+#log = logging.getLogger("debug")
 
 
 class KatanaController(GObject.GObject):
@@ -42,6 +42,7 @@ class KatanaController(GObject.GObject):
         GLib.timeout_add_seconds(1, self.wait_device)
 
     def queue_watcher(self):
+        #log.debug("queue watcher")
         while True:
             msg = self.msg_queue.get()
             if not self.listener_callback:
@@ -50,7 +51,7 @@ class KatanaController(GObject.GObject):
                 GLib.idle_add(self.listener_callback, msg)
 
     def wait_device(self):
-        dbg.debug("KatanaController.wait_device")
+        log.debug("waiting...")
         self.port.list()
         if self.port.has_device:
             self.port.connect(self.listener)
@@ -61,27 +62,28 @@ class KatanaController(GObject.GObject):
             return True
 
     def listener(self, msg):
-        #dbg.debug(f"listener({msg})")
-        #log_sysex.debug(msg.hex())
+        #log.debug("listener())")
+        #log.sysex(msg.hex())
         if msg.type == 'sysex':
             self.msg_queue.put(msg)
 
     def send( self, msg, callback=None ):
-        #dbg.debug(f"send: {message.hex()}")
-        log_sysex.debug(f"SEND: {msg.hex()}")
+        #log.debug(f"send: {message.hex()}")
+        log.sysex(f"SEND: {msg.hex()}")
         if callback:
+            #print(callback)
             self.listener_callback = callback
         self.port.output.send( msg )
         sleep(.05)
 
 
     def scan_devices(self):
-        dbg.debug(f"scan_devices()")
+        log.debug(f"scan_devices()")
         self.sysex.data = from_str(self.fsem.addrs['SCAN_REQ'])
         self.send(self.sysex, self.set_device)
 
     def set_device(self, msg):
-        #dbg.debug(f"set_device({msg.hex()})")
+        #log.debug(f"set_device({msg.hex()})")
         data = list(msg.data)
         #to_str = self.message.addrs.to_str
         if data[0:4] == from_str(self.fsem.addrs['SCAN_REP']):
@@ -95,11 +97,11 @@ class KatanaController(GObject.GObject):
             self.device.model = sq(to_str(mod))
             self.device.number = to_str(num)
             self.fsem.header = man + dev + mod
-            #dbg.debug(f"{self.device=}")
-            #dbg.debug(f"message.header= {to_str(self.message.header)}")
+            #log.debug(f"{self.device=}")
+            #log.debug(f"message.header= {to_str(self.message.header)}")
         self.device.get_name()
         self.device.get_presets()
-        self.device.get_memory()
+        self.device.dump_memory()
 
     def get_path_val(self, path):
         m = path.split(':')
@@ -110,18 +112,20 @@ class KatanaController(GObject.GObject):
 
     def set_on(self, path):
         val = self.get_path_val(path)
-        #dbg.debug("on:", val, type(val))
+        #log.debug("on:", val, type(val))
         if path.split(':')[0].lower() == "program_change":
             self.pc.program = val
             self.port.send(self.pc)
-        else:
+        elif path.split(':')[0].lower() == "control_change":
             self.cc.control = val['CC']
             self.cc.value = val['ON']
             self.port.send(self.cc)
+        #elif path.split(':')[0].lower() == "sysex":
+        #    self.device.
 
     def set_off(self, path):
         val = self.get_path_val(path)
-        #dbg.debug("off:", val)
+        #log.debug("off:", val)
         self.cc.control = val['CC']
         self.cc.value = val['OFF']
         self.port.send(self.cc)

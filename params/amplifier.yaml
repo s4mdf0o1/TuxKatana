@@ -2,12 +2,15 @@ Num:
   prop_name: "amp_num"
   RECV: "60 00 06 50"
   type: int
-Type:
+Code:
+  prop_name: "amp_code"
+  RECV: "60 00 00 21"
+Models:
   prop_name: "amp_type"
   type: "combo"
   SEND: "60 00 00 21"
-  Values:
-    'Acoustic':      '01'
+  Codes:
+    'Acoustic':     '01'
     'Clean':        '08'
     'Crunch':       '0b'
     'Lead':         '18'

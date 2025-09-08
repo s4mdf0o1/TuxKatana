@@ -1,19 +1,29 @@
 TuxKatana
    |
    -> MainWindow
-         |
-         -> Controller
-               |
-               -> Port
-               -> SysExMessage
-               |     |
-               |     -> SysExML
-               -> Device
-                     |
-                     -> Memory
-                     |     |
-                     |     -> MemoryMap
-                     -> Presets
-                     -> Amplifier
-                     -> Booster
-
+   |     |
+   |     -> Controller
+   |           |
+   |            -> Port
+   |           |
+   |           -> FormatMessage
+   |           |     
+   |           -> Device
+   |                 |
+   |                 -> Memory
+   |                 |     |
+   |                 |     -> map = {}
+   |                 -> Presets
+   |                 |
+   |                 -> Amplifier
+   |                 |     |
+   |                 |     -> Map
+   |                 -> Booster
+   |
+   |
+   |
+   |
+   |
+   |
+   |
+   -> 

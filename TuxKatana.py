@@ -10,12 +10,12 @@ from ruamel.yaml import YAML
 yaml = YAML(typ="safe")
 from time import sleep
 
-from lib.log_setup import setup_logger, setup_debug
 from lib import KatanaController
 
 from widgets import KatanaEffectSwitcher, KatanaSettings
-logger = setup_logger("logs/sysex_messages.log")
-dbg = setup_debug()
+
+from lib.log_setup import setup_logger
+log = setup_logger()
 
 class ConnectWait(Gtk.Dialog):
     def __init__(self, app, parent):
@@ -43,9 +43,9 @@ class MainWindow(Gtk.Window):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.set_child(box)
 
-        self.ks = KatanaSettings( "SETTINGS", config['SETTINGS'], app.katana)
+        self.ks = KatanaSettings( "SETTINGS", config['SETTINGS'], app.ctrl)
         box.append(self.ks)
-        self.kes = KatanaEffectSwitcher( config['KES'], app.katana)
+        self.kes = KatanaEffectSwitcher( config['KES'], app.ctrl)
         box.append(self.kes)
 
         self.wait_dialog = ConnectWait( app, self )
@@ -54,8 +54,9 @@ class MainWindow(Gtk.Window):
         GLib.timeout_add_seconds(1, self.check_connection)
 
     def check_connection( self ):
-        print("MainWindow.check_connection")
-        if app.katana.port.has_device:
+        log.info("check_connection")
+        #print("MainWindow.check_connection")
+        if app.ctrl.port.has_device:
             self.set_sensitive(True)
             self.wait_dialog.set_visible(False)
             return False
@@ -77,7 +78,7 @@ class TuxKatana(Gtk.Application):
             config = yaml.load(f)
         self.dots=config['DOTS']
 
-        self.katana = KatanaController(self)
+        self.ctrl = KatanaController(self)
 
         self.win = MainWindow(self, config)
         self.win.set_default_size(550, 650)

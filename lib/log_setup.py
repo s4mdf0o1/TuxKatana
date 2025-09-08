@@ -1,64 +1,100 @@
 import logging
-import pathlib
-import shutil
+import os
 
 LOGGER_NAME = "TuxKatana"
-#from datetime import datetime
 
-#timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-#logfile = f"logs/{timestamp}.log"
-#handler = logging.FileHandler(logfile, mode="a")#, encoding="utf-8")
-#fmt = logging.Formatter("[%(levelname)s] %(message)s")
-#handler.setFormatter(fmt)
+# --- 1. Définition du niveau SYSEX ---
+SYSEX = 5
+logging.addLevelName(SYSEX, "SYSEX")
 
-#logger = logging.getLogger("TuxKatana")
-#logger.setLevel(logging.DEBUG)
-#logger.addHandler(handler)
-def setup_debug() -> logging.Logger:
-    handler = logging.FileHandler("logs/TuxKatana.log", mode="w")#, encoding="utf-8")
-    logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
-    logger = logging.getLogger("debug")
-    logger.addHandler(handler)
-    return logger
+def sysex(self, message, *args, **kwargs):
+    #if self.isEnabledFor(SYSEX):
+    self._log(SYSEX, message, args, **kwargs)
 
-def setup_logger(logfile: str = "logs/sysex_messages.log") -> logging.Logger:
-    handler = logging.FileHandler(logfile, mode="w")#, encoding="utf-8")
-    fmt = logging.Formatter("[%(levelname)s] %(message)s")
-    handler.setFormatter(fmt)
+logging.Logger.sysex = sysex   # ajouté une seule fois, globalement
+
+
+# --- 2. Formatter par niveau ---
+class LevelFormatter(logging.Formatter):
+    FORMATS = {
+        logging.DEBUG:    "%(filename)s:%(lineno)d-%(funcName)s: %(message)s",
+        logging.INFO:     "[INFO] %(message)s",
+        logging.WARNING:  "⚠️ WARNING: %(message)s",
+        logging.ERROR:    "❌ ERROR: %(message)s",
+        logging.CRITICAL: "🔥 CRITICAL: %(message)s",
+        SYSEX:            ">>> %(message)s",   # tu peux aussi mettre ton format SYSEX ici
+    }
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno, "%(levelname)s: %(message)s")
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
+
+
+# --- 3. Filtres utiles ---
+class ExcludeLevelFilter(logging.Filter):
+    def __init__(self, level):
+        super().__init__()
+        self.level = level
+    def filter(self, record):
+        return record.levelno != self.level
+
+class ExactLevelFilter(logging.Filter):
+    def __init__(self, level):
+        super().__init__()
+        self.level = level
+    def filter(self, record):
+        return record.levelno == self.level
+
+
+# --- 4. Configuration du logger ---
+def setup_logger() -> logging.Logger:
+    os.makedirs("logs", exist_ok=True)
 
     logger = logging.getLogger(LOGGER_NAME)
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(handler)
+
+    if not logger.handlers:
+        main_formatter = LevelFormatter()
+        sysex_formatter = logging.Formatter(">>> %(message)s")
+
+        # Handler fichier principal → tout sauf SYSEX
+        fh_main = logging.FileHandler("logs/tuxkatana.log", mode="w", encoding="utf-8")
+        fh_main.setLevel(logging.INFO)
+        fh_main.setFormatter(main_formatter)
+        fh_main.addFilter(ExcludeLevelFilter(SYSEX))
+        logger.addHandler(fh_main)
+
+        debug_handler = logging.StreamHandler()
+        debug_handler.setLevel(logging.DEBUG)
+        debug_handler.addFilter(ExactLevelFilter(logging.DEBUG))
+        debug_handler.setFormatter(logging.Formatter("%(filename)s:%(lineno)d-%(funcName)s: %(message)s"))
+        logger.addHandler(debug_handler)
+
+        # Handler fichier sysex → uniquement SYSEX
+        fh_sysex = logging.FileHandler("logs/sysex.log", mode="w", encoding="utf-8")
+        fh_sysex.setLevel(SYSEX)
+        fh_sysex.setFormatter(sysex_formatter)
+        fh_sysex.addFilter(ExactLevelFilter(SYSEX))
+        logger.addHandler(fh_sysex)
+
+        # Handler console → tout sauf SYSEX
+        sh = logging.StreamHandler()
+        sh.setLevel(logging.DEBUG)
+        sh.setFormatter(main_formatter)
+        sh.addFilter(ExcludeLevelFilter(SYSEX))
+        sh.addFilter(ExcludeLevelFilter(logging.DEBUG))
+        logger.addHandler(sh)
+
+        logger.propagate = False
+        logger.setLevel(logging.DEBUG)   # DEBUG capte tout >=5
+
     return logger
+if __name__ == "__main__":
+    log = setup_logger()
 
-def rotate_log(new_name: str):
-    logger = logging.getLogger(LOGGER_NAME)
-
-    # Trouver le FileHandler actif
-    handler = None
-    for h in logger.handlers:
-        if isinstance(h, logging.FileHandler):
-            handler = h
-            break
-
-    if handler is None:
-        raise RuntimeError("No 'TuxKatana' FileHandler found")
-
-    current_log = pathlib.Path(handler.baseFilename)
-    rotated_log = current_log.with_name(f"{new_name}{current_log.suffix}")
-
-    # Fermer le handler avant de manipuler le fichier
-    logger.removeHandler(handler)
-    handler.close()
-
-    # Déplacer/renommer le fichier
-    shutil.move(str(current_log), rotated_log)
-
-    # Recréer un FileHandler vide
-    new_handler = logging.FileHandler(current_log, mode="w")#, encoding="utf-8")
-    fmt = logging.Formatter("[%(levelname)s] %(message)s")
-    new_handler.setFormatter(fmt)
-    logger.addHandler(new_handler)
-
-    return rotated_log
+    log.debug("Un debug")
+    log.sysex("Un message SYSEX")
+    log.info("Un info")
+    log.warning("Un warning")
+    log.error("Une erreur")
 
