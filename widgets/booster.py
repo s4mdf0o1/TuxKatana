@@ -100,17 +100,23 @@ class Booster(Gtk.Box):
         self.append(box_solo)
 
         self.solo_sw = Toggle("SOLO")
+        self.own_ctrl.bind_property(
+            "solo_sw", self.solo_sw, "active", 
+            GObject.BindingFlags.SYNC_CREATE |\
+            GObject.BindingFlags.BIDIRECTIONAL )
         box_solo.append(self.solo_sw)
 
         self.own_ctrl.connect("booster-loaded", self.on_booster_models_loaded)
 
+        #self.ctrl.parent.win.switcher.effects.buttons[0].toggle_id
+
     def on_slider_changed( self, slider):
         self.own_ctrl.set_property(slider.name, slider.get_value())
 
-#    def on_booster_models_loaded(self, device, models):
-#        i = 0
-#        for name, code in models.items():
-#            self.store.append([i,name, code])
-#            i += 1
+    def on_booster_models_loaded(self, device, models):
+        i = 0
+        for name, code in models.items():
+            self.store.append([i,name, code])
+            i += 1
 
 

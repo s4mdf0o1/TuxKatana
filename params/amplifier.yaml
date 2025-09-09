@@ -1,57 +1,39 @@
-Num:
-  prop_name: "amp_num"
-  RECV: "60 00 06 50"
-  type: int
-Code:
-  prop_name: "amp_code"
-  RECV: "60 00 00 21"
+SEND:
+  amp_model:  "60 00 00 21"
+  gain_lvl:   "60 00 06 51"
+  volume_lvl: "60 00 00 28"
+RECV:
+  "60 00 06 50": "amp_num"
+  "60 00 06 5c": "amp_variation"
+  "60 00 06 52": "volume_lvl"
 Models:
-  prop_name: "amp_type"
-  type: "combo"
-  SEND: "60 00 00 21"
-  Codes:
-    'Acoustic':     '01'
-    'Clean':        '08'
-    'Crunch':       '0b'
-    'Lead':         '18'
-    'Brown':        '17'
-    'Var_Acoustic': '1c'
-    'Var_Clean':    '1d'
-    'Var_Crunch':   '1e'
-    'Var_Lead':     '1f'
-    'Var_Brown':    '20'
-    'Nat_Clean':    '00'
-    'Clean Twin':   '09'
-    'Combo Crunch': '02'
-    'Pro Crunch':   '0a'
-    'Delux Crunch': '0c'
-    'Stack Crunch': '03'
-    'VO Drive':     '0d'
-    'BG Drive':     '11'
-    'Match Drive':  '0f'
-    'Power Drive':  '05'
-    'VO Lead':      '0e'
-    'Extreme Lead': '06'
-    'T-Amp Lead':   '16'
-    'MS 1959 I':    '12'
-    'MS 1959 I+II': '13'
-    'HiGain Stack': '04'
-    'Fier Vintage': '14'
-    'Fier Modern':  '15'
-    'Core Metal':   '07'
-Variation:
-  prop_name: "amp_variation"
-  type: "toggle"
-  RECV: "60 00 06 5c"
-Gain:
-  prop_name: "amp_gain"
-  type: "slider"
-  #SEND: "60 00 00 22"
-  SEND: "60 00 06 51"
-  RECV: "60 00 06 51"
-Volume:
-  prop_name: "amp_volume"
-  type: "slider"
-  SEND: "60 00 00 28"
-  RECV: "60 00 06 52"
+  'Acoustic':     '01'
+  'Clean':        '08'
+  'Crunch':       '0b'
+  'Lead':         '18'
+  'Brown':        '17'
+  'Var_Acoustic': '1c'
+  'Var_Clean':    '1d'
+  'Var_Crunch':   '1e'
+  'Var_Lead':     '1f'
+  'Var_Brown':    '20'
+  'Nat_Clean':    '00'
+  'Clean Twin':   '09'
+  'Combo Crunch': '02'
+  'Pro Crunch':   '0a'
+  'Delux Crunch': '0c'
+  'Stack Crunch': '03'
+  'VO Drive':     '0d'
+  'BG Drive':     '11'
+  'Match Drive':  '0f'
+  'Power Drive':  '05'
+  'VO Lead':      '0e'
+  'Extreme Lead': '06'
+  'T-Amp Lead':   '16'
+  'MS 1959 I':    '12'
+  'MS 1959 I+II': '13'
+  'HiGain Stack': '04'
+  'Fier Vintage': '14'
+  'Fier Modern':  '15'
+  'Core Metal':   '07'
 

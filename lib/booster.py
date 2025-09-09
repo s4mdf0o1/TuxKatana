@@ -24,20 +24,10 @@ class Booster(AntiFlood, GObject.GObject):
     dir_mix_lvl     = GObject.Property(type=float, default=50.0)
     bank_select     = GObject.Property(type=int, default=0)
     model_G         = GObject.Property(type=int, default=0)
-    #model_G_num     = GObject.Property(type=int, default=0)
     model_R         = GObject.Property(type=int, default=0)
-    #model_R_num     = GObject.Property(type=int, default=0)
     model_Y         = GObject.Property(type=int, default=0)
-    #model_Y_num     = GObject.Property(type=int, default=0)
     booster_status  = GObject.Property(type=int, default=0)
 
-#    booster_bank = GObject.Property(type=int, default=0)
-#    booster_status = GObject.Property(type=int, default=0)
-#    booster_type = GObject.Property(type=int, default=0)
-#    booster_num  = GObject.Property(type=int, default=-1)
-#    booster_code = GObject.Property(type=int, default=-1)
-#    booster_switch = GObject.Property(type=bool, default=False)
-#    booster_driver = GObject.Property(type=float, default=50.0)
     def __init__(self, device, ctrl):
         super().__init__()
         self.ctrl = ctrl
@@ -48,7 +38,7 @@ class Booster(AntiFlood, GObject.GObject):
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        i#self.addr_id = device.mry.connect("mry-changed", self.addr_changed)
+        #self.addr_id = device.mry.connect("mry-changed", self.addr_changed)
         self.set_mry_map()
 
     def on_param_changed(self, name, value):
@@ -69,7 +59,11 @@ class Booster(AntiFlood, GObject.GObject):
         if method and name in ['booster_model', 'model_num', 'booster_status', 'bank_select']:
             method(name, value, addr, mry)
         elif 'lvl' in name:
-            pass
+            log.debug('Send LEVEL')
+            self.device.send(addr, [value])
+        elif 'sw' in name:
+            value = 1 if value else 0
+            self.device.send(addr, [value])
         else:
             log.warning(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
             #log.warning(f"{method_name} {name} ")
@@ -94,54 +88,36 @@ class Booster(AntiFlood, GObject.GObject):
         log.debug(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
         self.device.send(addr, [value])
 
-    def set_solo_lvl(self, name, value, addr, mry):
+    def set_solo_sw(self, name, value, addr, mry):
+        value = 1 if value else 0
         self.device.send(addr, [value])
 
-    def set_drive_lvl(self, name, value, addr, mry):
-        self.device.send(addr, [value])
-
-    def set_bottom_lvl(self, name, value, addr, mry):
-        self.device.send(addr, [value])
-
-    def set_tone_lvl(self, name, value, addr, mry):
-        self.device.send(addr, [value])
-
-    def get_mry_from_prop(self, prop):
-        addr = next((k for k, v in self.map.recv.items() \
-                if v == prop), None)
-        if addr:
-            return self.device.mry.read_from_str(addr)
-        return None
+#    def get_mry_from_prop(self, prop):
+#        addr = next((k for k, v in self.map.recv.items() \
+#                if v == prop), None)
+#        if addr:
+#            return self.device.mry.read_from_str(addr)
+#        return None
 
     def direct_set(self, prop, value):
         self.handler_block_by_func(self._on_any_property_changed)
         self.set_property(prop, value)
         self.handler_unblock_by_func(self._on_any_property_changed)
 
-    def load_from_mry(self, mry):
-        for addr, prop in self.map.send.inverse.items():
-            value = mry.read_from_str(addr)
-            #log.debug(f"{prop}: {addr}: {to_str(value)}")
-            if value:
-                self.direct_set(prop, value)
-
-        for addr, prop in self.map.recv.items():
-            value = mry.read_from_str(addr)
-            #log.debug(f"{prop}: {addr}: {to_str(value)}")
-            if value:
-                self.direct_set(prop, value)
-                #self.handler_block_by_func(self._on_any_property_changed)
-                #self.set_property(prop_name, value)
-                #self.handler_unblock_by_func(self._on_any_property_changed)
-                #self.handler_unblock(self.notify_id)
-        #log.debug(f"{self.bank_status=}")
-        #log.debug(f"{self.booster_sw=}")
-
+    def set_bank_model(self):
         bank = self.banks[self.booster_status - 1]
         bank_name = "model_"+bank
         model = self.get_property(bank_name)
         num = list(self.map['Models'].values()).index(to_str(model))
         self.direct_set("model_num", num)
+
+    def load_from_mry(self, mry):
+        for addr, prop in self.map.recv.items():
+            value = mry.read_from_str(addr)
+            #log.debug(f"{prop}: {addr}: {to_str(value)}")
+            if value:
+                self.direct_set(prop, value)
+        self.set_bank_model()
 
     def set_mry_map(self):
         for addr, prop in self.map.recv.items():

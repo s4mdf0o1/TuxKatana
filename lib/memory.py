@@ -8,7 +8,7 @@ log = logging.getLogger(LOGGER_NAME)
 
 class Memory(GObject.GObject):
     __gsignals__ = {
-        "mry-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        #"mry-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
         "mry-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
     }
