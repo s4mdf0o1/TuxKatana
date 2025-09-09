@@ -35,7 +35,8 @@ class Device(GObject.GObject):
         self.data = []
 
     def send(self, addr, value):
-        log.debug(f"{to_str(addr)=}, {to_str(value)=}")
+        saddr, sval = to_str(addr), to_str(value)
+        log.debug(f"[{saddr}]: {sval}")
         msg=self.fsem.get_with_addr('SET', addr, value)
         self.ctrl.sysex.data=msg
         self.ctrl.send(self.ctrl.sysex)
@@ -47,6 +48,11 @@ class Device(GObject.GObject):
         msg = self.fsem.get_with_addr('GET', addr, size)
         self.ctrl.sysex.data = msg
         self.ctrl.send(self.ctrl.sysex)
+
+    def set_edit_mode(self, edit):
+        log.debug(f"({edit})")
+        val = [1] if edit else [0]
+        self.send([0x7F,0,0,1], val)
 
     def get_name(self):
         size = [0,0,0,0x10]

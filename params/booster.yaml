@@ -1,3 +1,29 @@
+SEND:
+  Effet:
+    "60 00 00 10": switch
+    "60 00 00 11": type
+  Solo:
+    "60 00 00 15": solo sw
+    "60 00 00 16": solo lvl
+  Drive:
+    "60 00 00 12": drive lvl
+    "60 00 00 13": bottom lvl
+    "60 00 00 14": tone lvl
+  Level:
+    "60 00 00 17": effect lvl
+    "60 00 00 18": direct mix lvl
+  Banks:
+    "60 00 06 39": switch
+    "60 00 06 24": type G
+    "60 00 06 25": type R
+    "60 00 06 26": type Y
+
+RECV:
+  "60 00 06 24": type
+  "60 00 00 11": type
+  "60 00 06 57": ?
+  "60 00 06 5d": ?
+
 Types:
   prop_name: "booster_type"
   type: "combo"
@@ -37,6 +63,14 @@ Colors:
     GREEN:  🟢
     RED:    🔴
     YELLOW: 🟡
+Banks:
+  SEND: "60 00 06 24"
+  GREEN:
+    OFFSET: 0
+  RED:
+    OFFSET: 1
+  YELLOW:
+    OFFSET: 2
 Status:
   prop_name: "booster_status"
   RECV: "60 00 06 5d"

@@ -52,6 +52,7 @@ def setup_logger() -> logging.Logger:
     os.makedirs("logs", exist_ok=True)
 
     logger = logging.getLogger(LOGGER_NAME)
+    logger.SYSEX = SYSEX
 
     if not logger.handlers:
         main_formatter = LevelFormatter()

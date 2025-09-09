@@ -19,7 +19,7 @@ class Booster(Gtk.Box):
         self.ctrl = ctrl
         self.own_ctrl = self.ctrl.device.booster
         banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
-        self.booster_bank = Bank("BOOSTER", banks, ctrl)
+        self.booster_bank = Bank("BANKS", banks, ctrl)
         self.booster_bank.buttons[0].set_status_id(1)
         self.booster_bank.buttons[2].set_status_id(3)
         self.append(self.booster_bank)

@@ -49,7 +49,7 @@ class Controller(GObject.GObject):
                 GLib.idle_add(self.listener_callback, msg)
 
     def wait_device(self):
-        log.debug("waiting...")
+        log.info("Waiting for device...")
         self.port.list()
         if self.port.has_device:
             self.port.connect(self.listener)
@@ -92,6 +92,7 @@ class Controller(GObject.GObject):
         self.device.get_name()
         self.device.get_presets()
         self.device.dump_memory()
+        self.device.set_edit_mode(True)
 
     def get_path_val(self, path):
         m = path.split(':')
