@@ -19,7 +19,7 @@ button.toggle:not(:checked) {
   /*border: 1px solid black;
   border-radius: 6px;*/
 
-  padding: 5px;
+  padding: 1px;
   box-shadow: inset 1px 1px 1px rgba(0,0,0,0.6),
               inset -1px -1px 1px rgba(255,255,255,0.4);
       }
@@ -47,4 +47,8 @@ stacksidebar.button {
     background-color: #333;
     color: white;
     border-radius: 5px;
+}
+box.slider scale{
+   padding: 3px;
+   margin: 3px;
 }

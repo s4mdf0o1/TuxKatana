@@ -8,7 +8,8 @@ log = logging.getLogger(LOGGER_NAME)
 
 class Memory(GObject.GObject):
     __gsignals__ = {
-        "mry-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "mry-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        "mry-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
     }
 
@@ -33,7 +34,7 @@ class Memory(GObject.GObject):
         expected_next = self.incr_base128(self.base_addr, len(self.memory))
         if addr_start != expected_next:
             #log.debug("mry-changed")
-            self.emit("mry-changed")
+            self.emit("mry-loaded")
             self.loading = False
             expn = to_str(expected_next)
             adst = to_str(addr_start)
@@ -72,8 +73,10 @@ class Memory(GObject.GObject):
         if len(data) > 63:
             self.add_block(addr, data)
         else:
+            #self.write(addr, data)
             saddr = to_str(addr)
             sdata = to_str(data)
+            #self.emit("mry-changed", saddr)
             log.debug(f"{saddr=}: {sdata=}")
             if saddr in self.map:
                 mapping = self.map[saddr]

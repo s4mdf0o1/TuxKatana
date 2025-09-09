@@ -14,11 +14,12 @@ SEND:
   model_Y:      "60 00 06 26"
 
 RECV:
+  "60 00 06 5d":  "booster_status"
+  "60 00 00 11":  "booster_model"
   "60 00 06 24":  "model_G"
   "60 00 06 25":  "model_R"
   "60 00 06 26":  "model_Y"
-  "60 00 06 5d":  "bank_status"
-  "60 00 00 11":  "booster_model"
+  "60 00 00 10":  "booster_sw"
 
 Models:
   'Mid Boost':    '00'

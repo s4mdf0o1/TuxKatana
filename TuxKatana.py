@@ -21,7 +21,7 @@ log = setup_logger()
 
 def close(app):
     log.info(f"Closing...")
-    app.ctrl.port.close()
+    #app.ctrl.port.close()
 
 class MainWindow(Gtk.Window):
     def __init__(self, app, config):
@@ -92,6 +92,7 @@ class TuxKatana(Gtk.Application):
         self.win.present()
         #self.move(x, y)
     def do_shutdown(self):
+        #self.ctrl.port.close()
         close(self)
         Gtk.Application.do_shutdown(self)
         #super().do_shutdown(self)

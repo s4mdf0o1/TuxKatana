@@ -27,7 +27,7 @@ class Device(GObject.GObject):
         self.mry = Memory(ctrl.fsem)
 
         self.presets = Gio.ListStore(item_type=Preset)
-        self.amplifier=Amplifier( self, ctrl )
+        #self.amplifier=Amplifier( self, ctrl )
         self.booster = Booster( self, ctrl )
 
         self.is_loading_params = False
@@ -59,10 +59,10 @@ class Device(GObject.GObject):
         msg = self.fsem.get_from_name( 'GET', 'NAME', size)
         self.ctrl.sysex.data = msg
         self.ctrl.send(self.ctrl.sysex, self.set_name_from_data)
-        self.amplifier.emit("amp-types-loaded", \
-                self.amplifier.map['Models']['Codes'])
+        #self.amplifier.emit("amp-types-loaded", \
+        #        self.amplifier.map['Models']['Codes'])
         self.booster.emit("booster-loaded", \
-                self.booster.map['Types']['Codes'])
+                self.booster.map['Models'])
 
     def set_name_from_data(self, msg):
         name = self.fsem.get_str(msg).strip()

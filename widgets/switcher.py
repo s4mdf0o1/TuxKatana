@@ -29,7 +29,7 @@ class Switcher(Gtk.Box):
         #self.effects = Effects('EFFECTS', config, ctrl)
         self.effects = Bank("EFFECTS", config['EFFECTS'], ctrl, True)
         self.ctrl.device.booster.bind_property(
-            "booster_switch", self.effects.buttons[0], "active",
+            "booster_sw", self.effects.buttons[0], "active",
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
 
