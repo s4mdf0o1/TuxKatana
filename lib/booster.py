@@ -48,7 +48,7 @@ class Booster(AntiFlood, GObject.GObject):
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        self.addr_id = device.mry.connect("mry-changed", self.addr_changed)
+        i#self.addr_id = device.mry.connect("mry-changed", self.addr_changed)
         self.set_mry_map()
 
     def on_param_changed(self, name, value):
@@ -68,15 +68,13 @@ class Booster(AntiFlood, GObject.GObject):
         log.debug(f"{method_name} {name}")
         if method and name in ['booster_model', 'model_num', 'booster_status', 'bank_select']:
             method(name, value, addr, mry)
+        elif 'lvl' in name:
+            pass
         else:
-            log.error(f"{method_name} not found")
+            log.warning(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
+            #log.warning(f"{method_name} {name} ")
 
-    def addr_changed(self, mry, addr):
-        if addr in self.map.recv:
-            prop = self.map.recv[addr]
-            value = mry.read_from_str(addr)
-            log.debug(f"{addr=} {prop=} {to_str(value)=}")
-    
+   
     def set_booster_model(self, name, value, addr, mry):
         log.debug(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
         num = list(self.map['Models'].values()).index(to_str(value))
@@ -96,12 +94,6 @@ class Booster(AntiFlood, GObject.GObject):
         log.debug(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
         self.device.send(addr, [value])
 
-    def set_booster_sw(self, name, value, addr, mry):
-        log.debug(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
-
-    def set_solo_sw(self, name, value, addr, mry):
-        log.debug(f"{to_str(addr)}, to_str(value)")
-
     def set_solo_lvl(self, name, value, addr, mry):
         self.device.send(addr, [value])
 
@@ -113,56 +105,6 @@ class Booster(AntiFlood, GObject.GObject):
 
     def set_tone_lvl(self, name, value, addr, mry):
         self.device.send(addr, [value])
-
-    def set_model_G(self, name, value, addr, mry):
-        log.debug(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
-
-    def set_model_R(self, name, value, addr, mry):
-        log.debug(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
-
-    def set_model_Y(self, name, value, addr, mry):
-        log.debug(f"{name}: {to_str(value)=} / {to_str(addr)=}, {to_str(mry)=}")
-
-       #self.handler_block(self.notify_id)
-        #self.handler_block_by_func(self._on_any_property_changed)
-        #self.bank_status = value
-        #self.set_property("name", value)
-        #self.handler_unblock_by_func(self._on_any_property_changed)
-        #self.handler_unblock(self.notify_id)
-
-  
-
-#    def on_param_changed(self, name, value):
-#        log.debug(f">>> {name}={value}")
-#        prop_name = name.replace('-', '_')
-#        if name == "booster-bank":
-#            mry = self.device.mry.read_from_str("60 00 06 39")
-#            mry = self.get_mry_from_pname(prop_name)
-#            log.debug(f"{mry=}, {value-1=}")
-#            #if mry != int(value):
-#            addr=from_str(self.map.send[prop_name])
-#            self.device.send(addr, [int(value)])
-#        if name == "booster-type":
-#            idx =list(self.map['Types']['Codes'].values()).index(to_str(value))
-#            self.handler_block(self.notify_id)
-#            self.set_property("booster_num", idx)
-#            self.handler_unblock(self.notify_id)
-#        if name == "booster-num":
-#            index = self.booster_num
-#            code_num = list(self.map['Types']['Codes'].values())[index]
-#            addr = from_str(self.map.send["booster_type"])
-#            self.device.send(addr, from_str(code_num))
-#            #self.handler_block(self.notify_id)
-#            #self.set_property("amp_type", index)
-#            #self.handler_unblock(self.notify_id)
-#        elif name == "booster-driver":
-#            addr=from_str(self.map.send[prop_name])
-#            mry = mry = self.device.mry.read(addr)
-#            if mry != int(value):
-#                self.device.send(addr, [int(value)])
-            
-        
-
 
     def get_mry_from_prop(self, prop):
         addr = next((k for k, v in self.map.recv.items() \

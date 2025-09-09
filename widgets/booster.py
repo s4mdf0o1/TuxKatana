@@ -24,12 +24,8 @@ class Booster(Gtk.Box):
         self.bank_select = Bank("BOOSTER", banks, ctrl)
         self.bank_select.buttons[0].set_status_id(1)
         self.bank_select.buttons[2].set_status_id(3)
-        #self.append(self.booster_bank)
         self.append(self.bank_select)
-        #self.own_ctrl.bind_property(
-        #    "booster_bank", self.booster_bank, "selected",
-        #    GObject.BindingFlags.BIDIRECTIONAL |\
-        #    GObject.BindingFlags.SYNC_CREATE )
+
         self.own_ctrl.bind_property(
             "bank_select", self.bank_select, "selected",
             GObject.BindingFlags.BIDIRECTIONAL |\
@@ -49,17 +45,12 @@ class Booster(Gtk.Box):
         box_drive = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
         box_drive.get_style_context().add_class('inner')
         label=Gtk.Label(label="Drive")
-        #label.set_halign(Gtk.Align.END)
         label.set_xalign(1.0)
         label.set_margin_end(20)
         box_drive.append(label)
 
         self.drive_lvl = Slider( "Drive", 50.0, self.own_ctrl, "drive_lvl" )
         self.drive_lvl.name = "drive_lvl"
-#        self.own_ctrl.bind_property(
-#            "drive_lvl", self.drive_lvl,
-#            "value", GObject.BindingFlags.SYNC_CREATE |\
-#            GObject.BindingFlags.BIDIRECTIONAL )
         self.drive_lvl.connect("value-changed", self.on_slider_changed)
         box_drive.append(self.drive_lvl)
 
@@ -84,10 +75,6 @@ class Booster(Gtk.Box):
 
         self.effect_lvl = Slider( "Effect", 50.0, self.own_ctrl, "effect_lvl" )
         self.effect_lvl.name = "effect_lvl"
-#        self.own_ctrl.bind_property(
-#            "effect_lvl", self.effect_lvl,
-#            "value", GObject.BindingFlags.SYNC_CREATE |\
-#            GObject.BindingFlags.BIDIRECTIONAL )
         self.effect_lvl.connect("value-changed", self.on_slider_changed)
         box_level.append(self.effect_lvl)
 
@@ -116,17 +103,14 @@ class Booster(Gtk.Box):
         box_solo.append(self.solo_sw)
 
         self.own_ctrl.connect("booster-loaded", self.on_booster_models_loaded)
-        #self.booster_types_load(self, self.ctrl.device, self.own_ctrl.map['Types']['Codes'])
 
     def on_slider_changed( self, slider):
         self.own_ctrl.set_property(slider.name, slider.get_value())
 
-
-
-    def on_booster_models_loaded(self, device, models):
-        i = 0
-        for name, code in models.items():
-            self.store.append([i,name, code])
-            i += 1
+#    def on_booster_models_loaded(self, device, models):
+#        i = 0
+#        for name, code in models.items():
+#            self.store.append([i,name, code])
+#            i += 1
 
 
