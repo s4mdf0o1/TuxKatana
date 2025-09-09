@@ -12,18 +12,35 @@ class Booster(AntiFlood, GObject.GObject):
     __gsignals__ = {
         "booster-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
-    booster_bank = GObject.Property(type=int, default=0)
-    booster_status = GObject.Property(type=int, default=0)
-    booster_type = GObject.Property(type=int, default=0)
-    booster_num  = GObject.Property(type=int, default=-1)
-    booster_code = GObject.Property(type=int, default=-1)
-    booster_switch = GObject.Property(type=bool, default=False)
-    booster_driver = GObject.Property(type=float, default=50.0)
+    booster_sw      = GObject.Property(type=bool, default=False)
+    booster_model   = GObject.Property(type=int, default=0)
+    solo_sw         = GObject.Property(type=bool, default=False)
+    solo_lvl        = GObject.Property(type=float, default=50.0)
+    drive_lvl       = GObject.Property(type=float, default=50.0)
+    bottom_lvl      = GObject.Property(type=float, default=50.0)
+    tone_lvl        = GObject.Property(type=float, default=50.0)
+    effect_lvl      = GObject.Property(type=float, default=50.0)
+    dir_mix_lvl     = GObject.Property(type=float, default=50.0)
+    bank_select     = GObject.Property(type=int, default=0)
+    model_G         = GObject.Property(type=int, default=0)
+    model_R         = GObject.Property(type=int, default=0)
+    model_Y         = GObject.Property(type=int, default=0)
+    bank_status     = GObject.Property(type=int, default=0)
+
+#    booster_bank = GObject.Property(type=int, default=0)
+#    booster_status = GObject.Property(type=int, default=0)
+#    booster_type = GObject.Property(type=int, default=0)
+#    booster_num  = GObject.Property(type=int, default=-1)
+#    booster_code = GObject.Property(type=int, default=-1)
+#    booster_switch = GObject.Property(type=bool, default=False)
+#    booster_driver = GObject.Property(type=float, default=50.0)
     def __init__(self, device, ctrl):
         super().__init__()
         self.ctrl = ctrl
         self.device = device
+        self.name = "BOOSTER"
         self.map = Map("params/booster.yaml")
+
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-changed", self.load_from_mry)
         self.set_mry_map()
@@ -60,9 +77,9 @@ class Booster(AntiFlood, GObject.GObject):
         
 
 
-    def get_mry_from_pname(self, pname):
+    def get_mry_from_prop(self, prop):
         addr = next((k for k, v in self.map.recv.items() \
-                if v == pname), None)
+                if v == prop), None)
         if addr:
             return self.device.mry.read_from_str(addr)
         return None
@@ -77,11 +94,11 @@ class Booster(AntiFlood, GObject.GObject):
 
 
     def set_mry_map(self):
-        for addr, prop_name in self.map.recv.items():
-            #log.debug(f"{addr}: {prop_name}")
+        for addr, prop in self.map.recv.items():
+            #log.debug(f"{addr}: {prop}")
             self.device.mry.map[addr] = {
                     "obj": self,
-                    "prop": prop_name
+                    "prop": prop
                 }
 
 

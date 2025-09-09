@@ -11,11 +11,14 @@ class Map(UserDict):
     def __init__(self, filepath):
         super().__init__()
         self.filepath = filepath
-        with open(filepath, 'r') as f:
-            raw = yaml.load(f)
-        self.data = raw
+        data = None
         self.recv = {}
         self.send = {}
+        with open(filepath, 'r') as f:
+            data = yaml.load(f)
+        #self.data = raw
+        for k in data:
+
         for param in self.data.values():
             if 'RECV' in param:
                 self.recv[param['RECV']] = param['prop_name']
