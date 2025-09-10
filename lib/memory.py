@@ -79,9 +79,9 @@ class Memory(GObject.GObject):
             #self.emit("mry-changed", saddr)
             log.debug(f"{saddr=}: {sdata=}")
             if saddr in self.map:
-                mapping = self.map[saddr]
-                obj = mapping["obj"]
-                prop = mapping["prop"]
+                obj, prop = self.map[saddr]
+                #obj = mapping["obj"]
+                #prop = mapping["prop"]
                 value = None
                 if isinstance(getattr(obj, prop), bool):
                     value = bool(data[0])

@@ -38,7 +38,7 @@ class Booster(Gtk.Box):
         self.models.add_attribute(renderer, "text", 1)
         self.append(self.models)
         self.own_ctrl.bind_property(
-            "model_num", self.models, "active", 
+            "model_idx", self.models, "active", 
             GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
 

@@ -48,9 +48,9 @@ class KS_Settings(Gtk.Box):
         if name == "DEBUG":
             debug = Debug(ctrl)
             self.append(debug)
-        #elif name == "AMP":
-        #    self.amplifier = Amplifier(ctrl)
-        #    self.append(self.amplifier) 
+        elif name == "AMP":
+            self.amplifier = Amplifier(ctrl)
+            self.append(self.amplifier) 
         elif name == "BOOSTER":
             self.booster = Booster(ctrl)
             self.append(self.booster)

@@ -19,7 +19,7 @@ class Amplifier(Gtk.Box):
         self.own_ctrl = self.ctrl.device.amplifier
 
         self.amp_store = Gtk.ListStore(int, str, str)
-        bank_buttons = dict(list(self.own_ctrl.map['Models']['Codes'].items())[:5])
+        bank_buttons = dict(list(self.own_ctrl.map['Models'].items())[:5])
         #log.debug(bank_buttons)
         self.amp_bank = Bank("TYPE", bank_buttons, ctrl)
         self.append(self.amp_bank)
@@ -28,18 +28,18 @@ class Amplifier(Gtk.Box):
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
 
-        self.amp_types = Gtk.ComboBox.new_with_model(self.amp_store)
+        self.amp_models = Gtk.ComboBox.new_with_model(self.amp_store)
         renderer = Gtk.CellRendererText()
-        self.amp_types.pack_start(renderer, True)
-        self.amp_types.add_attribute(renderer, "text", 1)
+        self.amp_models.pack_start(renderer, True)
+        self.amp_models.add_attribute(renderer, "text", 1)
 
         self.own_ctrl.bind_property(
-            "amp_type", self.amp_types, "active", 
+            "model_idx", self.amp_models, "active", 
             GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
 
-        self.amp_types.connect("changed", self.on_combo_changed)
-        self.append(self.amp_types)
+        self.amp_models.connect("changed", self.on_combo_changed)
+        self.append(self.amp_models)
 
         self.amp_variation = Toggle("Variation")
         self.amp_variation.name = "amp_variation"
@@ -50,22 +50,22 @@ class Amplifier(Gtk.Box):
         self.amp_variation.connect("toggled", self.on_toggle_changed)
         self.append(self.amp_variation)
 
-        self.amp_gain = Slider( "Gain", 50.0 )
-        self.amp_gain.name = "amp_gain"
-        self.own_ctrl.bind_property(
-            "amp_gain", self.amp_gain,
-            "value", GObject.BindingFlags.SYNC_CREATE |\
-            GObject.BindingFlags.BIDIRECTIONAL )
+        self.amp_gain = Slider( "Gain", 50.0, self.own_ctrl, "gain_lvl" )
+        self.amp_gain.name = "gain_lvl"
+#        self.own_ctrl.bind_property(
+#            "amp_gain", self.amp_gain,
+#            "value", GObject.BindingFlags.SYNC_CREATE |\
+#            GObject.BindingFlags.BIDIRECTIONAL )
 
         self.amp_gain.scale.connect("value-changed", self.on_slider_changed)
         self.append(self.amp_gain)
 
-        self.amp_volume = Slider( "Volume", 50.0 )
-        self.amp_volume.name = "amp_volume"
-        self.own_ctrl.bind_property(
-            "amp_volume", self.amp_volume,
-            "value", GObject.BindingFlags.SYNC_CREATE |\
-            GObject.BindingFlags.BIDIRECTIONAL )
+        self.amp_volume = Slider( "Volume", 50.0, self.own_ctrl, 'volume_lvl' )
+        self.amp_volume.name = "volume_lvl"
+#        self.own_ctrl.bind_property(
+#            "amp_volume", self.amp_volume,
+#            "value", GObject.BindingFlags.SYNC_CREATE |\
+#            GObject.BindingFlags.BIDIRECTIONAL )
         self.amp_volume.connect("value-changed", self.on_slider_changed)
         self.append(self.amp_volume)
 
@@ -75,7 +75,7 @@ class Amplifier(Gtk.Box):
         idx = combo.get_active()
         if idx >= 0:  # -1 si rien de sélectionné
             name, code = self.amp_store[idx][:2]
-            self.own_ctrl.set_property("amp_type", idx)
+            self.own_ctrl.set_property("model_idx", idx)
 
     def on_slider_changed( self, slider):
         self.own_ctrl.set_property(slider.name, slider.get_value())
