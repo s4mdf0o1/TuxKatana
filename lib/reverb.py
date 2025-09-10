@@ -8,33 +8,37 @@ from .tools import to_str, from_str
 from .map import Map
 from .anti_flood import AntiFlood
 
-class Booster(AntiFlood, GObject.GObject):
+class Reverb(AntiFlood, GObject.GObject):
     __gsignals__ = {
-        "booster-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "reverb-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
-    booster_sw      = GObject.Property(type=bool, default=False)
-    booster_model   = GObject.Property(type=int, default=0)
-    model_idx       = GObject.Property(type=int, default=0)
-    solo_sw         = GObject.Property(type=bool, default=False)
-    solo_lvl        = GObject.Property(type=float, default=50.0)
-    drive_lvl       = GObject.Property(type=float, default=50.0)
-    bottom_lvl      = GObject.Property(type=float, default=50.0)
-    tone_lvl        = GObject.Property(type=float, default=50.0)
+    reverb_sw       = GObject.Property(type=bool, default=False)
+    reverb_type     = GObject.Property(type=int, default=0)
+    type_idx        = GObject.Property(type=int, default=0)
+    reverb_status   = GObject.Property(type=int, default=0)
+    bank_select     = GObject.Property(type=int, default=0)
+    bank_G          = GObject.Property(type=int, default=0)
+    bank_R          = GObject.Property(type=int, default=0)
+    bank_Y          = GObject.Property(type=int, default=0)
+    mode_idx        = GObject.Property(type=int, default=0)
+    mode_G          = GObject.Property(type=int, default=0)
+    mode_R          = GObject.Property(type=int, default=0)
+    mode_Y          = GObject.Property(type=int, default=0)
+    pre_delay_lvl   = GObject.Property(type=float, default=50.0)
+    time_lvl        = GObject.Property(type=float, default=50.0)
+    density_lvl     = GObject.Property(type=float, default=50.0)
+    low_cut_lvl     = GObject.Property(type=float, default=50.0)
+    high_cut_lvl    = GObject.Property(type=float, default=50.0)
     effect_lvl      = GObject.Property(type=float, default=50.0)
     dir_mix_lvl     = GObject.Property(type=float, default=50.0)
-    bank_select     = GObject.Property(type=int, default=0)
-    bank_G         = GObject.Property(type=int, default=0)
-    bank_R         = GObject.Property(type=int, default=0)
-    bank_Y         = GObject.Property(type=int, default=0)
-    booster_status  = GObject.Property(type=int, default=0)
 
     def __init__(self, device, ctrl):
         super().__init__()
-        self.name = "Booster"
+        self.name = "Reverb"
         self.ctrl = ctrl
         self.device = device
-        #self.name = "BOOSTER"
-        self.map = Map("params/booster.yaml")
+        #self.name = "REVERB"
+        self.map = Map("params/reverb.yaml")
         self.banks=['G', 'R', 'Y']
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
@@ -42,21 +46,21 @@ class Booster(AntiFlood, GObject.GObject):
         self.set_mry_map()
 
     def on_param_changed(self, name, value):
-        #log.debug(f">>> {name} = {value}")
+        log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
-        if name == 'booster_model':
-            num = list(self.map['Models'].values()).index(to_str(value))
-            self.direct_set("model_idx", num)
-        elif name == 'model_idx':
-            model_val = list(self.map['Models'].values())[value]
-            addr  = self.map.send["booster_model"]
+        if name == 'reverb_type':
+            num = list(self.map['Types'].values()).index(to_str(value))
+            self.direct_set("type_idx", num)
+        elif name == 'type_idx':
+            model_val = list(self.map['Types'].values())[value]
+            addr  = self.map.send["reverb_type"]
             self.device.send(from_str(addr), from_str(model_val))
-        elif name == 'booster_status':
+        elif name == 'reverb_status':
             self.direct_set(name, value)
         elif 'lvl' in name or name == 'bank_select':
             self.device.send(addr, [value])
@@ -69,12 +73,12 @@ class Booster(AntiFlood, GObject.GObject):
         self.set_property(prop, value)
         self.handler_unblock_by_func(self._on_any_property_changed)
 
-    def set_bank_model(self):
-        bank = self.banks[self.booster_status - 1]
+    def set_bank_type(self):
+        bank = self.banks[self.reverb_status - 1]
         bank_name = "bank_"+bank
         model = self.get_property(bank_name)
-        num = list(self.map['Models'].values()).index(to_str(model))
-        self.direct_set("model_idx", num)
+        num = list(self.map['Types'].values()).index(to_str(model))
+        self.direct_set("type_idx", num)
 
     def load_from_mry(self, mry):
         for addr, prop in self.map.recv.items():
@@ -82,7 +86,7 @@ class Booster(AntiFlood, GObject.GObject):
             #log.debug(f"{prop}: {addr}: {to_str(value)}")
             if value and value >= 0:
                 self.direct_set(prop, value)
-        self.set_bank_model()
+        self.set_bank_type()
 
     def set_mry_map(self):
         for addr, prop in self.map.recv.items():

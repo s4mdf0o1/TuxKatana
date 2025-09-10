@@ -29,6 +29,7 @@ class Switcher(Gtk.Box):
         self.effects = Bank("EFFECTS", config['EFFECTS'], ctrl, True)
 
         self.ctrl.device.booster.connect("notify::booster-status", self.on_status_changed)
+        self.ctrl.device.reverb.connect("notify::reverb-status", self.on_status_changed)
 
         self.append(self.effects)
         self.append(self.bank_a)
@@ -37,10 +38,16 @@ class Switcher(Gtk.Box):
 
         for bank in [self.bank_a, self.bank_b, self.effects]:
             for but in bank.buttons:
+                
                 #log.debug(but.name)
                 if but.name == 'BOOSTER':
                     self.ctrl.device.booster.bind_property(
                         "booster_sw", but, "active",
+                        GObject.BindingFlags.BIDIRECTIONAL |\
+                        GObject.BindingFlags.SYNC_CREATE )
+                if but.name == 'REVERB':
+                    self.ctrl.device.reverb.bind_property(
+                        "reverb_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
                 else:

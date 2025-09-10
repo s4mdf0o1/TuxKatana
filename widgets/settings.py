@@ -18,6 +18,7 @@ from .slider import Slider
 from .presets import PresetsView
 from .amplifier import Amplifier
 from .booster import Booster
+from .reverb import Reverb
 from .debug import Debug
 
 class KS_TabbedPanel(Gtk.Box):
@@ -54,6 +55,9 @@ class KS_Settings(Gtk.Box):
         elif name == "BOOSTER":
             self.booster = Booster(ctrl)
             self.append(self.booster)
+        elif name == "REVERB":
+            self.reverb = Reverb(ctrl)
+            self.append(self.reverb)
         else:
             self.slider = Slider( "Level", 50)
             self.append(self.slider)

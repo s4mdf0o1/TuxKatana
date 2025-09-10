@@ -9,9 +9,9 @@ SEND:
   effect_lvl:   "60 00 00 17"
   dir_mix_lvl:  "60 00 00 18"
   bank_select:  "60 00 06 39"
-  model_G:      "60 00 06 24"
-  model_R:      "60 00 06 25"
-  model_Y:      "60 00 06 26"
+  bank_G:      "60 00 06 24"
+  bank_R:      "60 00 06 25"
+  bank_Y:      "60 00 06 26"
 
 RECV:
   "60 00 06 5d":  "booster_status"

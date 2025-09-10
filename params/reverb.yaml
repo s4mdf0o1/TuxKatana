@@ -1,7 +1,25 @@
+SEND:
+  reverb_type:  "60 00 05 41"
+  bank_select:  "60 00 06 3d"
+  reverb_sw:    "60 00 05 40"
+  bank_G:       "60 00 06 30"
+  bank_R:       "60 00 06 31"
+  bank_Y:       "60 00 06 32"
+  mode_G:       "60 00 06 36"
+  mode_R:       "60 00 06 37"
+  mode_Y:       "60 00 06 38"
+  pre_delay_lvl: "60 00 05 43" # '00 00' -> '03 74'
+  time_lvl:     "60 00 05 42" # '00' -> '63'
+  density_lvl:  "60 00 05 47" # '00' -> '0a'
+  low_cut_lvl:  "60 00 05 45" # '00' -> '11'=FLAT/20Hz -> 800Hz
+  high_cut_lvl: "60 00 05 46" # '00' -> '0e'=630Hz -> 12.5kHz/FLAT
+  effect_lvl:   "60 00 05 48" # '00' -> '63'
+  dir_mix_lvl:  "60 00 05 49" # '00' -> '63'
+
+RECV:
+  "60 00 06 61": "reverb_status"
+
 Types:
-  prop_name: "reverb_type"
-  SEND: "60 00 05 41"
-  Codes:
     'Ambience': '00'
     'Room':     '01'
     'Hall 1':   '02'
@@ -10,55 +28,11 @@ Types:
     'Spring':   '05'
     'Modulate': '06'
 
-
-Banks:
-  prop_name: "reverb_bank"
-  SEND: "60 00 06 3d"
-Status:
-  prop_name: "reverb_status"
-  RECV: "60 00 06 61"
-Switch:
-  prop_name: "reverb_switch"
-  SEND: "60 00 05 40"
-
 Modes:
-  DELAY:  '00'
-  DUAL:   '01'
-  REVERB: '02'
-
-GREEN:
-  TYPE:
-    SEND: "60 00 06 30"
-  MODE:
-    SEND: "60 00 06 36"
-RED:
-  TYPE:
-    SEND: "60 00 06 31"
-  MODE:
-    SEND: "60 00 06 37"
-YELLOW:
-  TYPE:
-    SEND: "60 00 06 32"
-  MODE:
-    SEND: "60 00 06 38"
-Reverb:
-  PRE_DELAY:
-    SEND: "60 00 05 43" # '00 00' -> '03 74'
-  REVERB_TIME:
-    SEND: "60 00 05 42" # '00' -> '63'
-  DENSITY:
-    SEND: "60 00 05 47" # '00' -> '0a'
-Filter:
-  LOW_CUT: 
-    SEND: "60 00 05 45" # '00' -> '11' = FLAT | 20Hz -> 800Hz
-  HIGH_CUT:
-    SEND: "60 00 05 46" # '00' -> '0e' = 630Hz -> 12.5kHz | FLAT
-Level:
-  EFFECT:
-    SEND: "60 00 05 48" # '00' -> '63' 
-  DIRECT_MIX:
-    SEND: "60 00 05 49" # '00' -> '63'
+  Delay:  '00'
+  Dual:   '01'
+  Reverb: '02'
 
 Unimplemented:
-  "60 00 06 5b": '2c'|--|'1e'|'2c'
-  "60 00 06 51":
+  "60 00 06 5b":  '2c|--|1e|2c'
+  "60 00 06 51":  '??'

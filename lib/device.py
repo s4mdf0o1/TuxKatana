@@ -13,6 +13,8 @@ from .presets import Preset
 from .amplifier import Amplifier
 from .memory import Memory
 from .booster import Booster
+from .reverb import Reverb
+
 #from lib.map import Map
 from time import sleep
 from queue import Empty
@@ -33,6 +35,7 @@ class Device(GObject.GObject):
         self.presets = Gio.ListStore(item_type=Preset)
         self.amplifier=Amplifier( self, ctrl )
         self.booster = Booster( self, ctrl )
+        self.reverb = Reverb( self, ctrl )
 
         self.is_loading_params = False
 
@@ -86,6 +89,8 @@ class Device(GObject.GObject):
                 self.amplifier.map['Models'])
         self.booster.emit("booster-loaded", \
                 self.booster.map['Models'])
+        self.reverb.emit("reverb-loaded", \
+                self.reverb.map['Types'])
 
     def set_name(self, msg):
         name = self.fsem.get_str(msg).strip()
