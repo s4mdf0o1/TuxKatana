@@ -29,9 +29,9 @@ Types:
     'Modulate': '06'
 
 Modes:
-  Delay:  '00'
-  Dual:   '01'
   Reverb: '02'
+  Dual:   '01'
+  Delay:  '00'
 
 Unimplemented:
   "60 00 06 5b":  '2c|--|1e|2c'

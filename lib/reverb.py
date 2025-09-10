@@ -10,7 +10,7 @@ from .anti_flood import AntiFlood
 
 class Reverb(AntiFlood, GObject.GObject):
     __gsignals__ = {
-        "reverb-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "reverb-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
     }
     reverb_sw       = GObject.Property(type=bool, default=False)
     reverb_type     = GObject.Property(type=int, default=0)

@@ -27,16 +27,33 @@ class Reverb(Gtk.Box):
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
 
-        self.store = Gtk.ListStore(int, str, str)
-        self.types = Gtk.ComboBox.new_with_model(self.store)
+        box_sel = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
+
+        self.types_store = Gtk.ListStore(int, str, str)
+        self.types = Gtk.ComboBox.new_with_model(self.types_store)
+        self.types.set_hexpand(True)
         renderer = Gtk.CellRendererText()
         self.types.pack_start(renderer, True)
         self.types.add_attribute(renderer, "text", 1)
-        self.append(self.types)
         self.own_ctrl.bind_property(
             "type_idx", self.types, "active", 
             GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
+        box_sel.append(self.types)
+
+        self.modes_store = Gtk.ListStore(int, str, str)
+        self.modes = Gtk.ComboBox.new_with_model(self.modes_store)
+        self.modes.set_hexpand(True)
+        renderer = Gtk.CellRendererText()
+        self.modes.pack_start(renderer, True)
+        self.modes.add_attribute(renderer, "text", 1)
+        self.own_ctrl.bind_property(
+            "mode_idx", self.modes, "active", 
+            GObject.BindingFlags.SYNC_CREATE |\
+            GObject.BindingFlags.BIDIRECTIONAL )
+        box_sel.append(self.modes)
+
+        self.append(box_sel)
 
         box_revb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
         box_revb.get_style_context().add_class('inner')
@@ -101,15 +118,22 @@ class Reverb(Gtk.Box):
         self.append(box_lvl)
 
 
-        self.own_ctrl.connect("reverb-loaded", self.on_booster_models_loaded)
+        self.own_ctrl.connect("reverb-loaded", self.on_reverb_loaded)
+        #self.own_ctrl.connect("reverb-modes-loaded", self.on_reverb_modes_loaded)
 
     def on_slider_changed( self, slider):
         self.own_ctrl.set_property(slider.name, slider.get_value())
 
-    def on_booster_models_loaded(self, device, models):
+    def on_reverb_loaded(self, device, types, modes):
         i = 0
-        for name, code in models.items():
-            self.store.append([i,name, code])
+        for name, code in types.items():
+            self.types_store.append([i,name, code])
             i += 1
+    #def on_reverb_modes_loaded(self, device, modes):
+        i = 0
+        for name, code in modes.items():
+            self.modes_store.append([i,name, code])
+            i += 1
+
 
 

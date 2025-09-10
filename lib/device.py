@@ -90,7 +90,8 @@ class Device(GObject.GObject):
         self.booster.emit("booster-loaded", \
                 self.booster.map['Models'])
         self.reverb.emit("reverb-loaded", \
-                self.reverb.map['Types'])
+                self.reverb.map['Types'],\
+                self.reverb.map['Modes'])
 
     def set_name(self, msg):
         name = self.fsem.get_str(msg).strip()
