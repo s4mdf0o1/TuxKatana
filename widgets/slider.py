@@ -3,7 +3,7 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GObject
 
 class Slider(Gtk.Box):
-    def __init__(self, name, value=0):
+    def __init__(self, name, value=0, own_ctrl=None, bind_prop=""):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         adjustment = Gtk.Adjustment(
             value=value,
@@ -23,6 +23,13 @@ class Slider(Gtk.Box):
         label.set_size_request(80, -1)
         self.append(label)
         self.append(self.scale)
+        self.get_style_context().add_class('slider')
+        
+        if own_ctrl:
+            own_ctrl.bind_property(
+                bind_prop, self, "value",\
+                GObject.BindingFlags.SYNC_CREATE |\
+                GObject.BindingFlags.BIDIRECTIONAL )
 
     @GObject.Property(type=float, default=0.0)
     def value(self):

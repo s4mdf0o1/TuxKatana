@@ -1,88 +1,44 @@
 SEND:
-  Effet:
-    "60 00 00 10": switch
-    "60 00 00 11": type
-  Solo:
-    "60 00 00 15": solo sw
-    "60 00 00 16": solo lvl
-  Drive:
-    "60 00 00 12": drive lvl
-    "60 00 00 13": bottom lvl
-    "60 00 00 14": tone lvl
-  Level:
-    "60 00 00 17": effect lvl
-    "60 00 00 18": direct mix lvl
-  Banks:
-    "60 00 06 39": switch
-    "60 00 06 24": type G
-    "60 00 06 25": type R
-    "60 00 06 26": type Y
+  booster_sw:   "60 00 00 10"
+  booster_model: "60 00 00 11"
+  solo_sw:      "60 00 00 15"
+  solo_lvl:     "60 00 00 16"
+  drive_lvl:    "60 00 00 12"
+  bottom_lvl:   "60 00 00 13"
+  tone_lvl:     "60 00 00 14"
+  effect_lvl:   "60 00 00 17"
+  dir_mix_lvl:  "60 00 00 18"
+  bank_select:  "60 00 06 39"
+  model_G:      "60 00 06 24"
+  model_R:      "60 00 06 25"
+  model_Y:      "60 00 06 26"
 
 RECV:
-  "60 00 06 24": type
-  "60 00 00 11": type
-  "60 00 06 57": ?
-  "60 00 06 5d": ?
+  "60 00 06 5d":  "booster_status"
 
-Types:
-  prop_name: "booster_type"
-  type: "combo"
-  SEND: "60 00 00 11"
-  RECV: "60 00 00 11"
-  Codes:
-    'Mid Boost':    '00'
-    'Clean Boost':  '01'
-    'Treble Boost': '02'
-    'Crunch OD':    '03'
-    'Natural OD':   '04'
-    'Warm OD':      '05'
-    'Fat DS':       '06'
-    'Metal DS':     '08'
-    'Oct Fuzz':     '09'
-    'Blues Drive':  '0a'
-    'Over Drive':   '0b'
-    'TubeScreamer': '0c'
-    'Turbo OD':     '0d'
-    'Distortion':   '0e'
-    'Rat':          '0f'
-    'GuV DS':       '10'
-    'DTS+':         '11'
-    'Metal Zone':   '12'
-    '60s Fuzz':     '13'
-    'Muff Fuzz':    '14'
-    'HM-2':         '15'
-    'Metal Core':   '16'
-    'Centa OD':     '17'
-Colors:
-  prop_name: "booster_bank"
-  type: "combo"
-  SEND: "60 00 06 39"
-  RECV: "60 00 06 39"
-  Values:
-    BLACK:  ⚫
-    GREEN:  🟢
-    RED:    🔴
-    YELLOW: 🟡
-Banks:
-  SEND: "60 00 06 24"
-  GREEN:
-    OFFSET: 0
-  RED:
-    OFFSET: 1
-  YELLOW:
-    OFFSET: 2
-Status:
-  prop_name: "booster_status"
-  RECV: "60 00 06 5d"
-Switch:
-  prop_name: "booster_switch"
-  type: "toggle"
-  RECV: "60 00 00 10"
-Drive:
-  prop_name: "booster_driver"
-  type: "slider"
-  SEND: "60 00 00 12"
-  RECV: "60 00 00 12"
-
+Models:
+  'Mid Boost':    '00'
+  'Clean Boost':  '01'
+  'Treble Boost': '02'
+  'Crunch OD':    '03'
+  'Natural OD':   '04'
+  'Warm OD':      '05'
+  'Fat DS':       '06'
+  'Metal DS':     '08'
+  'Oct Fuzz':     '09'
+  'Blues Drive':  '0a'
+  'Over Drive':   '0b'
+  'TubeScreamer': '0c'
+  'Turbo OD':     '0d'
+  'Distortion':   '0e'
+  'Rat':          '0f'
+  'GuV DS':       '10'
+  'DTS+':         '11'
+  'Metal Zone':   '12'
+  '60s Fuzz':     '13'
+  'Muff Fuzz':    '14'
+  'HM-2':         '15'
+  'Metal Core':   '16'
+  'Centa OD':     '17'
 Unimplemented:
   "60 00 06 57": 

@@ -60,9 +60,9 @@ class Device(GObject.GObject):
         self.ctrl.sysex.data = msg
         self.ctrl.send(self.ctrl.sysex, self.set_name_from_data)
         self.amplifier.emit("amp-types-loaded", \
-                self.amplifier.map['Models']['Codes'])
+                self.amplifier.map['Models'])
         self.booster.emit("booster-loaded", \
-                self.booster.map['Types']['Codes'])
+                self.booster.map['Models'])
 
     def set_name_from_data(self, msg):
         name = self.fsem.get_str(msg).strip()

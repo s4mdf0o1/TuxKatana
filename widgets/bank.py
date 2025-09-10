@@ -17,7 +17,7 @@ class Bank(Gtk.Box):
         self.get_style_context().add_class("inner")
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         self.single = single
-        self.single_list = []
+        #self.single_list = []
         #grid = Gtk.Grid()
         #grid.set_column_homogeneous(True)
         label = Gtk.Label(label=label)
@@ -36,8 +36,8 @@ class Bank(Gtk.Box):
             #grid.attach( button, i, 0,1,1 )
         if not self.single:
             self.connect("notify::selected", self.on_selected)
-        else:
-            self.connect("notify::single_list", self.on_update_list)
+        #else:
+        #    self.connect("notify::single_list", self.on_update_list)
 
     def on_selected(self, obj, pspec):
         #log.debug(f"bank.on_selected({self.selected})")
@@ -47,20 +47,23 @@ class Bank(Gtk.Box):
         self.set_inactives(button)
         button.handler_unblock(button.handler_id)
 
-    def on_update_list(self, widget, value):
-        log.debug(f"{widget}, {value}")
+#    def on_update_list(self, widget, value):
+#        log.debug(f"{widget}, {value}")
             
     def on_toggled(self, widget, idx):
         #log.debug(f"{widget} {widget.get_active()}" )
+        log.debug(f"{self.single=} {hasattr(self, 'f_bank')=}")
         if not self.single or hasattr(self, "f_bank"):
             self.selected = idx
             self.set_inactives( widget )
-        else:
-            if widget.get_active():
-                self.single_list.append(idx)
-            else:
-                self.single_list.pop(self.single_list.index(idx))
-            log.debug(self.single_list)
+            if hasattr(self, "f_bank"):
+                self.f_bank.set_inactives()
+#        else:
+#            if widget.get_active():
+#                self.single_list.append(idx)
+#            else:
+#                self.single_list.pop(self.single_list.index(idx))
+#            log.debug(self.single_list)
         #if hasattr(self, "f_bank"):
         #    self.f_bank.set_inactives()
 

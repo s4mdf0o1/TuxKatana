@@ -28,10 +28,6 @@ class Switcher(Gtk.Box):
 
         #self.effects = Effects('EFFECTS', config, ctrl)
         self.effects = Bank("EFFECTS", config['EFFECTS'], ctrl, True)
-        self.ctrl.device.booster.bind_property(
-            "booster_switch", self.effects.buttons[0], "active",
-            GObject.BindingFlags.BIDIRECTIONAL |\
-            GObject.BindingFlags.SYNC_CREATE )
 
         self.ctrl.device.booster.connect("notify::booster-status", self.on_status_changed)
 
@@ -42,7 +38,14 @@ class Switcher(Gtk.Box):
 
         for bank in [self.bank_a, self.bank_b, self.effects]:
             for but in bank.buttons:
-                but.connect("toggled", self.callback_toggled)
+                #log.debug(but.name)
+                if but.name == 'BOOSTER':
+                    self.ctrl.device.booster.bind_property(
+                        "booster_sw", but, "active",
+                        GObject.BindingFlags.BIDIRECTIONAL |\
+                        GObject.BindingFlags.SYNC_CREATE )
+                else:
+                    but.toggled_id = but.connect("toggled", self.callback_toggled)
 
     def on_status_changed(self, obj, pspec):
         name = pspec.name.split('-')[0]
