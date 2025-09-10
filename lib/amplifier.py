@@ -83,8 +83,12 @@ class Amplifier(AntiFlood, GObject.GObject):
             #log.debug(f"{prop}: {addr}: {to_str(value)}")
             if value:
                 self.direct_set(prop, value)
-        #self.set_bank_model()
+        self.set_amp_model()
 
+    def set_amp_model(self):
+        num = list(self.map['Models'].values()).index(to_str(self.amp_model))
+        self.direct_set("model_idx", num)
+        
  
 #    def set_amp_type(self, amp_name, amp_code):
 #        #log.debug(f"set_amp_type({amp_name=}, {amp_code=} )")
