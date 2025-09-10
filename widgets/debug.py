@@ -45,14 +45,14 @@ class Debug(Gtk.Box):
         self.value = Gtk.Entry()
         h_box2.append(self.value)
 
-        but_send = Gtk.Button(label="SEND")
+        but_send = Gtk.Button(label="SEND to AMP")
         but_send.connect("clicked", self.send)
 
         but_test = Gtk.Button(label="TEST")
         but_test.connect("clicked", self.test)
 
-        but_cfg = Gtk.Button(label="Get_Config")
-        but_cfg.connect("clicked", self.set_config)
+        but_cfg = Gtk.Button(label="READ Memory")
+        but_cfg.connect("clicked", self.read_memory)
 
         h_box3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         label = Gtk.Label(label="Log Note: ")
@@ -136,7 +136,8 @@ class Debug(Gtk.Box):
             self.ctrl.cc.value = value
             self.ctrl.port.send(self.ctrl.cc)
 
-    def set_config(self, button):
-        self.cmd.set_active(0)
-        self.address.set_text('60 00 00 00')
-        self.value.set_text('00 00 0f 48')
+    def read_memory(self, button):
+        #self.cmd.set_active(0)
+        addr = from_str(self.address.get_text())
+        value = self.ctrl.mry.read(addr)
+        self.value.set_text(to_str(value))

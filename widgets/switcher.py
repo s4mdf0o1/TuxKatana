@@ -3,7 +3,7 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GObject# GLib, Gdk
 
 from ruamel.yaml import YAML
-yaml = YAML(typ="safe")
+yaml = YAML(typ="rt")
 config = ""
 with open("params/config.yaml", "r") as f:
     config = yaml.load(f)
@@ -26,7 +26,6 @@ class Switcher(Gtk.Box):
         self.bank_a.f_bank = self.bank_b
         self.bank_b.f_bank = self.bank_a
 
-        #self.effects = Effects('EFFECTS', config, ctrl)
         self.effects = Bank("EFFECTS", config['EFFECTS'], ctrl, True)
 
         self.ctrl.device.booster.connect("notify::booster-status", self.on_status_changed)
@@ -59,9 +58,8 @@ class Switcher(Gtk.Box):
     def callback_toggled( self, button):
         #log.debug(button.path)
         if button.get_active():
-            self.ctrl.set_on( button.path )
-        else:
-            self.ctrl.set_off(button.path)
+            #self.ctrl.set_on( button.path )
+            self.ctrl.device.set_midi_channel(button.path)
 
     def on_channel_changed(self, obj, ch_num):
         log.debug(f"{ch_num=}")
@@ -84,14 +82,6 @@ class Effects(Gtk.Box):
         effects = ["BOOSTER", "MOD", "FX", "DELAY", "REVERB"]
         for name in effects:
             but = Toggle(name, cfg[name], status_id=1)
-            #colors = [c for n,c in dots.items()]
-            #label = colors[effects.index(name)%4] + "  " + name
-            #but = Gtk.Button(label= config['DOTS']['BLACK'] + "  " +name)
-            #but = Gtk.Button(label= label)
-            #but.name = name
-            #but.get_style_context().add_class("outer")
-            #but.path = cfg[name]
-            #but.is_active = False
             but.connect("clicked", self.on_click)
             #but.set_hexpand(True)
             #but.set_halign(Gtk.Align.FILL)
@@ -106,33 +96,4 @@ class Effects(Gtk.Box):
         else:
             self.ctrl.set_off(button.path)
             button.is_active = True
-
-#class KES_Bank(Gtk.Box):
-#    def __init__(self, label, buttons, ctrl):
-#        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-#        self.get_style_context().add_class("inner")
-#        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-#        label = Gtk.Label(label=label)
-#        self.append(label)
-#        self.append(box)
-#        self.ctrl = ctrl
-#        self.presets = []
-#        for b in buttons:
-#            preset = Toggle( b, buttons[b] )
-#            preset.handler_id = preset.connect("toggled", self.on_toggled)
-#            self.presets.append(preset)
-#            box.append( preset )
-#            
-#    def on_toggled(self, widget):
-#        self.ctrl.set_on( widget.path )
-#        self.set_inactives( widget )
-#        self.f_bank.set_inactives()
-#
-#    def set_inactives( self, widget=None ):
-#        for button in self.presets:
-#            if button != widget and button.get_active():
-#                button.handler_block(button.handler_id)
-#                button.set_active(False)
-#                button.handler_unblock(button.handler_id)
-
 

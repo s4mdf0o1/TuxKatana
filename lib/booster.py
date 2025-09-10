@@ -30,6 +30,7 @@ class Booster(AntiFlood, GObject.GObject):
 
     def __init__(self, device, ctrl):
         super().__init__()
+        self.name = "Booster"
         self.ctrl = ctrl
         self.device = device
         self.name = "BOOSTER"
@@ -38,21 +39,16 @@ class Booster(AntiFlood, GObject.GObject):
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        #self.addr_id = device.mry.connect("mry-changed", self.addr_changed)
         self.set_mry_map()
 
     def on_param_changed(self, name, value):
-        log.debug(f">>> {name} = {value}")
+        #log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
-        #mry=None
-        #if addr:
-        #    mry = self.device.mry.read(addr)
-        #log.debug(f"{to_str(addr)}: {value=}, {mry=}")
         if name == 'booster_model':
             num = list(self.map['Models'].values()).index(to_str(value))
             self.direct_set("model_idx", num)
@@ -84,7 +80,7 @@ class Booster(AntiFlood, GObject.GObject):
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
             #log.debug(f"{prop}: {addr}: {to_str(value)}")
-            if value:
+            if value and value >= 0:
                 self.direct_set(prop, value)
         self.set_bank_model()
 

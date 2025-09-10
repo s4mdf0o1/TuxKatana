@@ -30,7 +30,8 @@ class MainWindow(Gtk.Window):
         self.set_child(box)
         self.app = app
 
-        self.settings = Settings( "SETTINGS", config['SETTINGS'], app.ctrl)
+        #self.settings = Settings( "SETTINGS", config['SETTINGS'], app.ctrl)
+        self.settings = Settings( "SETTINGS", app.ctrl)
         box.append(self.settings)
         self.switcher = Switcher( config['SWITCHER'], app.ctrl)
         box.append(self.switcher)

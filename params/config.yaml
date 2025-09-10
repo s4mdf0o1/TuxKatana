@@ -5,24 +5,23 @@ DOTS:
   YELLOW: 🟡
 
 SWITCHER:
-  #PANEL: "Program_Change:PANEL"
   BANK_A:
-    CH_1:  "Program_Change:BANK_A:CH_1"
-    CH_2:  "Program_Change:BANK_A:CH_2"
-    CH_3:  "Program_Change:BANK_A:CH_3"
-    CH_4:  "Program_Change:BANK_A:CH_4"
+    CH_1:  '00 01 7e'         # "Program_Change:BANK_A:CH_1"
+    CH_2:  '00 02 7d'         # "Program_Change:BANK_A:CH_2"
+    CH_3:  '00 03 7c'         # "Program_Change:BANK_A:CH_3"
+    CH_4:  '00 04 7b'         # "Program_Change:BANK_A:CH_4"
   BANK_B:
-    CH_5:  "Program_Change:BANK_B:CH_1"
-    CH_6:  "Program_Change:BANK_B:CH_2"
-    CH_7:  "Program_Change:BANK_B:CH_3"
-    CH_8:  "Program_Change:BANK_B:CH_4"
-  EFFECTS: #  "Control_Change:EFFECTS"
-    BOOSTER:  "Control_Change:BOOSTER_SWITCH"
-    MOD:      "Control_Change:MOD_SWITCH"
-    FX:       "Control_Change:FX_SWITCH"
-    DELAY:    "Control_Change:DELAY_SWITCH"
-    REVERB:   "Control_Change:REVERB_SWITCH"
-
+    CH_5:  '00 05 7a'         # "Program_Change:BANK_B:CH_1"
+    CH_6:  '00 06 79'         # "Program_Change:BANK_B:CH_2"
+    CH_7:  '00 07 78'         # "Program_Change:BANK_B:CH_3"
+    CH_8:  '00 08 77'         # "Program_Change:BANK_B:CH_4"
+  EFFECTS:                    # "Control_Change:EFFECTS"
+    BOOSTER:  '60 00 00 10'   # "Control_Change:BOOSTER_SWITCH"
+    MOD:      '60 00 01 00'   # "Control_Change:MOD_SWITCH"
+    FX:       '60 00 03 00'   # "Control_Change:FX_SWITCH"
+    DELAY:    '60 00 05 00'   # "Control_Change:DELAY_SWITCH"
+    REVERB:   '60 00 05 40'   # "Control_Change:REVERB_SWITCH"
+    
 SETTINGS:
   EFFECTS:
     BOOSTER:

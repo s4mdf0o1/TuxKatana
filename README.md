@@ -26,7 +26,3 @@ Models:
 ### widgets/your_interface
 
 
-addresses to send/receive NB: receive = receive | send.inverse
-  - lib/ur_intrf.py
-  - widgets/ur_intrf.py
-

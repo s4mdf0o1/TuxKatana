@@ -42,13 +42,13 @@ class KS_TabbedPanel(Gtk.Box):
 
 
 class KS_Settings(Gtk.Box):
-    def __init__(self, name, cfg, ctrl):
+    def __init__(self, name, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
         if name == "DEBUG":
             debug = Debug(ctrl)
             self.append(debug)
-        elif name == "AMP":
+        elif name == "PRE-AMP":
             self.amplifier = Amplifier(ctrl)
             self.append(self.amplifier) 
         elif name == "BOOSTER":
@@ -59,7 +59,7 @@ class KS_Settings(Gtk.Box):
             self.append(self.slider)
 
 class Settings(Gtk.Box):
-    def __init__(self, label, cfg, ctrl):
+    def __init__(self, label, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.get_style_context().add_class("inner")
         self.ctrl = ctrl
@@ -70,14 +70,14 @@ class Settings(Gtk.Box):
         #box=Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         tabs = KS_TabbedPanel()
-        for name in ["PRESETS","AMP", "BOOSTER", "MOD", "FX", "DELAY", "REVERB", "CHAIN", "DEBUG"]:
+        for name in ["PRESETS","PRE-AMP", "BOOSTER", "MOD", "FX", "DELAY", "REVERB", "CHAIN", "DEBUG"]:
             page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
             tabs.add_tab(page, name.lower(), name)
             if name == "PRESETS":
                 self.presets = PresetsView(ctrl)
                 page.append(self.presets)
             else:
-                ks_settings = KS_Settings( name, config, ctrl)
+                ks_settings = KS_Settings( name, ctrl)
                 page.append(ks_settings)
 
         #page2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)

@@ -69,7 +69,7 @@ class Amplifier(Gtk.Box):
         self.amp_volume.connect("value-changed", self.on_slider_changed)
         self.append(self.amp_volume)
 
-        self.own_ctrl.connect("amp-types-loaded", self.on_amp_types_loaded)
+        self.own_ctrl.connect("amp-models-loaded", self.on_amp_models_loaded)
 
     def on_combo_changed(self, combo):
         idx = combo.get_active()
@@ -83,9 +83,9 @@ class Amplifier(Gtk.Box):
     def on_toggle_changed( self, toggle):
         self.own_ctrl.set_property(toggle.name, toggle.get_active())
 
-    def on_amp_types_loaded(self, device, amp_types):
+    def on_amp_models_loaded(self, device, amp_models):
         i = 0
-        for name, code in amp_types.items():
+        for name, code in amp_models.items():
             self.amp_store.append([i,name, code])
             i += 1
 

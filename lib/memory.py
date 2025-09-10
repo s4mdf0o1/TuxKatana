@@ -8,14 +8,14 @@ log = logging.getLogger(LOGGER_NAME)
 
 class Memory(GObject.GObject):
     __gsignals__ = {
-        #"mry-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
         "mry-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
     }
 
-    def __init__(self, sysex):
+    def __init__(self, ctrl):#device, sysex):
         super().__init__()
-        self.sysex = sysex
+        self.ctrl = ctrl
+        self.sysex = ctrl.fsem #sysex
         self.memory = []
         self.loading = False
         self.base_addr = None
@@ -77,7 +77,7 @@ class Memory(GObject.GObject):
             saddr = to_str(addr)
             sdata = to_str(data)
             #self.emit("mry-changed", saddr)
-            log.debug(f"{saddr=}: {sdata=}")
+            #log.debug(f"{saddr=}: {sdata=}")
             if saddr in self.map:
                 obj, prop = self.map[saddr]
                 #obj = mapping["obj"]
@@ -90,12 +90,15 @@ class Memory(GObject.GObject):
                 setattr(obj, prop, value)
                 if saddr in obj.map.recv:
                     self.write(addr, data)
+                log.debug(f"{saddr=}: {sdata=}\n\
+                    {obj.name}: {prop}={value}")
+
             elif saddr == '00 01 00 00':
                 log.debug(f"emit channel-changed {data}")
                 self.emit("channel-changed", data[1])
             else:
                 log.warning(f"Memory.received_msg: {saddr=}: not implemented")
-
+            #self.ctrl.recv_event.set()
 
     def addr_to_offset(self, addr):
         offset = 0

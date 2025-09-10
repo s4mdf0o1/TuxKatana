@@ -10,10 +10,6 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-#from ruamel.yaml import YAML
-#yaml = YAML(typ="rt")
-#from .toggle import Toggle
-
 class Booster(Gtk.Box):
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -107,8 +103,6 @@ class Booster(Gtk.Box):
         box_solo.append(self.solo_sw)
 
         self.own_ctrl.connect("booster-loaded", self.on_booster_models_loaded)
-
-        #self.ctrl.parent.win.switcher.effects.buttons[0].toggle_id
 
     def on_slider_changed( self, slider):
         self.own_ctrl.set_property(slider.name, slider.get_value())
