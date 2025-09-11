@@ -35,7 +35,7 @@ class Map(UserDict):
             addr = from_str(self.recv.inverse[prop])
         elif prop in self.send:
             addr = from_str(self.send[prop])
-        if not addr:
+        if not addr and 'idx' not in prop:
             log.warning(f"No Address for {prop}")
         return addr
 

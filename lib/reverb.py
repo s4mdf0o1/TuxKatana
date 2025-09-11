@@ -3,7 +3,7 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-from .tools import to_str, from_str
+from .tools import to_str, from_str, int_to_midi_bytes
 
 from .map import Map
 from .anti_flood import AntiFlood
@@ -24,13 +24,13 @@ class Reverb(AntiFlood, GObject.GObject):
     mode_G          = GObject.Property(type=int, default=0)
     mode_R          = GObject.Property(type=int, default=0)
     mode_Y          = GObject.Property(type=int, default=0)
-    pre_delay_lvl   = GObject.Property(type=float, default=50.0)
-    time_lvl        = GObject.Property(type=float, default=50.0)
-    density_lvl     = GObject.Property(type=float, default=50.0)
-    low_cut_lvl     = GObject.Property(type=float, default=50.0)
-    high_cut_lvl    = GObject.Property(type=float, default=50.0)
-    effect_lvl      = GObject.Property(type=float, default=50.0)
-    dir_mix_lvl     = GObject.Property(type=float, default=50.0)
+    pre_delay_lvl   = GObject.Property(type=float, default=0.0)
+    time_lvl        = GObject.Property(type=float, default=0.0)
+    density_lvl     = GObject.Property(type=float, default=0.0)
+    low_cut_lvl     = GObject.Property(type=float, default=0.0)
+    high_cut_lvl    = GObject.Property(type=float, default=0.0)
+    effect_lvl      = GObject.Property(type=float, default=0.0)
+    dir_mix_lvl     = GObject.Property(type=float, default=0.0)
 
     def __init__(self, device, ctrl):
         super().__init__()
@@ -46,8 +46,8 @@ class Reverb(AntiFlood, GObject.GObject):
         self.set_mry_map()
 
     def on_param_changed(self, name, value):
-        log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
+        #log.debug(f">>> {name} = {value}")
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
         if isinstance(value, float):
@@ -60,10 +60,22 @@ class Reverb(AntiFlood, GObject.GObject):
             model_val = list(self.map['Types'].values())[value]
             addr  = self.map.send["reverb_type"]
             self.device.send(from_str(addr), from_str(model_val))
+        elif 'mode' in name and name.split('_')[1] in self.banks:
+            num = list(self.map['Modes'].values()).index(to_str(value))
+            self.direct_set("mode_idx", num)
+        elif name == 'mode_idx':
+            mode_val = list(self.map['Modes'].values())[value]
+            bank = self.get_bank_var("mode_")
+            addr  = self.map.send[bank]
+            self.device.send(from_str(addr), from_str(mode_val))
         elif name == 'reverb_status':
             self.direct_set(name, value)
         elif 'lvl' in name or name == 'bank_select':
-            self.device.send(addr, [value])
+            if name == 'pre_delay_lvl':
+                value = int_to_midi_bytes(value, 2) 
+                self.device.send(addr, value)
+            else:
+                self.device.send(addr, [value])
         elif 'sw' in name:
             value = 1 if value else 0
             self.device.send(addr, [value])
@@ -73,24 +85,33 @@ class Reverb(AntiFlood, GObject.GObject):
         self.set_property(prop, value)
         self.handler_unblock_by_func(self._on_any_property_changed)
 
-    def set_bank_type(self):
+    def get_bank_var(self, var):
         bank = self.banks[self.reverb_status - 1]
-        bank_name = "bank_"+bank
-        model = self.get_property(bank_name)
-        num = list(self.map['Types'].values()).index(to_str(model))
+        return var+bank
+
+    def set_bank_type(self):
+        bank_name = self.get_bank_var("bank_")
+        r_type = self.get_property(bank_name)
+        num = list(self.map['Types'].values()).index(to_str(r_type))
         self.direct_set("type_idx", num)
+
+    def set_bank_mode(self):
+        bank_name = self.get_bank_var("mode_")
+        mode = self.get_property(bank_name)
+        num = list(self.map['Modes'].values()).index(to_str(mode))
+        self.direct_set("mode_idx", num)
+
 
     def load_from_mry(self, mry):
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
-            #log.debug(f"{prop}: {addr}: {to_str(value)}")
-            if value and value >= 0:
+            if value is not None and value >= 0:
                 self.direct_set(prop, value)
         self.set_bank_type()
+        self.set_bank_mode()
 
     def set_mry_map(self):
         for addr, prop in self.map.recv.items():
-            #log.debug(f"{addr}: {prop}")
             self.device.mry.map[addr] = ( self, prop) 
 
 

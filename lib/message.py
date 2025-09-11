@@ -45,19 +45,19 @@ class FormatMessage:
         addr, data = self.get_addr_data(msg)
         return ''.join([chr(v) for v in data])
 
-    def build(self, cmd, addr, data):
-        cmd = self.addrs[cmd]
-        cks = self.checksum( addr + data )
-        msg = self.header + cmd + addr + data + cks
-        return msg
-
-    def decode(self, msg):
-        log.debug(f"SysExMessage.decode({msg.hex()})")
-        addr, data =  self.get_addr_data(msg)
-        log.debug(f"{to_str(addr)}: {to_str(data)}")
-
-    def decode_ident( self, data ):
-        log.debug(f"decode_ident({[hex(i) for i in data]})")
+#    def build(self, cmd, addr, data):
+#        cmd = self.addrs[cmd]
+#        cks = self.checksum( addr + data )
+#        msg = self.header + cmd + addr + data + cks
+#        return msg
+#
+#    def decode(self, msg):
+#        log.debug(f"SysExMessage.decode({msg.hex()})")
+#        addr, data =  self.get_addr_data(msg)
+#        log.debug(f"{to_str(addr)}: {to_str(data)}")
+#
+#    def decode_ident( self, data ):
+#        log.debug(f"decode_ident({[hex(i) for i in data]})")
 
     def checksum( self, data ):
         return [(128 - (sum(data) % 128)) % 128]

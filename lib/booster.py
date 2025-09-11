@@ -80,7 +80,7 @@ class Booster(AntiFlood, GObject.GObject):
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
             #log.debug(f"{prop}: {addr}: {to_str(value)}")
-            if value and value >= 0:
+            if value is not None and value >= 0:
                 self.direct_set(prop, value)
         self.set_bank_model()
 

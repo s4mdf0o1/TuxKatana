@@ -8,6 +8,7 @@ from .bank import Bank
 from .toggle import Toggle
 import logging
 from lib.log_setup import LOGGER_NAME
+from lib.tools import from_str
 log = logging.getLogger(LOGGER_NAME)
 
 class Booster(Gtk.Box):
@@ -45,18 +46,24 @@ class Booster(Gtk.Box):
         label.set_margin_end(20)
         box_drive.append(label)
 
-        self.drive_lvl = Slider( "Drive", 50.0, self.own_ctrl, "drive_lvl" )
+        self.drive_lvl = Slider( "Drive", 0.0, self.own_ctrl, "drive_lvl" )
         self.drive_lvl.name = "drive_lvl"
+        adj = self.drive_lvl.scale.get_adjustment()
+        adj.set_upper(from_str('78')[0]) # max 125
         self.drive_lvl.connect("value-changed", self.on_slider_changed)
         box_drive.append(self.drive_lvl)
 
-        self.bottom_lvl = Slider( "Bottom", 50.0, self.own_ctrl, "bottom_lvl" )
+        self.bottom_lvl = Slider( "Bottom", 0.0, self.own_ctrl, "bottom_lvl" )
         self.bottom_lvl.name = "bottom_lvl"
+        adj = self.bottom_lvl.scale.get_adjustment()
+        self.bottom_lvl.scale.set_format_value_func(self.format_scale_value) # format -50->+50
         self.bottom_lvl.connect("value-changed", self.on_slider_changed)
         box_drive.append(self.bottom_lvl)
 
-        self.tone_lvl = Slider( "Tone", 50.0, self.own_ctrl, "tone_lvl" )
+        self.tone_lvl = Slider( "Tone", 0.0, self.own_ctrl, "tone_lvl" )
         self.tone_lvl.name = "tone_lvl"
+        adj = self.tone_lvl.scale.get_adjustment()
+        self.tone_lvl.scale.set_format_value_func(self.format_scale_value) # format -50->+50
         self.tone_lvl.connect("value-changed", self.on_slider_changed)
         box_drive.append(self.tone_lvl)
 
@@ -69,12 +76,12 @@ class Booster(Gtk.Box):
         label.set_margin_end(20)
         box_level.append(label)
 
-        self.effect_lvl = Slider( "Effect", 50.0, self.own_ctrl, "effect_lvl" )
+        self.effect_lvl = Slider( "Effect", 0.0, self.own_ctrl, "effect_lvl" )
         self.effect_lvl.name = "effect_lvl"
         self.effect_lvl.connect("value-changed", self.on_slider_changed)
         box_level.append(self.effect_lvl)
 
-        self.dir_mix_lvl = Slider( "Dir Mix", 50.0, self.own_ctrl, "dir_mix_lvl" )
+        self.dir_mix_lvl = Slider( "Dir Mix", 0.0, self.own_ctrl, "dir_mix_lvl" )
         self.dir_mix_lvl.name = "dir_mix_lvl"
         self.dir_mix_lvl.connect("value-changed", self.on_slider_changed)
         box_level.append(self.dir_mix_lvl)
@@ -103,6 +110,9 @@ class Booster(Gtk.Box):
         box_solo.append(self.solo_sw)
 
         self.own_ctrl.connect("booster-loaded", self.on_booster_models_loaded)
+
+    def format_scale_value(self, scale, value):
+        return str(int(value - 50))
 
     def on_slider_changed( self, slider):
         self.own_ctrl.set_property(slider.name, slider.get_value())

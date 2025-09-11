@@ -32,7 +32,7 @@ class Amplifier(AntiFlood, GObject.GObject):
         self.set_mry_map()
 
     def on_param_changed(self, name, value):
-        log.debug(f">>> {name} = {value}")
+        #log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
@@ -75,12 +75,12 @@ class Amplifier(AntiFlood, GObject.GObject):
         self.handler_unblock_by_func(self._on_any_property_changed)
 
     def load_from_mry(self, mry):
-        log.debug(self.map.recv.items())
+        #log.debug(self.map.recv.items())
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
-            log.debug(f"{addr}: {prop} = {to_str(value)}")
+            #log.debug(f"{addr}: {prop} = {to_str(value)}")
             #if prop == "amp_model":
-            if value and value >= 0:
+            if value is not None and value >= 0:
                 self.direct_set(prop, value)
         self.set_amp_model()
 

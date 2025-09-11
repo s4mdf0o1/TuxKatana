@@ -9,7 +9,7 @@ from .toggle import Toggle
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
-
+from lib.tools import hexstr_to_int, from_str
 class Reverb(Gtk.Box):
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -64,16 +64,22 @@ class Reverb(Gtk.Box):
 
         self.pre_delay_lvl = Slider( "Pre Delay", 50.0, self.own_ctrl, "pre_delay_lvl" )
         self.pre_delay_lvl.name = "pre_delay_lvl"
+        adj = self.pre_delay_lvl.scale.get_adjustment()
+        adj.set_upper(hexstr_to_int('03 74'))
+        self.pre_delay_lvl.scale.set_format_value_func(self.format_pre_delay)
         self.pre_delay_lvl.connect("value-changed", self.on_slider_changed)
         box_revb.append(self.pre_delay_lvl)
 
-        self.time_lvl = Slider( "Time", 50.0, self.own_ctrl, "time_lvl" )
+        self.time_lvl = Slider( "Time", 5.0, self.own_ctrl, "time_lvl" )
         self.time_lvl.name = "time_lvl"
+        self.time_lvl.scale.set_format_value_func(self.format_time)
         self.time_lvl.connect("value-changed", self.on_slider_changed)
         box_revb.append(self.time_lvl)
 
         self.density_lvl = Slider( "Density", 50.0, self.own_ctrl, "density_lvl" )
         self.density_lvl.name = "density_lvl"
+        adj = self.density_lvl.scale.get_adjustment()
+        adj.set_upper(from_str('0a')[0])
         self.density_lvl.connect("value-changed", self.on_slider_changed)
         box_revb.append(self.density_lvl)
 
@@ -86,13 +92,20 @@ class Reverb(Gtk.Box):
         label.set_margin_end(20)
         box_filt.append(label)
 
-        self.low_cut_lvl = Slider( "Low Cut", 50.0, self.own_ctrl, "low_cut_lvl" )
+        self.low_cut_lvl = Slider( "Low Cut", 0.0, self.own_ctrl, "low_cut_lvl" )
         self.low_cut_lvl.name = "low_cut_lvl"
+        adj = self.low_cut_lvl.scale.get_adjustment()
+        adj.set_upper(from_str('11')[0])
+        self.low_cut_lvl.scale.set_format_value_func(self.format_low_freq)
         self.low_cut_lvl.connect("value-changed", self.on_slider_changed)
         box_filt.append(self.low_cut_lvl)
 
-        self.high_cut_lvl = Slider( "High Cut", 50.0, self.own_ctrl, "high_cut_lvl" )
+        self.high_cut_lvl = Slider( "High Cut", 0.0, self.own_ctrl, "high_cut_lvl" )
         self.high_cut_lvl.name = "high_cut_lvl"
+        adj = self.high_cut_lvl.scale.get_adjustment()
+        adj.set_upper(from_str('0e')[0])
+        adj.set_page_increment(1)
+        self.high_cut_lvl.scale.set_format_value_func(self.format_high_freq)
         self.high_cut_lvl.connect("value-changed", self.on_slider_changed)
         box_filt.append(self.high_cut_lvl)
 
@@ -129,11 +142,29 @@ class Reverb(Gtk.Box):
         for name, code in types.items():
             self.types_store.append([i,name, code])
             i += 1
-    #def on_reverb_modes_loaded(self, device, modes):
         i = 0
         for name, code in modes.items():
             self.modes_store.append([i,name, code])
             i += 1
 
+    def format_high_freq(self, scale, v):
+        return self.format_freq(v, 630, 12500, 0x0e)
 
+    def format_low_freq(self, scale, v):
+        return self.format_freq(v, 20, 800, 0x11)
 
+    def format_freq(scale, v, f_min, f_max, upper):
+            freq = f_min * ((f_max / f_min) ** (v / upper))
+            if freq >= 1000:
+                return f"{freq/1000:.1f} kHz"
+            else:
+                return f"{int(freq)} Hz"
+
+    def format_time(self, scale, v):
+        t_min, t_max = 0.1, 10.0
+        t = t_min + (t_max - t_min) * (v / 100)
+        return f"{t:.2f} s" if t < 1 else f"{t:.1f} s"
+
+    def format_pre_delay(self, scale, v):
+        t = 500 * (v / 884)
+        return f"{int(t)} ms"

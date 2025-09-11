@@ -70,12 +70,13 @@ class Device(GObject.GObject):
                 break
         for msg in msgs:
             addr, data = self.ctrl.fsem.get_addr_data(msg)
-            log.debug(f"{to_str(addr)}: {len(data)}")
+            #log.debug(f"{to_str(addr)}: {len(data)}")
             self.mry.add_block(addr, data)
         self.ctrl.pause_queue = False
 
     def set_edit_mode(self, edit):
-        log.debug(f"({edit})")
+        #log.debug(f"({edit})")
+        log.info("Edit Mode")
         val = [1] if edit else [0]
         self.send([0x7F,0,0,1], val)
 

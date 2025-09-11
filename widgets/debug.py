@@ -139,5 +139,5 @@ class Debug(Gtk.Box):
     def read_memory(self, button):
         #self.cmd.set_active(0)
         addr = from_str(self.address.get_text())
-        value = self.ctrl.mry.read(addr)
+        value = self.ctrl.device.mry.read(addr)
         self.value.set_text(to_str(value))

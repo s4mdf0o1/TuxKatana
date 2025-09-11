@@ -41,6 +41,7 @@ class Switcher(Gtk.Box):
                 
                 #log.debug(but.name)
                 if but.name == 'BOOSTER':
+                    log.warning("bind BOOSTER")
                     self.ctrl.device.booster.bind_property(
                         "booster_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
@@ -50,8 +51,9 @@ class Switcher(Gtk.Box):
                         "reverb_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
-                else:
-                    but.toggled_id = but.connect("toggled", self.callback_toggled)
+                #else:
+                but.toggled_id = but.connect("toggled", self.callback_toggled)
+            self.ctrl.device.booster.connect("notify::booster_sw", lambda o,p: print("booster_sw changed:", o.booster_sw))
 
     def on_status_changed(self, obj, pspec):
         name = pspec.name.split('-')[0]
@@ -63,10 +65,13 @@ class Switcher(Gtk.Box):
                 but.set_status_id(status)
 
     def callback_toggled( self, button):
-        #log.debug(button.path)
+        log.debug(button.path)
         if button.get_active():
             #self.ctrl.set_on( button.path )
-            self.ctrl.device.set_midi_channel(button.path)
+            if 'CH_' in button.name:
+                self.ctrl.device.set_midi_channel(button.path)
+            else:
+                log.debug(f"{button.name}")
 
     def on_channel_changed(self, obj, ch_num):
         log.debug(f"{ch_num=}")
