@@ -27,6 +27,7 @@ class FormatMessage:
         command = from_str(self.addrs[cmd])
         data = addr + value
         cks = self.checksum(data)
+        #log.debug(f"{addr=} {value=} {data=} {cks=}")
         return self.header + command + data + cks
 
 

@@ -1,10 +1,10 @@
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk, GObject
-from time import sleep
 
 import logging
-dbg=logging.getLogger("debug")
+from lib.log_setup import LOGGER_NAME
+log = logging.getLogger(LOGGER_NAME)
 
 class PresetEntry(Gtk.Entry):
     def __init__(self, text):
@@ -29,9 +29,17 @@ class PresetsView(Gtk.Box):
         factory.connect("setup", self.on_setup)
         factory.connect("bind", self.on_bind)
 
-        selection = Gtk.SingleSelection.new(ctrl.device.presets)
-        listview = Gtk.ListView.new(selection, factory)
+        self.selection = Gtk.SingleSelection.new(ctrl.device.presets)
+        listview = Gtk.ListView.new(self.selection, factory)
         self.append(listview)
+
+        self.selection.connect("selection-changed", self.on_selection_changed)
+
+    def on_selection_changed(self, selection, position, n_items):
+        index = selection.get_selected()
+        if index != Gtk.INVALID_LIST_POSITION:
+            item = selection.get_model().get_item(index)
+            log.debug(f"Sélectionné index={index}, valeur={item}")
 
     def on_setup(self, factory, list_item):
         row = PresetRow()

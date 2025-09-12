@@ -14,6 +14,7 @@ from .amplifier import Amplifier
 from .memory import Memory
 from .booster import Booster
 from .reverb import Reverb
+from .delay import Delay
 
 #from lib.map import Map
 from time import sleep
@@ -22,6 +23,7 @@ from queue import Empty
        
 class Device(GObject.GObject):
     #__gsignals__ = {
+    #    "selected-preset": (GObject.SIGNAL_RUN_FIRST, None, (int,)),      
     #}
     name = GObject.Property(type=str, default="SETTINGS")
     presets = GObject.Property(type=Gio.ListStore)
@@ -36,6 +38,7 @@ class Device(GObject.GObject):
         self.amplifier=Amplifier( self, ctrl )
         self.booster = Booster( self, ctrl )
         self.reverb = Reverb( self, ctrl )
+        self.delay = Delay( self, ctrl )
 
         self.is_loading_params = False
 
@@ -74,6 +77,9 @@ class Device(GObject.GObject):
             self.mry.add_block(addr, data)
         self.ctrl.pause_queue = False
 
+    def set_selected_channel(self):
+        log.debug("-")
+
     def set_edit_mode(self, edit):
         #log.debug(f"({edit})")
         log.info("Edit Mode")
@@ -93,6 +99,8 @@ class Device(GObject.GObject):
         self.reverb.emit("reverb-loaded", \
                 self.reverb.map['Types'],\
                 self.reverb.map['Modes'])
+        self.delay.emit("delay-loaded", \
+                self.delay.map['Types'])
 
     def set_name(self, msg):
         name = self.fsem.get_str(msg).strip()

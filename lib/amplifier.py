@@ -32,7 +32,7 @@ class Amplifier(AntiFlood, GObject.GObject):
         self.set_mry_map()
 
     def on_param_changed(self, name, value):
-        #log.debug(f">>> {name} = {value}")
+        log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)

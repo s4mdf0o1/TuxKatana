@@ -30,7 +30,7 @@ class Switcher(Gtk.Box):
 
         self.ctrl.device.booster.connect("notify::booster-status", self.on_status_changed)
         self.ctrl.device.reverb.connect("notify::reverb-status", self.on_status_changed)
-
+        self.ctrl.device.delay.connect("notify::delay-status", self.on_status_changed)
         self.append(self.effects)
         self.append(self.bank_a)
         self.append(self.bank_b)
@@ -46,14 +46,19 @@ class Switcher(Gtk.Box):
                         "booster_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
-                if but.name == 'REVERB':
+                elif but.name == 'REVERB':
                     self.ctrl.device.reverb.bind_property(
                         "reverb_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
+                elif but.name == 'DELAY':
+                    self.ctrl.device.delay.bind_property(
+                        "delay_sw", but, "active",
+                        GObject.BindingFlags.BIDIRECTIONAL |\
+                        GObject.BindingFlags.SYNC_CREATE )
                 #else:
                 but.toggled_id = but.connect("toggled", self.callback_toggled)
-            self.ctrl.device.booster.connect("notify::booster_sw", lambda o,p: print("booster_sw changed:", o.booster_sw))
+            #self.ctrl.device.booster.connect("notify::booster_sw", lambda o,p: print("booster_sw changed:", o.booster_sw))
 
     def on_status_changed(self, obj, pspec):
         name = pspec.name.split('-')[0]

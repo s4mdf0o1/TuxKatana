@@ -1,0 +1,73 @@
+SEND:
+  delay_sw:     "60 00 05 00"
+  bank_select:  "60 00 06 3c"
+  delay_type:   "60 00 05 01"
+  time_lvl:     "60 00 05 02" # '00 01' -> '0f 50'=1ms->2s
+  feedback_lvl: "60 00 05 04" 
+  tap_time_lvl: "60 00 05 08" # 0% -> 100%
+  high_cut_lvl: "60 00 05 05" # '00' -> '0e'=630Hz->12.5k
+  effect_lvl:   "60 00 05 06"
+  dirmix_lvl:   "60 00 05 07"
+  d1_time_lvl:  "60 00 05 09" # '00 01' -> '0f 50'=1ms->2s
+  d1_fb_lvl:    "60 00 05 0b"
+  d1_h_cut_lvl: "60 00 05 0c"
+  d1_eff_lvl:   "60 00 05 0d"
+  d2_time_lvl:  "60 00 05 0e"
+  d2_fb_lvl:    "60 00 05 10"
+  d2_h_cut_lvl: "60 00 05 11"
+  d2_eff_lvl:   "60 00 05 12"
+  mod_rate_lvl: "60 00 05 13"
+  mod_depth_lvl: "60 00 05 14"
+  bank_G:       "60 00 06 2d"
+  bank_R:       "60 00 06 2e"
+  bank_Y:       "60 00 06 2f"
+  sde_vint_lpf_sw: "60 00 05 15" # Off|On
+  sde_fb_phase_sw: "60 00 05 17" # Normal|Inverse
+  sde_ef_phase_sw: "60 00 05 18" # Normal|Inverse
+  sde_filter_sw:  "60 00 05 16"  # 8kHz|17kHz
+  sde_modul_sw:   "60 00 05 19"  # Off|On
+
+RECV:
+  "60 00 06 2d":  delay_return
+  "60 00 06 60":  delay_status
+
+Types:
+  "Digital":      '00'
+  "Pan":          '01'
+  "Stereo":       '02'
+  "Dual series":  '03'
+  "Dual parallel": '04'
+  "Dual L/R":     '05'
+  "Reverse":      '06'
+  "Analog":       '07'
+  "Tap Echo":     '08'
+  "Modulate":     '09'
+  "SDE-3000":     '0a'
+
+#Digital:
+#  Delay: (time, feedback)
+#  Filter: high_cut
+#  Level: (effect, dir_mix)
+#Pan:
+#  Delay: +tap_time
+#  Filter: idem
+#  Level: idem
+#Stereo: Digital
+#  Delay1: idem
+#  Delay2: idem
+#  Filter1: idem
+#  Filter2: idem
+#  Effet1: -dir_mix
+#  Effect2: -dir_mix
+#  Direct: dir_mix
+#Dual*: Stereo
+#Reverse: Digital
+#Analog: Digital
+#Tap Echo: Digital
+#Modulate:
+#  Base: Digital
+#  Modulate: (mod_rate, mode_depth)
+#SDE:
+#  Delay: Digital.Delay
+#  Level: Digital.Level
+#  Modulation: (modul_rate, modul_depth)

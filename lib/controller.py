@@ -100,6 +100,7 @@ class Controller(GObject.GObject):
         self.device.get_name()
         self.device.get_presets()
         self.device.dump_memory()
+        self.device.set_selected_channel()
         self.device.set_edit_mode(True)
 
 

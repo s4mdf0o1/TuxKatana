@@ -1,6 +1,6 @@
 from gi.repository import GLib, GObject, Gio
 
-from lib.tools import to_str, from_str
+from lib.tools import to_str, from_str, midi_bytes_to_int, midi_str_to_int
 
 import logging
 from lib.log_setup import LOGGER_NAME
@@ -49,10 +49,9 @@ class Memory(GObject.GObject):
         offset = self.addr_to_offset(addr)
         value = self.memory[offset:offset+size]
         if len(value)==size and size==1:
-            value = value[0]
+            return value[0]
         else:
-            value=None
-        return value
+            return midi_str_to_int(to_str(value))
 
     def write_from_str(self, saddr, data):
         self.write( from_str(saddr), data)

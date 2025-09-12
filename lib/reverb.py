@@ -59,6 +59,7 @@ class Reverb(AntiFlood, GObject.GObject):
         elif name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
             addr  = self.map.send["reverb_type"]
+            #log.debug(f"name: {addr} {model_val}")
             self.device.send(from_str(addr), from_str(model_val))
         elif 'mode' in name and name.split('_')[1] in self.banks:
             num = list(self.map['Modes'].values()).index(to_str(value))
@@ -67,17 +68,21 @@ class Reverb(AntiFlood, GObject.GObject):
             mode_val = list(self.map['Modes'].values())[value]
             bank = self.get_bank_var("mode_")
             addr  = self.map.send[bank]
+            #log.debug(f"{name}: {addr} -> {val}")
             self.device.send(from_str(addr), from_str(mode_val))
         elif name == 'reverb_status':
             self.direct_set(name, value)
         elif 'lvl' in name or name == 'bank_select':
             if name == 'pre_delay_lvl':
-                value = int_to_midi_bytes(value, 2) 
+                value = int_to_midi_bytes(value, 2)
+                #log.debug(f"SEND: {name}: {to_str(value)}")
                 self.device.send(addr, value)
             else:
+                #log.debug(f"SEND: {name}: {to_str(value)}")
                 self.device.send(addr, [value])
         elif 'sw' in name:
             value = 1 if value else 0
+            #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
             self.device.send(addr, [value])
 
     def direct_set(self, prop, value):
@@ -86,7 +91,11 @@ class Reverb(AntiFlood, GObject.GObject):
         self.handler_unblock_by_func(self._on_any_property_changed)
 
     def get_bank_var(self, var):
-        bank = self.banks[self.reverb_status - 1]
+        if self.reverb_status <= 0:
+            log.warning(f"{self.reverb_status=}")
+            return var + self.banks[0]
+        else:
+            return var + self.banks[self.reverb_status - 1]
         return var+bank
 
     def set_bank_type(self):
@@ -105,8 +114,13 @@ class Reverb(AntiFlood, GObject.GObject):
     def load_from_mry(self, mry):
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
-            if value is not None and value >= 0:
+            if prop == 'pre_delay_lvl':
+                #log.debug(prop)
+                value = mry.read_from_str(addr, 2)
                 self.direct_set(prop, value)
+            else:
+                if value is not None and value >= 0:
+                    self.direct_set(prop, value)
         self.set_bank_type()
         self.set_bank_mode()
 

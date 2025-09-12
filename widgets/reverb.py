@@ -9,7 +9,7 @@ from .toggle import Toggle
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
-from lib.tools import hexstr_to_int, from_str
+from lib.tools import from_str, midi_str_to_int
 class Reverb(Gtk.Box):
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -65,14 +65,15 @@ class Reverb(Gtk.Box):
         self.pre_delay_lvl = Slider( "Pre Delay", 50.0, self.own_ctrl, "pre_delay_lvl" )
         self.pre_delay_lvl.name = "pre_delay_lvl"
         adj = self.pre_delay_lvl.scale.get_adjustment()
-        adj.set_upper(hexstr_to_int('03 74'))
+        adj.set_upper(midi_str_to_int('03 74'))
+        #self.pre_delay_lvl.scale.set_format_value_func(self.format_pre_delay)
         self.pre_delay_lvl.scale.set_format_value_func(self.format_pre_delay)
         self.pre_delay_lvl.connect("value-changed", self.on_slider_changed)
         box_revb.append(self.pre_delay_lvl)
 
         self.time_lvl = Slider( "Time", 5.0, self.own_ctrl, "time_lvl" )
         self.time_lvl.name = "time_lvl"
-        self.time_lvl.scale.set_format_value_func(self.format_time)
+        self.time_lvl.scale.set_format_value_func(self.format_t_time)
         self.time_lvl.connect("value-changed", self.on_slider_changed)
         box_revb.append(self.time_lvl)
 
@@ -154,17 +155,41 @@ class Reverb(Gtk.Box):
         return self.format_freq(v, 20, 800, 0x11)
 
     def format_freq(scale, v, f_min, f_max, upper):
-            freq = f_min * ((f_max / f_min) ** (v / upper))
-            if freq >= 1000:
-                return f"{freq/1000:.1f} kHz"
-            else:
-                return f"{int(freq)} Hz"
-
-    def format_time(self, scale, v):
-        t_min, t_max = 0.1, 10.0
-        t = t_min + (t_max - t_min) * (v / 100)
-        return f"{t:.2f} s" if t < 1 else f"{t:.1f} s"
+        freq = f_min * ((f_max / f_min) ** (v / upper))
+        if freq >= 1000:
+            return f"{freq/1000:.1f} kHz"
+        else:
+            return f"{int(freq)} Hz"
 
     def format_pre_delay(self, scale, v):
-        t = 500 * (v / 884)
-        return f"{int(t)} ms"
+        return self.format_time(scale, v, 1000)
+
+    def format_t_time(self, scale, v):
+        return self.format_time(scale, v, 10)
+
+    def format_time(self, scale, v, div=1):
+        adj = scale.get_adjustment()
+        v_min = int(adj.get_lower())
+        v_max = int(adj.get_upper())
+        if div > 1:
+            v /= div
+        if v < 1.0:
+            return f"{int(round(v*1000))} ms"
+        else:
+            return f"{v:.2f} s"
+
+
+#    def format_freq(scale, v):#, f_min, f_max, upper):
+#        adj = scale.get_adjustment()
+#        v_min = int(adj.get_lower())
+#        v_max = int(adj.get_upper())
+#        freq = f_min * ((f_max / f_min) ** (v / upper))
+#        if freq >= 1000:
+#            return f"{freq/1000:.1f} kHz"
+#        else:
+#            return f"{int(freq)} Hz"
+
+
+#    def format_pre_delay(self, scale, v):
+#        t = 500 * (v / 884)
+#        return f"{int(t)} ms"
