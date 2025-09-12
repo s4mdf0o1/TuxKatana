@@ -132,7 +132,7 @@ class Reverb(Gtk.Box):
         self.append(box_lvl)
 
 
-        self.own_ctrl.connect("reverb-loaded", self.on_reverb_loaded)
+        self.own_ctrl.connect("reverb-map-ready", self.on_reverb_loaded)
         #self.own_ctrl.connect("reverb-modes-loaded", self.on_reverb_modes_loaded)
 
     def on_slider_changed( self, slider):

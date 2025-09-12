@@ -10,7 +10,7 @@ from .anti_flood import AntiFlood
 
 class Booster(AntiFlood, GObject.GObject):
     __gsignals__ = {
-        "booster-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "booster-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
     booster_sw      = GObject.Property(type=bool, default=False)
     booster_model   = GObject.Property(type=int, default=0)
@@ -35,11 +35,17 @@ class Booster(AntiFlood, GObject.GObject):
         self.device = device
         #self.name = "BOOSTER"
         self.map = Map("params/booster.yaml")
+        self.set_mry_map()
+
         self.banks=['G', 'R', 'Y']
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        self.set_mry_map()
+
+        self.device.connect("load-maps", self.load_map)
+
+    def load_map(self, ctrl):
+        self.emit("booster-map-ready", self.map['Models'])
 
     def on_param_changed(self, name, value):
         #log.debug(f">>> {name} = {value}")

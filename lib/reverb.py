@@ -10,7 +10,7 @@ from .anti_flood import AntiFlood
 
 class Reverb(AntiFlood, GObject.GObject):
     __gsignals__ = {
-        "reverb-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
+        "reverb-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
     }
     reverb_sw       = GObject.Property(type=bool, default=False)
     reverb_type     = GObject.Property(type=int, default=0)
@@ -39,11 +39,17 @@ class Reverb(AntiFlood, GObject.GObject):
         self.device = device
         #self.name = "REVERB"
         self.map = Map("params/reverb.yaml")
+        self.set_mry_map()
+
         self.banks=['G', 'R', 'Y']
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        self.set_mry_map()
+
+        self.device.connect("load-maps", self.load_map)
+
+    def load_map(self, ctrl):
+        self.emit("reverb-map-ready", self.map['Types'], self.map['Modes'])
 
     def on_param_changed(self, name, value):
         name = name.replace('-', '_')

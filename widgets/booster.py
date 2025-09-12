@@ -109,7 +109,7 @@ class Booster(Gtk.Box):
             GObject.BindingFlags.BIDIRECTIONAL )
         box_solo.append(self.solo_sw)
 
-        self.own_ctrl.connect("booster-loaded", self.on_booster_models_loaded)
+        self.own_ctrl.connect("booster-map-ready", self.on_booster_models_loaded)
 
     def format_scale_value(self, scale, value):
         return str(int(value - 50))

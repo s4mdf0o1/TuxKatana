@@ -28,6 +28,13 @@ class Delay(Gtk.Box):
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
 
+        ### Show/Hide Boxes and +
+        self.bank_dual = Bank("DUAL DELAY", {'DELAY_1':'1', 'DELAY_2':'2'}, ctrl)
+        self.bank_dual.buttons[0].set_active(True)
+        self.bank_dual.hide()
+        self.append(self.bank_dual)
+
+
         box_sel = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
         self.types_store = Gtk.ListStore(int, str, str)
         self.types = Gtk.ComboBox.new_with_model(self.types_store)
@@ -43,12 +50,6 @@ class Delay(Gtk.Box):
         self.types.connect("changed", self.on_type_changed)
         self.append(box_sel)
         
-        ### Show/Hide Boxes and +
-        self.bank_dual = Bank("DUAL DELAY", {'DELAY_1':'1', 'DELAY_2':'2'}, ctrl)
-        self.bank_dual.buttons[0].set_active(True)
-        self.bank_dual.hide()
-        self.append(self.bank_dual)
-
         ### Box Delay
         self.box_dly = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
         self.box_dly.get_style_context().add_class('inner')
@@ -100,23 +101,12 @@ class Delay(Gtk.Box):
         self.append(self.box_filt)
 
         ## Box Level
-        self.box_lvl = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
-        self.box_lvl.get_style_context().add_class('inner')
-        label=Gtk.Label(label="Level")
-        label.set_xalign(1.0)
-        label.set_margin_end(20)
-        self.box_lvl.append(label)
-
-        self.effect_lvl = Slider( "Effect", 50.0, self.own_ctrl, "effect_lvl" )
-        self.effect_lvl.name = "effect_lvl"
-        self.effect_lvl.connect("value-changed", self.on_slider_changed)
-        self.box_lvl.append(self.effect_lvl)
-
-        self.dirmix_lvl = Slider( "Direct Mix", 50.0, self.own_ctrl, "dirmix_lvl" )
-        self.dirmix_lvl.name = "dirmix_lvl"
-        self.dirmix_lvl.connect("value-changed", self.on_slider_changed)
-        self.box_lvl.append(self.dirmix_lvl)
-        self.append(self.box_lvl)
+        # self.box_lvl = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        # self.box_lvl.get_style_context().add_class('inner')
+        # label=Gtk.Label(label="Level")
+        # label.set_xalign(1.0)
+        # label.set_margin_end(20)
+        # self.box_lvl.append(label)
 
         ## Box SDE-3000
         self.box_sde = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
@@ -192,12 +182,24 @@ class Delay(Gtk.Box):
         self.mod_depth_lvl.connect("value-changed", self.on_slider_changed)
         self.box_mod.append(self.mod_depth_lvl)
         
-
         self.append(self.box_mod)
 
+        #Levels
+        self.effect_lvl = Slider( "Effect", 50.0, self.own_ctrl, "effect_lvl" )
+        self.effect_lvl.get_style_context().add_class('inner')
+        self.effect_lvl.name = "effect_lvl"
+        self.effect_lvl.connect("value-changed", self.on_slider_changed)
+        self.append(self.effect_lvl)
 
+        self.dirmix_lvl = Slider( "Direct Mix", 50.0, self.own_ctrl, "dirmix_lvl" )
+        self.dirmix_lvl.get_style_context().add_class('outer')
+        self.dirmix_lvl.name = "dirmix_lvl"
+        self.dirmix_lvl.connect("value-changed", self.on_slider_changed)
+        #self.box_lvl.append(self.dirmix_lvl)
 
-        self.own_ctrl.connect("delay-loaded", self.on_delay_loaded)
+        self.append(self.dirmix_lvl)
+
+        self.own_ctrl.connect("delay-map-ready", self.on_delay_loaded)
 
     def on_type_changed(self, types):
         idx = types.get_active()
@@ -207,7 +209,6 @@ class Delay(Gtk.Box):
             self.box_dly.show()
             self.effect_lvl.show()
             self.box_filt.show()
-            self.box_lvl.show()
             self.tap_time_lvl.hide()
             self.box_mod.hide()
             self.box_sde.hide()
@@ -216,7 +217,6 @@ class Delay(Gtk.Box):
             self.box_dly.show()
             self.effect_lvl.show()
             self.box_filt.show()
-            self.box_lvl.show()
             self.tap_time_lvl.show()
             self.box_mod.hide()
             self.box_sde.hide()
@@ -225,7 +225,6 @@ class Delay(Gtk.Box):
             self.box_dly.show()
             self.effect_lvl.show()
             self.box_filt.show()
-            self.box_lvl.show()
             self.tap_time_lvl.hide()
             self.box_mod.show()
             self.box_sde.hide()
@@ -234,7 +233,6 @@ class Delay(Gtk.Box):
             self.box_dly.show()
             self.effect_lvl.show()
             self.box_filt.hide()
-            self.box_lvl.show()
             self.tap_time_lvl.hide()
             self.box_mod.hide()
             self.box_sde.show()
@@ -242,14 +240,10 @@ class Delay(Gtk.Box):
             self.bank_dual.show()
             self.box_dly.show()
             self.effect_lvl.show()
-            self.box_filt.hide()
-            self.box_lvl.show()
+            self.box_filt.show()
             self.tap_time_lvl.hide()
             self.box_mod.hide()
             self.box_sde.hide()
-
-
-
 
     def on_slider_changed( self, slider):
         self.own_ctrl.set_property(slider.name, slider.get_value())

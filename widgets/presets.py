@@ -6,6 +6,8 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
+from lib.tools import int_to_midi_bytes, to_str
+
 class PresetEntry(Gtk.Entry):
     def __init__(self, text):
         super().__init__()
@@ -22,6 +24,7 @@ class PresetRow(Gtk.Box):
  
 
 class PresetsView(Gtk.Box):
+
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
@@ -34,12 +37,35 @@ class PresetsView(Gtk.Box):
         self.append(listview)
 
         self.selection.connect("selection-changed", self.on_selection_changed)
+        self.ctrl.device.mry.connect('mry-loaded', self.on_mry_loaded)
+
+    def on_mry_loaded(self, mry):
+        mry_preset=self.ctrl.device.mry.read_from_str('60 00 00 00', 16)
+        preset_bytes = int_to_midi_bytes(mry_preset, 16)
+        #log.debug(f"{preset_bytes=}")
+        preset_name= ''.join([chr(v) for v in preset_bytes])
+        log.debug(preset_name)
+        index = self.find_index_by_text(self.selection, preset_name)
+        log.debug(index)
+        log.debug(isinstance(index, gint))
+        self.ctrl.device.emit("channel-changed", index+1)
+
+
 
     def on_selection_changed(self, selection, position, n_items):
         index = selection.get_selected()
         if index != Gtk.INVALID_LIST_POSITION:
             item = selection.get_model().get_item(index)
             log.debug(f"Sélectionné index={index}, valeur={item}")
+
+    def find_index_by_text(self, selection, text_to_find):
+        model = selection.get_model()
+        for i in range(model.get_n_items()):
+            preset=model.get_item(i)
+            log.debug(preset.label)
+            if text_to_find.strip() in preset.label.strip():
+                return i
+        return Gtk.INVALID_LIST_POSITION
 
     def on_setup(self, factory, list_item):
         row = PresetRow()

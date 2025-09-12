@@ -10,7 +10,7 @@ from .anti_flood import AntiFlood
 
 class Delay(AntiFlood, GObject.GObject):
     __gsignals__ = {
-        "delay-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "delay-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
     delay_sw        = GObject.Property(type=bool, default=False)
     delay_type      = GObject.Property(type=int, default=0)
@@ -47,12 +47,19 @@ class Delay(AntiFlood, GObject.GObject):
         self.name = "Delay"
         self.ctrl = ctrl
         self.device = device
+
         self.map = Map("params/delay.yaml")
+        self.set_mry_map()
+
         self.banks=['G', 'R', 'Y']
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        self.set_mry_map()
+
+        self.device.connect("load-maps", self.load_map)
+
+    def load_map(self, ctrl):
+        self.emit("delay-map-ready", self.map['Types'])
 
     def on_param_changed(self, name, value):
         name = name.replace('-', '_')

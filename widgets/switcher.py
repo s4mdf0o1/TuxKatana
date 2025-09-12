@@ -34,7 +34,7 @@ class Switcher(Gtk.Box):
         self.append(self.effects)
         self.append(self.bank_a)
         self.append(self.bank_b)
-        self.ctrl.device.mry.connect("channel-changed", self.on_channel_changed)
+        self.ctrl.device.connect("channel-changed", self.on_channel_changed)
 
         for bank in [self.bank_a, self.bank_b, self.effects]:
             for but in bank.buttons:

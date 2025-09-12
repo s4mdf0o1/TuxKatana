@@ -22,9 +22,12 @@ from queue import Empty
 
        
 class Device(GObject.GObject):
-    #__gsignals__ = {
-    #    "selected-preset": (GObject.SIGNAL_RUN_FIRST, None, (int,)),      
-    #}
+    __gsignals__ = {
+        "channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        "preset-changed": (GObject.SIGNAL_RUN_FIRST, None, (str,)),
+        "load-maps": (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
+
     name = GObject.Property(type=str, default="SETTINGS")
     presets = GObject.Property(type=Gio.ListStore)
     amplifier = GObject.Property(type=object)
@@ -43,6 +46,11 @@ class Device(GObject.GObject):
         self.is_loading_params = False
 
         self.data = []
+        self.ctrl.parent.connect("main-ready", self.on_main_ready)
+
+    def on_main_ready(self, main):
+        self.emit("load-maps")
+
 
     def send(self, addr, value):
         saddr, sval = to_str(addr), to_str(value)
@@ -53,7 +61,6 @@ class Device(GObject.GObject):
 
     def set_midi_channel(self, data):
         self.send(from_str('00 01 00 00'), from_str(data))
-
 
     def dump_memory(self):
         self.ctrl.pause_queue = True
@@ -73,7 +80,7 @@ class Device(GObject.GObject):
                 break
         for msg in msgs:
             addr, data = self.ctrl.fsem.get_addr_data(msg)
-            #log.debug(f"{to_str(addr)}: {len(data)}")
+            log.debug(f"{to_str(addr)}: {len(data)}")
             self.mry.add_block(addr, data)
         self.ctrl.pause_queue = False
 
@@ -92,15 +99,6 @@ class Device(GObject.GObject):
         self.ctrl.sysex.data = msg
         self.ctrl.send(self.ctrl.sysex)#, self.set_name)
         self.set_name(self.ctrl.wait_msg())
-        self.amplifier.emit("amp-models-loaded", \
-                self.amplifier.map['Models'])
-        self.booster.emit("booster-loaded", \
-                self.booster.map['Models'])
-        self.reverb.emit("reverb-loaded", \
-                self.reverb.map['Types'],\
-                self.reverb.map['Modes'])
-        self.delay.emit("delay-loaded", \
-                self.delay.map['Types'])
 
     def set_name(self, msg):
         name = self.fsem.get_str(msg).strip()

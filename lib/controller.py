@@ -38,7 +38,6 @@ class Controller(GObject.GObject):
         self.msg_queue = Queue()
         self.pause_queue = True
         self.thread_watch = Thread(target=self.queue_watcher, daemon=True).start()
-
         GLib.timeout_add_seconds(1, self.wait_device)
     
     def wait_msg(self):
@@ -102,5 +101,4 @@ class Controller(GObject.GObject):
         self.device.dump_memory()
         self.device.set_selected_channel()
         self.device.set_edit_mode(True)
-
 

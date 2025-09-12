@@ -11,7 +11,7 @@ from .anti_flood import AntiFlood
 
 class Amplifier(AntiFlood, GObject.GObject):
     __gsignals__ = {
-        "amp-models-loaded": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "amp-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
     amp_num     = GObject.Property(type=int, default=-1)            # Base LEDs
     amp_variation = GObject.Property(type=bool, default=False)
@@ -24,12 +24,17 @@ class Amplifier(AntiFlood, GObject.GObject):
         super().__init__()
         self.name="Ampli"
         self.ctrl = ctrl
-        self.map = Map("params/amplifier.yaml")
         self.device = device
+        self.map = Map("params/amplifier.yaml")
+        self.set_mry_map()
+
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        self.set_mry_map()
+        self.device.connect("load-maps", self.load_map)
+
+    def load_map(self, ctrl):
+        self.emit("amp-map-ready", self.map['Models'])
 
     def on_param_changed(self, name, value):
         log.debug(f">>> {name} = {value}")

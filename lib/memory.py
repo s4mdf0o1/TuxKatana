@@ -1,6 +1,6 @@
 from gi.repository import GLib, GObject, Gio
 
-from lib.tools import to_str, from_str, midi_bytes_to_int, midi_str_to_int
+from lib.tools import to_str, from_str, midi_str_to_int, int_to_midi_bytes
 
 import logging
 from lib.log_setup import LOGGER_NAME
@@ -9,7 +9,7 @@ log = logging.getLogger(LOGGER_NAME)
 class Memory(GObject.GObject):
     __gsignals__ = {
         "mry-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
-        "channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        #"channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
     }
 
     def __init__(self, ctrl):#device, sysex):
@@ -65,6 +65,13 @@ class Memory(GObject.GObject):
             raise IndexError("Write exceeds memory size")
         self.memory[offset:offset + len(data)] = data
 
+    def get_preset_name(self):
+        mry_bytes=self.read_from_str('60 00 00 00', 16)
+        preset_bytes = int_to_midi_bytes(mry_bytes, 16)
+        #log.debug(f"{preset_bytes=}")
+        preset_name= ''.join([chr(v) for v in preset_bytes])
+        return preset_name
+
 
     def received_msg(self, msg):
         log.sysex(f"{msg.hex()}")
@@ -94,7 +101,7 @@ class Memory(GObject.GObject):
 
             elif saddr == '00 01 00 00':
                 log.debug(f"emit channel-changed {data}")
-                self.emit("channel-changed", data[1])
+                self.ctrl.device.emit("channel-changed", data[1])
             else:
                 log.warning(f"Memory.received_msg: {saddr=}: not implemented")
             #self.ctrl.recv_event.set()
