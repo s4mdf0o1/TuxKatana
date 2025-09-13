@@ -91,13 +91,14 @@ class Delay(AntiFlood, GObject.GObject):
         #    bank = self.get_bank_var("mode_")
         #    addr  = self.map.send[bank]
         #    self.device.send(from_str(addr), from_str(mode_val))
+        elif name == 'bank_select':
+            self.device.send(addr, [value])
         elif 'lvl' in name or name == 'bank_select':
-            if name in ['time_lvl', 'dly1_lvl']:
-                value = int_to_midi_bytes(value, 2) 
+            if name in ['time_lvl', 'dly1_time_lvl', 'dly2_time_lvl']:
+                value = int_to_midi_bytes(value, 2)
+                
                 #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
                 self.device.send(addr, value)
-            elif name == 'bank_select':
-                self.device.send(addr, [value])
             else:
                 #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
                 self.device.send(addr, [value])
@@ -125,9 +126,10 @@ class Delay(AntiFlood, GObject.GObject):
         self.direct_set("type_idx", num)
 
     def load_from_mry(self, mry):
+        log.debug("-")
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
-            log.debug(f"{prop}: {addr} = {to_str(value)}")
+            #log.debug(f"{prop}: {addr} = {to_str(value)}")
             if prop in ['time_lvl', 'd1_time_lvl']:
                 value = mry.read_from_str(addr, 2)
                 self.direct_set(prop, value)

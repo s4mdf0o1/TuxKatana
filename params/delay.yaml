@@ -12,7 +12,7 @@ SEND:
   d1_fb_lvl:    "60 00 05 0b"
   d1_h_cut_lvl: "60 00 05 0c"
   d1_eff_lvl:   "60 00 05 0d"
-  d2_time_lvl:  "60 00 05 0e"
+  d2_time_lvl:  "60 00 05 0e" # '00 01' -> '0f 50'=1ms->2s
   d2_fb_lvl:    "60 00 05 10"
   d2_h_cut_lvl: "60 00 05 11"
   d2_eff_lvl:   "60 00 05 12"
@@ -44,11 +44,11 @@ Types:
   "Modulate":     '09'
   "SDE-3000":     '0a'
 
-#Digital:
+#Digital: 0
 #  Delay: (time, feedback)
 #  Filter: high_cut
 #  Level: (effect, dir_mix)
-#Pan:
+#Pan: 1
 #  Delay: +tap_time
 #  Filter: idem
 #  Level: idem
@@ -61,13 +61,13 @@ Types:
 #  Effect2: -dir_mix
 #  Direct: dir_mix
 #Dual*: Stereo
-#Reverse: Digital
-#Analog: Digital
-#Tap Echo: Digital
-#Modulate:
+#Reverse: 6 Digital
+#Analog: 7 Digital
+#Tap Echo: 8 Digital
+#Modulate: 9
 #  Base: Digital
 #  Modulate: (mod_rate, mode_depth)
-#SDE:
+#SDE: 10
 #  Delay: Digital.Delay
 #  Level: Digital.Level
-#  Modulation: (modul_rate, modul_depth)
+#  SDE

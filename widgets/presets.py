@@ -28,6 +28,8 @@ class PresetsView(Gtk.Box):
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
+        self.own_ctrl = self.ctrl.device.presets
+
         factory = Gtk.SignalListItemFactory()
         factory.connect("setup", self.on_setup)
         factory.connect("bind", self.on_bind)
@@ -44,25 +46,21 @@ class PresetsView(Gtk.Box):
         preset_bytes = int_to_midi_bytes(mry_preset, 16)
         #log.debug(f"{preset_bytes=}")
         preset_name= ''.join([chr(v) for v in preset_bytes])
-        log.debug(preset_name)
         index = self.find_index_by_text(self.selection, preset_name)
-        log.debug(index)
-        log.debug(isinstance(index, gint))
         self.ctrl.device.emit("channel-changed", index+1)
-
-
 
     def on_selection_changed(self, selection, position, n_items):
         index = selection.get_selected()
         if index != Gtk.INVALID_LIST_POSITION:
             item = selection.get_model().get_item(index)
             log.debug(f"Sélectionné index={index}, valeur={item}")
+            self.ctrl.device.emit("channel-changed", index+1)
 
     def find_index_by_text(self, selection, text_to_find):
         model = selection.get_model()
         for i in range(model.get_n_items()):
             preset=model.get_item(i)
-            log.debug(preset.label)
+            log.debug(f"{preset.label=} {text_to_find.strip()=}")
             if text_to_find.strip() in preset.label.strip():
                 return i
         return Gtk.INVALID_LIST_POSITION

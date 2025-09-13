@@ -27,11 +27,11 @@ class Delay(Gtk.Box):
             "bank_select", self.bank_select, "selected",
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
-
         ### Show/Hide Boxes and +
         self.bank_dual = Bank("DUAL DELAY", {'DELAY_1':'1', 'DELAY_2':'2'}, ctrl)
         self.bank_dual.buttons[0].set_active(True)
         self.bank_dual.hide()
+        self.bank_dual.buttons[0].connect("toggled", self.on_delay_toggled)
         self.append(self.bank_dual)
 
 
@@ -50,7 +50,7 @@ class Delay(Gtk.Box):
         self.types.connect("changed", self.on_type_changed)
         self.append(box_sel)
         
-        ### Box Delay
+        ### Box Delay ###
         self.box_dly = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
         self.box_dly.get_style_context().add_class('inner')
         label=Gtk.Label(label="Delay")
@@ -65,13 +65,52 @@ class Delay(Gtk.Box):
         adj.set_upper(midi_str_to_int('0f 50'))
         self.time_lvl.scale.set_format_value_func(self.format_t_time)
         self.time_lvl.connect("value-changed", self.on_slider_changed)
+        self.time_lvl.show()
         self.box_dly.append(self.time_lvl)
 
         self.feedback_lvl = Slider("Feeback", 0.0, self.own_ctrl, "feedback_lvl" )
         self.feedback_lvl.name = "feedback_lvl"
         #self.feedback_lvl.scale.set_format_value_func(self.format_time)
         self.feedback_lvl.connect("value-changed", self.on_slider_changed)
+        self.feedback_lvl.show()
         self.box_dly.append(self.feedback_lvl)
+
+            ## D1 Time ##
+        self.d1_time_lvl = Slider("Time 1", 0.0, self.own_ctrl, "d1_time_lvl" )
+        self.d1_time_lvl.name = "d1_time_lvl"
+        adj = self.d1_time_lvl.scale.get_adjustment()
+        adj.set_lower(midi_str_to_int('00 01'))
+        adj.set_upper(midi_str_to_int('0f 50'))
+        self.d1_time_lvl.scale.set_format_value_func(self.format_t_time)
+        self.d1_time_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_time_lvl.hide()
+        self.box_dly.append(self.d1_time_lvl)
+
+        self.d1_fb_lvl = Slider("Feeback 1", 0.0, self.own_ctrl, "d1_fb_lvl" )
+        self.d1_fb_lvl.name = "d1_fb_lvl"
+        #self.fb_lvl.scale.set_format_value_func(self.format_time)
+        self.d1_fb_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_fb_lvl.hide()
+        self.box_dly.append(self.d1_fb_lvl)
+
+            ## D2 Time ##
+        self.d2_time_lvl = Slider("Time 2", 0.0, self.own_ctrl, "d2_time_lvl" )
+        self.d2_time_lvl.name = "d2_time_lvl"
+        adj = self.d2_time_lvl.scale.get_adjustment()
+        adj.set_lower(midi_str_to_int('00 01'))
+        adj.set_upper(midi_str_to_int('0f 50'))
+        self.d2_time_lvl.scale.set_format_value_func(self.format_t_time)
+        self.d2_time_lvl.connect("value-changed", self.on_slider_changed)
+        self.d2_time_lvl.hide()
+        self.box_dly.append(self.d2_time_lvl)
+
+        self.d2_fb_lvl = Slider("Feeback 2", 0.0, self.own_ctrl, "d2_fb_lvl" )
+        self.d2_fb_lvl.name = "d2_fb_lvl"
+        #self.fb_lvl.scale.set_format_value_func(self.format_time)
+        self.d2_fb_lvl.connect("value-changed", self.on_slider_changed)
+        self.d2_fb_lvl.hide()
+        self.box_dly.append(self.d2_fb_lvl)
+
 
         self.tap_time_lvl = Slider("Tap Time", 0.0, self.own_ctrl, "tap_time_lvl" )
         self.tap_time_lvl.name = "tap_time_lvl"
@@ -96,7 +135,28 @@ class Delay(Gtk.Box):
         adj.set_page_increment(1)
         self.high_cut_lvl.scale.set_format_value_func(self.format_high_freq)
         self.high_cut_lvl.connect("value-changed", self.on_slider_changed)
+        self.high_cut_lvl.show()
         self.box_filt.append(self.high_cut_lvl)
+            ## D1 High_cut
+        self.d1_h_cut_lvl = Slider( "High Cut 1", 0.0, self.own_ctrl, "d1_h_cut_lvl" )
+        self.d1_h_cut_lvl.name = "d1_h_cut_lvl"
+        adj = self.d1_h_cut_lvl.scale.get_adjustment()
+        adj.set_upper(from_str('0e')[0])
+        adj.set_page_increment(1)
+        self.d1_h_cut_lvl.scale.set_format_value_func(self.format_high_freq)
+        self.d1_h_cut_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_h_cut_lvl.hide()
+        self.box_filt.append(self.d1_h_cut_lvl)
+            ## D2 High_cut
+        self.d2_h_cut_lvl = Slider( "High Cut 2", 0.0, self.own_ctrl, "d2_h_cut_lvl" )
+        self.d2_h_cut_lvl.name = "d2_h_cut_lvl"
+        adj = self.d2_h_cut_lvl.scale.get_adjustment()
+        adj.set_upper(from_str('0e')[0])
+        adj.set_page_increment(1)
+        self.d2_h_cut_lvl.scale.set_format_value_func(self.format_high_freq)
+        self.d2_h_cut_lvl.connect("value-changed", self.on_slider_changed)
+        self.d2_h_cut_lvl.hide()
+        self.box_filt.append(self.d2_h_cut_lvl)
 
         self.append(self.box_filt)
 
@@ -189,7 +249,22 @@ class Delay(Gtk.Box):
         self.effect_lvl.get_style_context().add_class('inner')
         self.effect_lvl.name = "effect_lvl"
         self.effect_lvl.connect("value-changed", self.on_slider_changed)
+        self.effect_lvl.show()
         self.append(self.effect_lvl)
+
+        self.d1_eff_lvl = Slider( "Effect 1", 50.0, self.own_ctrl, "d1_eff_lvl" )
+        self.d1_eff_lvl.get_style_context().add_class('inner')
+        self.d1_eff_lvl.name = "d1_eff_lvl"
+        self.d1_eff_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_eff_lvl.hide()
+        self.append(self.d1_eff_lvl)
+
+        self.d2_eff_lvl = Slider( "Effect 2", 50.0, self.own_ctrl, "d2_eff_lvl" )
+        self.d2_eff_lvl.get_style_context().add_class('inner')
+        self.d2_eff_lvl.name = "d2_eff_lvl"
+        self.d2_eff_lvl.connect("value-changed", self.on_slider_changed)
+        self.d2_eff_lvl.hide()
+        self.append(self.d2_eff_lvl)
 
         self.dirmix_lvl = Slider( "Direct Mix", 50.0, self.own_ctrl, "dirmix_lvl" )
         self.dirmix_lvl.get_style_context().add_class('outer')
@@ -201,49 +276,57 @@ class Delay(Gtk.Box):
 
         self.own_ctrl.connect("delay-map-ready", self.on_delay_loaded)
 
+    def on_delay_toggled(self, button):
+        #st = button.get_active()
+        self.on_type_changed(self.types)
+
     def on_type_changed(self, types):
         idx = types.get_active()
         log.debug(f"{idx=}")
-        if idx in [0, 6, 7, 8]:
-            self.bank_dual.hide()
-            self.box_dly.show()
-            self.effect_lvl.show()
-            self.box_filt.show()
-            self.tap_time_lvl.hide()
-            self.box_mod.hide()
-            self.box_sde.hide()
-        elif idx == 1:
-            self.bank_dual.hide()
-            self.box_dly.show()
-            self.effect_lvl.show()
-            self.box_filt.show()
-            self.tap_time_lvl.show()
-            self.box_mod.hide()
-            self.box_sde.hide()
-        elif idx == 9:
-            self.bank_dual.hide()
-            self.box_dly.show()
-            self.effect_lvl.show()
-            self.box_filt.show()
-            self.tap_time_lvl.hide()
-            self.box_mod.show()
-            self.box_sde.hide()
+        base_widgets = [
+            self.box_dly,       # 0
+            self.time_lvl,      # 1
+            self.feedback_lvl,  # 2
+            self.effect_lvl,    # 3
+            self.high_cut_lvl,  # 4
+            self.box_filt,      # 5
+            self.tap_time_lvl,  # 6
+            self.box_mod,       # 7
+            self.box_sde,       # 8
+            self.bank_dual,     # 9
+        ]
+        duals = [
+            self.d1_time_lvl,
+            self.d1_fb_lvl,
+            self.d1_h_cut_lvl,
+            self.d1_eff_lvl,
+            self.d2_time_lvl,
+            self.d2_fb_lvl,
+            self.d2_h_cut_lvl,
+            self.d2_eff_lvl, 
+        ]
+        for w in base_widgets + duals:
+            w.hide()
+
+        if idx in [0, 1, 6, 7, 8, 9]:
+            for i in [0, 1, 2, 3, 4, 5]:
+                base_widgets[i].show()
+            if idx == 1:
+                base_widgets[6].show()
+            elif idx == 9:
+                base_widgets[7].show()
+        elif idx in [2, 3, 4, 5]:
+            for i in [0,5,9]:
+                base_widgets[i].show()
+            dn = self.bank_dual.selected
+            log.debug(f"{dn=}")
+            for i in range(4):
+                name = duals[i + dn*4].name
+                log.debug(name)
+                duals[i + dn*4].show()
         elif idx == 10:
-            self.bank_dual.hide()
-            self.box_dly.show()
-            self.effect_lvl.show()
-            self.box_filt.hide()
-            self.tap_time_lvl.hide()
-            self.box_mod.hide()
-            self.box_sde.show()
-        else:
-            self.bank_dual.show()
-            self.box_dly.show()
-            self.effect_lvl.show()
-            self.box_filt.show()
-            self.tap_time_lvl.hide()
-            self.box_mod.hide()
-            self.box_sde.hide()
+            for i in [0,1,2,3,8]:
+                base_widgets[i].show()
 
     def on_slider_changed( self, slider):
         self.own_ctrl.set_property(slider.name, slider.get_value())
@@ -282,3 +365,4 @@ class Delay(Gtk.Box):
 
     def format_percent(self, scale, v):
         return f"{v:.2f} %"
+
