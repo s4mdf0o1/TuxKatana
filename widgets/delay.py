@@ -32,6 +32,8 @@ class Delay(Gtk.Box):
         self.bank_dual.buttons[0].set_active(True)
         self.bank_dual.hide()
         self.bank_dual.buttons[0].connect("toggled", self.on_delay_toggled)
+        for but in self.bank_dual.buttons:
+            but.get_style_context().add_class('smaller')
         self.append(self.bank_dual)
 
 
@@ -282,7 +284,7 @@ class Delay(Gtk.Box):
 
     def on_type_changed(self, types):
         idx = types.get_active()
-        log.debug(f"{idx=}")
+        #log.debug(f"{idx=}")
         base_widgets = [
             self.box_dly,       # 0
             self.time_lvl,      # 1
@@ -319,7 +321,7 @@ class Delay(Gtk.Box):
             for i in [0,5,9]:
                 base_widgets[i].show()
             dn = self.bank_dual.selected
-            log.debug(f"{dn=}")
+            #log.debug(f"{dn=}")
             for i in range(4):
                 name = duals[i + dn*4].name
                 log.debug(name)

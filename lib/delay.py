@@ -94,10 +94,10 @@ class Delay(AntiFlood, GObject.GObject):
         elif name == 'bank_select':
             self.device.send(addr, [value])
         elif 'lvl' in name or name == 'bank_select':
-            if name in ['time_lvl', 'dly1_time_lvl', 'dly2_time_lvl']:
-                value = int_to_midi_bytes(value, 2)
+            if name in ['time_lvl', 'd1_time_lvl', 'd2_time_lvl']:
+                value = int_to_midi_bytes(int(value), 2)
                 
-                #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
+                log.debug(f"{name} {to_str(addr)} {to_str(value)}")
                 self.device.send(addr, value)
             else:
                 #log.debug(f"{name} {to_str(addr)} {to_str(value)}")

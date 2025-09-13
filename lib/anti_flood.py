@@ -1,5 +1,9 @@
 from gi.repository import GLib#, GObject, Gio
 
+import logging
+from lib.log_setup import LOGGER_NAME
+log = logging.getLogger(LOGGER_NAME)
+
 class AntiFlood:
     def __init__(self):
         super().__init__()
@@ -9,7 +13,7 @@ class AntiFlood:
     def _on_any_property_changed(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
-        #log.debug(f"{name=}: {value=}")
+        #log.debug(f"{obj.name=}: {value=}")
         self._pending[name] = value
         self._schedule_flush()
 

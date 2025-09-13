@@ -70,16 +70,16 @@ class Switcher(Gtk.Box):
                 but.set_status_id(status)
 
     def callback_toggled( self, button):
-        log.debug(button.path)
+        #log.debug(button.path)
         if button.get_active():
             #self.ctrl.set_on( button.path )
             if 'CH_' in button.name:
                 self.ctrl.device.set_midi_channel(button.path)
-            else:
-                log.debug(f"{button.name}")
+            #else:
+            #    log.debug(f"{button.name}")
 
     def on_channel_changed(self, obj, ch_num):
-        log.debug(f"{ch_num=}")
+        #log.debug(f"{ch_num=}")
         if ch_num <= 4:
             self.bank_a.buttons[ch_num-1].set_active(True)
         else:

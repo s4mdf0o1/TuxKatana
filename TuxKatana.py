@@ -55,7 +55,7 @@ class MainWindow(Gtk.Window):
 
 class TuxKatana(Gtk.Application):
     __gsignals__ = {
-        "main-ready": (GObject.SIGNAL_RUN_FIRST, None, ()),
+        "main-ready": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
     def __init__(self, debug=False, sysex=False):
         super().__init__(application_id="org.domosys.TuxKatana")

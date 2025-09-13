@@ -27,7 +27,7 @@ class Amplifier(AntiFlood, GObject.GObject):
         self.device = device
         self.map = Map("params/amplifier.yaml")
         self.set_mry_map()
-
+        self.switch_model = False
 
         self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
@@ -50,14 +50,21 @@ class Amplifier(AntiFlood, GObject.GObject):
             model_val = list(self.map['Models'].values())[value]
             addr  = self.map.send["amp_model"]
             self.device.send(from_str(addr), from_str(model_val))
+            if value >= 10:
+                self.switch_model = True
         elif name in ["amp_variation", "amp_num"]:
             num = value if name == 'amp_num' else self.amp_num
             var = value if name == 'amp_variation' else self.amp_variation
             index = num if not var else num + 5
             amp_model = list(self.map['Models'].values())[index]
             addr = from_str(self.map.send["amp_model"])
-            if self.model_idx < 10:
+            self.direct_set("amp_model", from_str(amp_model)[0])
+            if not self.switch_model:
                 self.device.send(addr, from_str(amp_model))
+                self.direct_set("model_idx", index)
+            else:
+                self.switch_model = False
+
         elif 'lvl' in name:
             self.device.send(addr, [value])
 

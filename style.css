@@ -52,3 +52,9 @@ box.slider scale{
    padding: 3px;
    margin: 3px;
 }
+.smaller {
+   /*font-size: 0.8em;*/
+   padding:0px;
+   margin:0px;
+   min-height: 20px;
+}

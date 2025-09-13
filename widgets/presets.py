@@ -60,7 +60,7 @@ class PresetsView(Gtk.Box):
         model = selection.get_model()
         for i in range(model.get_n_items()):
             preset=model.get_item(i)
-            log.debug(f"{preset.label=} {text_to_find.strip()=}")
+            #log.debug(f"{preset.label=} {text_to_find.strip()=}")
             if text_to_find.strip() in preset.label.strip():
                 return i
         return Gtk.INVALID_LIST_POSITION
