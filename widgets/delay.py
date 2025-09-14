@@ -60,64 +60,75 @@ class Delay(Gtk.Box):
         label.set_margin_end(20)
         self.box_dly.append(label)
 
-        self.time_lvl = Slider("Time", 0.0, self.own_ctrl, "time_lvl" )
+        self.time_lvl = Slider("Time", "long_time", self.own_ctrl, "time_lvl" )
         self.time_lvl.name = "time_lvl"
-        adj = self.time_lvl.scale.get_adjustment()
-        adj.set_lower(midi_str_to_int('00 01'))
-        adj.set_upper(midi_str_to_int('0f 50'))
-        self.time_lvl.scale.set_format_value_func(self.format_t_time)
-        self.time_lvl.connect("value-changed", self.on_slider_changed)
+        #adj = self.time_lvl.scale.get_adjustment()
+        #adj.set_lower(midi_str_to_int('00 01'))
+        #adj.set_upper(midi_str_to_int('0f 50'))
+        #self.time_lvl.set_format("t_time")
+        #self.time_lvl.scale.set_format_value_func(self.format_t_time)
+        # self.time_lvl.connect("value-changed", self.on_slider_changed)
+        self.time_lvl.connect("delayed-value", self.on_slider_changed)
         self.time_lvl.show()
         self.box_dly.append(self.time_lvl)
 
-        self.feedback_lvl = Slider("Feeback", 0.0, self.own_ctrl, "feedback_lvl" )
+        self.feedback_lvl = Slider("Feeback", "normal", self.own_ctrl, "feedback_lvl" )
         self.feedback_lvl.name = "feedback_lvl"
         #self.feedback_lvl.scale.set_format_value_func(self.format_time)
-        self.feedback_lvl.connect("value-changed", self.on_slider_changed)
+        # self.feedback_lvl.connect("value-changed", self.on_slider_changed)
+        self.feedback_lvl.connect("delayed-value", self.on_slider_changed)
         self.feedback_lvl.show()
         self.box_dly.append(self.feedback_lvl)
 
             ## D1 Time ##
-        self.d1_time_lvl = Slider("Time 1", 0.0, self.own_ctrl, "d1_time_lvl" )
+        self.d1_time_lvl = Slider("Time 1", "long_time", self.own_ctrl, "d1_time_lvl" )
         self.d1_time_lvl.name = "d1_time_lvl"
-        adj = self.d1_time_lvl.scale.get_adjustment()
-        adj.set_lower(midi_str_to_int('00 01'))
-        adj.set_upper(midi_str_to_int('0f 50'))
-        self.d1_time_lvl.scale.set_format_value_func(self.format_t_time)
-        self.d1_time_lvl.connect("value-changed", self.on_slider_changed)
+        #adj = self.d1_time_lvl.scale.get_adjustment()
+        #adj.set_lower(midi_str_to_int('00 01'))
+        #adj.set_upper(midi_str_to_int('0f 50'))
+        #self.d1_time_lvl.set_format("t_time")
+        #self.d1_time_lvl.scale.set_format_value_func(self.format_t_time)
+        # self.d1_time_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_time_lvl.connect("delayed-value", self.on_slider_changed)
         self.d1_time_lvl.hide()
         self.box_dly.append(self.d1_time_lvl)
 
-        self.d1_fb_lvl = Slider("Feeback 1", 0.0, self.own_ctrl, "d1_fb_lvl" )
+        self.d1_fb_lvl = Slider("Feeback 1", "normal", self.own_ctrl, "d1_fb_lvl" )
         self.d1_fb_lvl.name = "d1_fb_lvl"
         #self.fb_lvl.scale.set_format_value_func(self.format_time)
-        self.d1_fb_lvl.connect("value-changed", self.on_slider_changed)
+        # self.d1_fb_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_fb_lvl.connect("delayed-value", self.on_slider_changed)
         self.d1_fb_lvl.hide()
         self.box_dly.append(self.d1_fb_lvl)
 
             ## D2 Time ##
-        self.d2_time_lvl = Slider("Time 2", 0.0, self.own_ctrl, "d2_time_lvl" )
+        self.d2_time_lvl = Slider("Time 2", "long_time", self.own_ctrl, "d2_time_lvl" )
         self.d2_time_lvl.name = "d2_time_lvl"
-        adj = self.d2_time_lvl.scale.get_adjustment()
-        adj.set_lower(midi_str_to_int('00 01'))
-        adj.set_upper(midi_str_to_int('0f 50'))
-        self.d2_time_lvl.scale.set_format_value_func(self.format_t_time)
-        self.d2_time_lvl.connect("value-changed", self.on_slider_changed)
+        #adj = self.d2_time_lvl.scale.get_adjustment()
+        #adj.set_lower(midi_str_to_int('00 01'))
+        #adj.set_upper(midi_str_to_int('0f 50'))
+        #self.d2_time_lvl.set_format("t_time")
+        #self.d2_time_lvl.scale.set_format_value_func(self.format_t_time)
+        # self.d2_time_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_time_lvl.connect("delayed-value", self.on_slider_changed)
         self.d2_time_lvl.hide()
         self.box_dly.append(self.d2_time_lvl)
 
-        self.d2_fb_lvl = Slider("Feeback 2", 0.0, self.own_ctrl, "d2_fb_lvl" )
+        self.d2_fb_lvl = Slider("Feeback 2", "normal", self.own_ctrl, "d2_fb_lvl" )
         self.d2_fb_lvl.name = "d2_fb_lvl"
         #self.fb_lvl.scale.set_format_value_func(self.format_time)
-        self.d2_fb_lvl.connect("value-changed", self.on_slider_changed)
+        # self.d2_fb_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_fb_lvl.connect("delayed-value", self.on_slider_changed)
         self.d2_fb_lvl.hide()
         self.box_dly.append(self.d2_fb_lvl)
 
 
-        self.tap_time_lvl = Slider("Tap Time", 0.0, self.own_ctrl, "tap_time_lvl" )
+        self.tap_time_lvl = Slider("Tap Time", "percent", self.own_ctrl, "tap_time_lvl" )
         self.tap_time_lvl.name = "tap_time_lvl"
-        self.tap_time_lvl.scale.set_format_value_func(self.format_percent)
-        self.tap_time_lvl.connect("value-changed", self.on_slider_changed)
+        #self.tap_time_lvl.set_format("percent")
+        #self.tap_time_lvl.scale.set_format_value_func(self.format_percent)
+        # self.tap_time_lvl.connect("value-changed", self.on_slider_changed)
+        self.tap_time_lvl.connect("delayed-value", self.on_slider_changed)
         self.box_dly.append(self.tap_time_lvl)
         self.tap_time_lvl.hide()
         self.append(self.box_dly)
@@ -130,33 +141,39 @@ class Delay(Gtk.Box):
         label.set_margin_end(20)
         self.box_filt.append(label)
 
-        self.high_cut_lvl = Slider( "High Cut", 0.0, self.own_ctrl, "high_cut_lvl" )
+        self.high_cut_lvl = Slider( "High Cut", "high_freq", self.own_ctrl, "high_cut_lvl" )
         self.high_cut_lvl.name = "high_cut_lvl"
-        adj = self.high_cut_lvl.scale.get_adjustment()
-        adj.set_upper(from_str('0e')[0])
-        adj.set_page_increment(1)
-        self.high_cut_lvl.scale.set_format_value_func(self.format_high_freq)
-        self.high_cut_lvl.connect("value-changed", self.on_slider_changed)
+        #adj = self.high_cut_lvl.scale.get_adjustment()
+        #adj.set_upper(from_str('0e')[0])
+        #adj.set_page_increment(1)
+        #self.high_cut_lvl.set_format("high_freq")
+        #self.high_cut_lvl.scale.set_format_value_func(self.format_high_freq)
+        # self.high_cut_lvl.connect("value-changed", self.on_slider_changed)
+        self.high_cut_lvl.connect("delayed-value", self.on_slider_changed)
         self.high_cut_lvl.show()
         self.box_filt.append(self.high_cut_lvl)
             ## D1 High_cut
-        self.d1_h_cut_lvl = Slider( "High Cut 1", 0.0, self.own_ctrl, "d1_h_cut_lvl" )
+        self.d1_h_cut_lvl = Slider( "High Cut 1", "high_freq", self.own_ctrl, "d1_h_cut_lvl" )
         self.d1_h_cut_lvl.name = "d1_h_cut_lvl"
-        adj = self.d1_h_cut_lvl.scale.get_adjustment()
-        adj.set_upper(from_str('0e')[0])
-        adj.set_page_increment(1)
-        self.d1_h_cut_lvl.scale.set_format_value_func(self.format_high_freq)
-        self.d1_h_cut_lvl.connect("value-changed", self.on_slider_changed)
+        #adj = self.d1_h_cut_lvl.scale.get_adjustment()
+        #adj.set_upper(from_str('0e')[0])
+        #adj.set_page_increment(1)
+        #self.d1_h_cut_lvl.set_format("high_freq")
+        #self.d1_h_cut_lvl.scale.set_format_value_func(self.format_high_freq)
+        # self.d1_h_cut_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_h_cut_lvl.connect("delayed-value", self.on_slider_changed)
         self.d1_h_cut_lvl.hide()
         self.box_filt.append(self.d1_h_cut_lvl)
             ## D2 High_cut
-        self.d2_h_cut_lvl = Slider( "High Cut 2", 0.0, self.own_ctrl, "d2_h_cut_lvl" )
+        self.d2_h_cut_lvl = Slider( "High Cut 2", "high_freq", self.own_ctrl, "d2_h_cut_lvl" )
         self.d2_h_cut_lvl.name = "d2_h_cut_lvl"
-        adj = self.d2_h_cut_lvl.scale.get_adjustment()
-        adj.set_upper(from_str('0e')[0])
-        adj.set_page_increment(1)
-        self.d2_h_cut_lvl.scale.set_format_value_func(self.format_high_freq)
-        self.d2_h_cut_lvl.connect("value-changed", self.on_slider_changed)
+        #adj = self.d2_h_cut_lvl.scale.get_adjustment()
+        #adj.set_upper(from_str('0e')[0])
+        #adj.set_page_increment(1)
+        #self.d2_h_cut_lvl.set_format("high_freq")
+        #self.d2_h_cut_lvl.scale.set_format_value_func(self.format_high_freq)
+        # self.d2_h_cut_lvl.connect("value-changed", self.on_slider_changed)
+        self.d2_h_cut_lvl.connect("delayed-value", self.on_slider_changed)
         self.d2_h_cut_lvl.hide()
         self.box_filt.append(self.d2_h_cut_lvl)
 
@@ -234,44 +251,50 @@ class Delay(Gtk.Box):
         label.set_margin_end(20)
         self.box_mod.append(label)
 
-        self.mod_rate_lvl = Slider("Rate", 0.0, self.own_ctrl, "mod_rate_lvl" )
+        self.mod_rate_lvl = Slider("Rate", "normal", self.own_ctrl, "mod_rate_lvl" )
         self.mod_rate_lvl.name = "mod_rate_lvl"
-        self.mod_rate_lvl.connect("value-changed", self.on_slider_changed)
+        # self.mod_rate_lvl.connect("value-changed", self.on_slider_changed)
+        self.mod_rate_lvl.connect("delayed-value", self.on_slider_changed)
         self.box_mod.append(self.mod_rate_lvl)
 
-        self.mod_depth_lvl = Slider("Depth", 0.0, self.own_ctrl, "mod_depth_lvl" )
+        self.mod_depth_lvl = Slider("Depth", "normal", self.own_ctrl, "mod_depth_lvl" )
         self.mod_depth_lvl.name = "mod_depth_lvl"
-        self.mod_depth_lvl.connect("value-changed", self.on_slider_changed)
+        # self.mod_depth_lvl.connect("value-changed", self.on_slider_changed)
+        self.mod_depth_lvl.connect("delayed-value", self.on_slider_changed)
         self.box_mod.append(self.mod_depth_lvl)
         
         self.append(self.box_mod)
 
         #Levels
-        self.effect_lvl = Slider( "Effect", 50.0, self.own_ctrl, "effect_lvl" )
+        self.effect_lvl = Slider( "Effect", "normal", self.own_ctrl, "effect_lvl" )
         self.effect_lvl.get_style_context().add_class('inner')
         self.effect_lvl.name = "effect_lvl"
-        self.effect_lvl.connect("value-changed", self.on_slider_changed)
+        # self.effect_lvl.connect("value-changed", self.on_slider_changed)
+        self.effect_lvl.connect("delayed-value", self.on_slider_changed)
         self.effect_lvl.show()
         self.append(self.effect_lvl)
 
-        self.d1_eff_lvl = Slider( "Effect 1", 50.0, self.own_ctrl, "d1_eff_lvl" )
+        self.d1_eff_lvl = Slider( "Effect 1", "normal", self.own_ctrl, "d1_eff_lvl" )
         self.d1_eff_lvl.get_style_context().add_class('inner')
         self.d1_eff_lvl.name = "d1_eff_lvl"
-        self.d1_eff_lvl.connect("value-changed", self.on_slider_changed)
+        # self.d1_eff_lvl.connect("value-changed", self.on_slider_changed)
+        self.d1_eff_lvl.connect("delayed-value", self.on_slider_changed)
         self.d1_eff_lvl.hide()
         self.append(self.d1_eff_lvl)
 
-        self.d2_eff_lvl = Slider( "Effect 2", 50.0, self.own_ctrl, "d2_eff_lvl" )
+        self.d2_eff_lvl = Slider( "Effect 2", "normal", self.own_ctrl, "d2_eff_lvl" )
         self.d2_eff_lvl.get_style_context().add_class('inner')
         self.d2_eff_lvl.name = "d2_eff_lvl"
-        self.d2_eff_lvl.connect("value-changed", self.on_slider_changed)
+        # self.d2_eff_lvl.connect("value-changed", self.on_slider_changed)
+        self.d2_eff_lvl.connect("delayed-value", self.on_slider_changed)
         self.d2_eff_lvl.hide()
         self.append(self.d2_eff_lvl)
 
-        self.dirmix_lvl = Slider( "Direct Mix", 50.0, self.own_ctrl, "dirmix_lvl" )
+        self.dirmix_lvl = Slider( "Direct Mix", "normal", self.own_ctrl, "dirmix_lvl" )
         self.dirmix_lvl.get_style_context().add_class('outer')
         self.dirmix_lvl.name = "dirmix_lvl"
-        self.dirmix_lvl.connect("value-changed", self.on_slider_changed)
+        # self.dirmix_lvl.connect("value-changed", self.on_slider_changed)
+        self.dirmix_lvl.connect("delayed-value", self.on_slider_changed)
         #self.box_lvl.append(self.dirmix_lvl)
 
         self.append(self.dirmix_lvl)
@@ -330,8 +353,8 @@ class Delay(Gtk.Box):
             for i in [0,1,2,3,8]:
                 base_widgets[i].show()
 
-    def on_slider_changed( self, slider):
-        self.own_ctrl.set_property(slider.name, slider.get_value())
+    def on_slider_changed( self, slider, value):
+        self.own_ctrl.set_property(slider.name, int(value))
 
     def on_delay_loaded(self, device, types):
         i = 0
@@ -340,31 +363,4 @@ class Delay(Gtk.Box):
             i += 1
         i = 0
 
-    def format_high_freq(self, scale, v):
-        return self.format_freq(scale, v, 630, 12500, 0x0e)
-    def format_freq(self, scale, v, f_min, f_max, upper):
-        adj = scale.get_adjustment()
-        v_min = int(adj.get_lower())
-        v_max = int(adj.get_upper())
-        freq = f_min * ((f_max / f_min) ** (v / upper))
-        if freq >= 1000:
-            return f"{freq/1000:.1f} kHz"
-        else:
-            return f"{int(freq)} Hz"
-
-    def format_t_time(self, scale, v):
-        return self.format_time(scale, v, 1000)
-    def format_time(self, scale, v, div=1):
-        adj = scale.get_adjustment()
-        v_min = int(adj.get_lower())
-        v_max = int(adj.get_upper())
-        if div > 1:
-            v /= div
-        if v < 1.0:
-            return f"{int(round(v*1000))} ms"
-        else:
-            return f"{v:.2f} s"
-
-    def format_percent(self, scale, v):
-        return f"{v:.2f} %"
 

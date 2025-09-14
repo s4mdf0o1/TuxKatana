@@ -1,0 +1,95 @@
+normal:
+  vmin: 0
+  vmax: 64
+
+plus_minus:
+  vmin: 0
+  vmax: 64
+  valmin: -50
+  valmax: +50
+
+percent:
+  vmin: 0
+  vmax: 64
+  unit: "{percent}%"
+
+long_time:
+  vmin: 1
+  vmax: 10255   # '0f 50'
+  valmin: 1
+  valmax: 2000
+  unit: "{time} ms"
+  kilo: "{time:.2f} s"
+
+time_10s:
+  vmin: 0
+  vmax: 64
+  valmin: 1
+  valmax: 10000
+  unit: "{time} ms"
+  kilo: "{time} s"
+
+time_4ms:
+  vmin: 0
+  vmax: 80      # '50'
+  valmin:  0
+  valmax: 40
+  unit: "{time} ms"
+
+time_500ms:
+  vmin: 0
+  vmax: 14851   # '03 74'
+  valmin:  0
+  valmax: 500
+  unit: "{time} ms"
+
+low_freq:
+  vmin: 0
+  vmax: 10
+  valmin: 0
+  valmax: 800
+  unit: "{freq} Hz"
+
+mid_freq:
+  vmin: 0
+  vmax: 27      # '1b'
+  valmin: 20
+  valmax: 10000
+  unit: "{freq} Hz"
+  kilo: "{freq:.1f} kHz"
+
+high_freq:
+  vmin: 0
+  vmax: 14      # 'Oe'
+  valmin: 630
+  valmax: 12500
+  unit: "{freq} Hz"
+  kilo: "{freq:.1f} kHz"
+
+mid_q:
+  vmin: 0
+  vmax: 5
+  valmin: 0.5
+  valmax: 16
+      
+gain:
+  vmin: 0
+  vmax: 40      # '28'
+  valmin: -20
+  valmax: +20
+  unit: "{gain} dB"
+
+pattern:
+  vmin: 0
+  vmax: 20      # '13'
+
+density:
+  vmin: 0
+  vmax: 10      # '0a'
+
+repeat:
+  vmin: 5120    # '00 28'
+  vmax: 11268   # '04 58'
+  valmin: 40
+  valmax: 600
+  unit: "{repeat:.0f}rpm"

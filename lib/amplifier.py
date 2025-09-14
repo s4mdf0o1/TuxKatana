@@ -7,9 +7,9 @@ from .tools import from_str, to_str
 import numpy as np
 
 from .map import Map
-from .anti_flood import AntiFlood
+#from .anti_flood import AntiFlood
 
-class Amplifier(AntiFlood, GObject.GObject):
+class Amplifier(GObject.GObject):
     __gsignals__ = {
         "amp-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
@@ -29,14 +29,16 @@ class Amplifier(AntiFlood, GObject.GObject):
         self.set_mry_map()
         self.switch_model = False
 
-        self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
         self.device.connect("load-maps", self.load_map)
+        self.notify_id = self.connect("notify", self.on_param_changed)
 
     def load_map(self, ctrl):
         self.emit("amp-map-ready", self.map['Models'])
 
-    def on_param_changed(self, name, value):
+    def on_param_changed(self, obj, pspec):
+        name = pspec.name
+        value = self.get_property(name)
         log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
@@ -44,6 +46,7 @@ class Amplifier(AntiFlood, GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
+        return
         if name == 'amp_model':
             self.set_amp_model()
         elif name == 'model_idx':
@@ -82,9 +85,10 @@ class Amplifier(AntiFlood, GObject.GObject):
             self.device.mry.map[addr] = ( self, prop )
 
     def direct_set(self, prop, value):
-        self.handler_block_by_func(self._on_any_property_changed)
+        # self.handler_block_by_func(self._on_any_property_changed)
+        self.handler_block_by_func(self.on_param_changed)
         self.set_property(prop, value)
-        self.handler_unblock_by_func(self._on_any_property_changed)
+        self.handler_unblock_by_func(self.on_param_changed)
 
     def load_from_mry(self, mry):
         #log.debug(self.map.recv.items())
