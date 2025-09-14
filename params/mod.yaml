@@ -1,9 +1,17 @@
 SEND:
   mod_sw:       "60 00 01 00"
-  mod_type:     "60 00 01 01" # 60 00 06 3a
-  bank_G:       "60 00 06 27"
-  bank_R:       "60 00 06 28"
-  bank_Y:       "60 00 06 29"
+  mod_type:     "60 00 01 01"
+  mod_bank_sel: "60 00 06 3a"
+  mod_bank_G:   "60 00 06 27"
+  mod_bank_R:   "60 00 06 28"
+  mod_bank_Y:   "60 00 06 29"
+  fx_sw:        "60 00 03 00"
+  fx_type:      "60 00 03 01"
+  fx_bank_sel:  "60 00 06 3b"
+  fx_bank_G:    "60 00 06 2a"
+  fx_bank_R:    "60 00 06 2b"
+  fx_bank_Y:    "60 00 06 2c"
+
 # Touch_Wah
   tw_filt_sw:   "60 00 01 02" # Low/Band Pass
   tw_polar_sw:  "60 00 01 03" # Down/Up
@@ -157,6 +165,7 @@ SEND:
 # Vibrato
   vi_rate_lvl:  "60 00 02 26" # Rate
   vi_dept_lvl:  "60 00 02 27" # Depth
+    ### Missing "60 00 02 28" > 29 ###
   vi_levl_lvl:  "60 00 02 2a" # Level
 # Ring Modulate
   rm_type_sw:   "60 00 02 2b" # Normal/Intelligent
@@ -194,6 +203,7 @@ SEND:
 # Phaser 90E
   p9_script_sw: "60 00 02 46" # Scipt Off/On
   p9_speed_lvl: "60 00 02 47" # Speed
+    ### Missing: "60 00 02 48" > 4b ###
 # Wah 95E
   w9_ppos_lvl:  "60 00 02 4c" # Pedal Pos
   w9_min_lvl:   "60 00 02 4d"
@@ -205,9 +215,9 @@ SEND:
   dc_chint_lvl: "60 00 02 53" # Chorus Intensity
   dc_inp_lvl:   "60 00 02 52" # Input
   dc_tone_lvl:  "60 00 02 58" # Tone
-  dc_out_sw:    "60 00 02 59" # Output 0>1=D+E>D/E
+  dc_out_sw:    "60 00 02 59" # Output D+E>D/E
   dc_rep_lvl:   "60 00 02 54" # Repeat Rate
-          # 00 28 22>04 58 6e=40rpm>600rpm
+          # 00 28>04 58=40rpm>600rpm
   dc_ints_lvl:  "60 00 02 56" # Intensity
   dc_vol_lvl:   "60 00 02 57" # Volume
 # Heavy Octave
@@ -221,62 +231,67 @@ SEND:
   pb_dmix_lvl:  "60 00 02 60" # Direct Mix
   
 RECV:
-  "60 00 06 3a": "mod_return"
+  "60 00 06 27":  "mod_return"    # Type Copy G
+  "60 00 06 2a":  "fx_return"     # Type Copy
+  "60 00 06 5e":  "mod_status"    # GRY +1
+  "60 00 06 5f":  "fx_status"     # GRY +1
+  "60 00 06 58":  "mod_unknown_1"
+  "60 00 06 59":  "fx_unknown_1"
 
 Types:
-  "Touch Wah":    '00'
-  "Auto Wah":     '01'
-  "Pedal Wah":    '02'
-  "Compressor":   '03'
-  "Limiter":      '04'
-  "Graphic EQ":   '06'
-  "Parametric EQ": '07'
-  "Guitar Sym":   '09'
-  "Slow Gear":    '0a'
-  "Wave Synth":   '0c'
-  "Octave":       '0e'
-  "Pitch Shifter": '0f'
-  "Harmonist":    '10'
-  "Acu Processor": '12'
-  "Phaser":       '13'
-  "Flanger":      '14'
-  "Tremolo":      '15'
-  "Rotary":       '16'
-  "Uni-V":        '17'
-  "Slicer":       '19'
-  "Vibrato":      '1a'
-  "Ring Modulate": '1b'
-  "Humanizer":    '1c'
-  "2x2 Chorus":   '1d'
-  "AC Guitar Sym": '1f'
-  "Phaser 90E":   '23'
-  "Flanger 117E": '24'
-  "Wah 95E":      '25'
-  "DC30":         '26'
-  "Heavy Octave": '27'
-  "Pedal Bend":   '28'
+  "Touch Wah":      '00'
+  "Auto Wah":       '01'
+  "Pedal Wah":      '02'
+  "Compressor":     '03'
+  "Limiter":        '04'
+  "Graphic EQ":     '06'
+  "Parametric EQ":  '07'
+  "Guitar Sym":     '09'
+  "Slow Gear":      '0a'
+  "Wave Synth":     '0c'
+  "Octave":         '0e'
+  "Pitch Shifter":  '0f'
+  "Harmonist":      '10'
+  "Acu Processor":  '12'
+  "Phaser":         '13'
+  "Flanger":        '14'
+  "Tremolo":        '15'
+  "Rotary":         '16'
+  "Uni-V":          '17'
+  "Slicer":         '19'
+  "Vibrato":        '1a'
+  "Ring Modulate":  '1b'
+  "Humanizer":      '1c'
+  "2x2 Chorus":     '1d'
+  "AC Guitar Sym":  '1f'
+  "Phaser 90E":     '23'
+  "Flanger 117E":   '24'
+  "Wah 95E":        '25'
+  "DC30":           '26'
+  "Heavy Octave":   '27'
+  "Pedal Bend":     '28'
 
 Pedal_Wah:
-  "Cry Wah":    '00'
-  "VO Wah":     '01'
-  "Fat Wah":    '02'
-  "Light Wah":  '03'
+  "Cry Wah":      '00'
+  "VO Wah":       '01'
+  "Fat Wah":      '02'
+  "Light Wah":    '03'
   "7strings Wah": '04'
-  "Reso_Wah":   '05'
+  "Reso_Wah":     '05'
 
 Compressor:
-  "Boss CS-3":    '00'
-  "Hi Band":      '01'
-  "Light":        '02'
-  "MXR DynaComp": '03'
-  "Orange Squeezer": '04'
-  "Fat":          '05'
-  "Mild":         '06'
+  "Boss CS-3":        '00'
+  "Hi Band":          '01'
+  "Light":            '02'
+  "MXR DynaComp":     '03'
+  "Orange Squeezer":  '04'
+  "Fat":              '05'
+  "Mild":             '06'
 
 Limiter:
-  "Boss Limiter": '00'
-  "DBX 100X rack": '01'
-  "UREI 1178 vint rack": '02'
+  "Boss Limiter":         '00'
+  "DBX 100X rack":        '01'
+  "UREI 1178 vint rack":  '02'
 
 Guitar_Sym:
   "Singl to Humbuckr":  '00'
@@ -318,4 +333,4 @@ Humanizer:
   "I":  '02'
   "O":  '03'
   "U":  '04'
-    
+

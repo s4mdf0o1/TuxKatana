@@ -10,12 +10,13 @@ from .anti_flood import AntiFlood
 
 class ModFx(AntiFlood, GObject.GObject):
     __gsignals__ = {
-        "mod-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
-        "fx-map-ready":  (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "modfx-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
+        #"fx-map-ready":  (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
+    type_idx      = GObject.Property(type=int, default=-1)
     mod_sw        = GObject.Property(type=bool, default=False)
     mod_type      = GObject.Property(type=int, default=0)
-    mod_idx       = GObject.Property(type=int, default=0)
+    mod_idx       = GObject.Property(type=int, default=-1)
     mod_status    = GObject.Property(type=int, default=0)
     mod_select    = GObject.Property(type=int, default=0)
     mod_G         = GObject.Property(type=int, default=0)
@@ -23,7 +24,7 @@ class ModFx(AntiFlood, GObject.GObject):
     mod_Y         = GObject.Property(type=int, default=0)
     fx_sw         = GObject.Property(type=bool, default=False)
     fx_type       = GObject.Property(type=int, default=0)
-    fx_idx        = GObject.Property(type=int, default=0)
+    fx_idx        = GObject.Property(type=int, default=-1)
     fx_status     = GObject.Property(type=int, default=0)
     fx_select     = GObject.Property(type=int, default=0)
     fx_G          = GObject.Property(type=int, default=0)
@@ -37,7 +38,7 @@ class ModFx(AntiFlood, GObject.GObject):
         self.device = device
 
         self.map = Map("params/mod.yaml") # params/modfx.yaml
-        self.set_mry_map()
+        #self.set_mry_map()
 
         self.banks=['G', 'R', 'Y']
 
@@ -49,6 +50,10 @@ class ModFx(AntiFlood, GObject.GObject):
     def load_map(self, ctrl):
         self.emit(self.name + "-map-ready", self.map['Types'])
 
+    def set_mry_map(self):
+        for addr, prop in self.map.recv.items():
+            self.device.mry.map[addr] = ( self, prop ) 
+
     def on_param_changed(self, name, value):
         name = name.replace('-', '_')
         log.debug(f">>> {name} = {value}")
@@ -57,6 +62,7 @@ class ModFx(AntiFlood, GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
+        return
         if 'sw' in name:
             value = 1 if value else 0
             #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
@@ -118,16 +124,12 @@ class ModFx(AntiFlood, GObject.GObject):
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
             #log.debug(f"{prop}: {addr} = {to_str(value)}")
-            if prop in ['time_lvl', 'd1_time_lvl']:
-                value = mry.read_from_str(addr, 2)
+            if prop in ['dc_rep_lvl']:
+                value = mry.read_from_str(addr, 3)
                 self.direct_set(prop, value)
             else:
                 if value is not None and value >= 0:
                     self.direct_set(prop, value)
         self.set_bank_type()
-
-    def set_mry_map(self):
-        for addr, prop in self.map.recv.items():
-            self.device.mry.map[addr] = ( self, prop ) 
 
 
