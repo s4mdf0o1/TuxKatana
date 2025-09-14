@@ -47,26 +47,28 @@ class Amplifier(Gtk.Box):
             "amp_variation", self.amp_variation,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
-        self.amp_variation.connect("toggled", self.on_toggle_changed)
+        #self.amp_variation.connect("toggled", self.on_toggle_changed)
         self.append(self.amp_variation)
 
-        self.amp_gain = Slider( "Gain", 50.0, self.own_ctrl, "gain_lvl" )
+        self.amp_gain = Slider( "Gain", "normal", self.own_ctrl, "gain_lvl" )
         self.amp_gain.name = "gain_lvl"
 #        self.own_ctrl.bind_property(
 #            "amp_gain", self.amp_gain,
 #            "value", GObject.BindingFlags.SYNC_CREATE |\
 #            GObject.BindingFlags.BIDIRECTIONAL )
 
-        self.amp_gain.scale.connect("value-changed", self.on_slider_changed)
+        #self.amp_gain.scale.connect("value-changed", self.on_slider_changed)
+        self.amp_gain.connect("delayed-value", self.on_slider_changed)
         self.append(self.amp_gain)
 
-        self.amp_volume = Slider( "Volume", 50.0, self.own_ctrl, 'volume_lvl' )
+        self.amp_volume = Slider( "Volume", "normal", self.own_ctrl, 'volume_lvl' )
         self.amp_volume.name = "volume_lvl"
 #        self.own_ctrl.bind_property(
 #            "amp_volume", self.amp_volume,
 #            "value", GObject.BindingFlags.SYNC_CREATE |\
 #            GObject.BindingFlags.BIDIRECTIONAL )
-        self.amp_volume.connect("value-changed", self.on_slider_changed)
+        #self.amp_volume.connect("value-changed", self.on_slider_changed)
+        self.amp_volume.connect("delayed-value", self.on_slider_changed)
         self.append(self.amp_volume)
 
         self.own_ctrl.connect("amp-map-ready", self.on_amp_models_loaded)
@@ -77,8 +79,8 @@ class Amplifier(Gtk.Box):
             name, code = self.amp_store[idx][:2]
             self.own_ctrl.set_property("model_idx", idx)
 
-    def on_slider_changed( self, slider):
-        self.own_ctrl.set_property(slider.name, slider.get_value())
+    def on_slider_changed( self, slider, value):
+        self.own_ctrl.set_property(slider.name, int(value))
 
     def on_toggle_changed( self, toggle):
         self.own_ctrl.set_property(toggle.name, toggle.get_active())

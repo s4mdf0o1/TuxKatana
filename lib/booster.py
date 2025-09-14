@@ -6,9 +6,9 @@ log = logging.getLogger(LOGGER_NAME)
 from .tools import to_str, from_str
 
 from .map import Map
-from .anti_flood import AntiFlood
+#from .anti_flood import AntiFlood
 
-class Booster(AntiFlood, GObject.GObject):
+class Booster(GObject.GObject):
     __gsignals__ = {
         "booster-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
@@ -39,7 +39,7 @@ class Booster(AntiFlood, GObject.GObject):
 
         self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self._on_any_property_changed)
+        self.notify_id = self.connect("notify", self.on_param_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
 
         self.device.connect("load-maps", self.load_map)
@@ -47,14 +47,17 @@ class Booster(AntiFlood, GObject.GObject):
     def load_map(self, ctrl):
         self.emit("booster-map-ready", self.map['Models'])
 
-    def on_param_changed(self, name, value):
-        #log.debug(f">>> {name} = {value}")
+    def on_param_changed(self, obj, pspec):
+        name = pspec.name
+        value = self.get_property(name)
+        log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
+        return
         if name == 'booster_model':
             num = list(self.map['Models'].values()).index(to_str(value))
             self.direct_set("model_idx", num)
@@ -71,9 +74,9 @@ class Booster(AntiFlood, GObject.GObject):
             self.device.send(addr, [value])
 
     def direct_set(self, prop, value):
-        self.handler_block_by_func(self._on_any_property_changed)
+        self.handler_block_by_func(self.on_param_changed)
         self.set_property(prop, value)
-        self.handler_unblock_by_func(self._on_any_property_changed)
+        self.handler_unblock_by_func(self.on_param_changed)
 
     def set_bank_model(self):
         bank = self.banks[self.booster_status - 1]

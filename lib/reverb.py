@@ -6,9 +6,9 @@ log = logging.getLogger(LOGGER_NAME)
 from .tools import to_str, from_str, int_to_midi_bytes
 
 from .map import Map
-from .anti_flood import AntiFlood
+#from .anti_flood import AntiFlood
 
-class Reverb(AntiFlood, GObject.GObject):
+class Reverb(GObject.GObject):
     __gsignals__ = {
         "reverb-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
     }
@@ -43,7 +43,7 @@ class Reverb(AntiFlood, GObject.GObject):
 
         self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self._on_any_property_changed)
+        self.notify_id = self.connect("notify", self.on_param_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
 
         self.device.connect("load-maps", self.load_map)
@@ -51,14 +51,17 @@ class Reverb(AntiFlood, GObject.GObject):
     def load_map(self, ctrl):
         self.emit("reverb-map-ready", self.map['Types'], self.map['Modes'])
 
-    def on_param_changed(self, name, value):
+    def on_param_changed(self, obj, pspec):
+        name = pspec.name
+        value = self.get_property(name)
         name = name.replace('-', '_')
-        #log.debug(f">>> {name} = {value}")
+        log.debug(f">>> {name} = {value}")
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
+        return
         if name == 'reverb_type':
             num = list(self.map['Types'].values()).index(to_str(value))
             self.direct_set("type_idx", num)
@@ -92,9 +95,9 @@ class Reverb(AntiFlood, GObject.GObject):
             self.device.send(addr, [value])
 
     def direct_set(self, prop, value):
-        self.handler_block_by_func(self._on_any_property_changed)
+        self.handler_block_by_func(self.on_param_changed)
         self.set_property(prop, value)
-        self.handler_unblock_by_func(self._on_any_property_changed)
+        self.handler_unblock_by_func(self.on_param_changed)
 
     def get_bank_var(self, var):
         if self.reverb_status <= 0:

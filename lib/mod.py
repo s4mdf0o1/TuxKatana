@@ -6,63 +6,54 @@ log = logging.getLogger(LOGGER_NAME)
 from .tools import to_str, from_str, int_to_midi_bytes
 
 from .map import Map
-#from .anti_flood import AntiFlood
+from .anti_flood import AntiFlood
 
-class Delay(GObject.GObject):
+class ModFx(GObject.GObject):
     __gsignals__ = {
-        "delay-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "modfx-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
+        #"fx-map-ready":  (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
-    delay_sw        = GObject.Property(type=bool, default=False)
-    delay_type      = GObject.Property(type=int, default=0)
-    type_idx        = GObject.Property(type=int, default=0)
-    delay_status    = GObject.Property(type=int, default=0)
-    bank_select     = GObject.Property(type=int, default=0)
-    bank_G          = GObject.Property(type=int, default=0)
-    bank_R          = GObject.Property(type=int, default=0)
-    bank_Y          = GObject.Property(type=int, default=0)
-    time_lvl        = GObject.Property(type=float, default=0.0)
-    feedback_lvl    = GObject.Property(type=float, default=0.0)
-    tap_time_lvl    = GObject.Property(type=float, default=0.0)
-    high_cut_lvl    = GObject.Property(type=float, default=0.0)
-    effect_lvl      = GObject.Property(type=float, default=0.0)
-    dirmix_lvl      = GObject.Property(type=float, default=0.0)
-    d1_time_lvl     = GObject.Property(type=float, default=0.0)
-    d1_fb_lvl       = GObject.Property(type=float, default=0.0)
-    d1_h_cut_lvl    = GObject.Property(type=float, default=0.0)
-    d1_eff_lvl      = GObject.Property(type=float, default=0.0)
-    d2_time_lvl     = GObject.Property(type=float, default=0.0)
-    d2_fb_lvl       = GObject.Property(type=float, default=0.0)
-    d2_h_cut_lvl    = GObject.Property(type=float, default=0.0)
-    d2_eff_lvl      = GObject.Property(type=float, default=0.0)
-    mod_rate_lvl    = GObject.Property(type=float, default=0.0)
-    mod_depth_lvl   = GObject.Property(type=float, default=0.0)
-    sde_vint_lpf_sw = GObject.Property(type=bool, default=False)
-    sde_fb_phase_sw = GObject.Property(type=bool, default=False)
-    sde_ef_phase_sw = GObject.Property(type=bool, default=False)
-    sde_filter_sw   = GObject.Property(type=bool, default=False)
-    sde_modul_sw    = GObject.Property(type=bool, default=False)
-
-    def __init__(self, device, ctrl):
+    mod_sw        = GObject.Property(type=bool, default=False)
+    mod_type      = GObject.Property(type=int, default=0)
+    mod_type_idx  = GObject.Property(type=int, default=-1)
+    mod_status    = GObject.Property(type=int, default=0)
+    mod_bank_sel  = GObject.Property(type=int, default=0)
+    mod_bank_G    = GObject.Property(type=int, default=0)
+    mod_bank_R    = GObject.Property(type=int, default=0)
+    mod_bank_Y    = GObject.Property(type=int, default=0)
+    fx_sw         = GObject.Property(type=bool, default=False)
+    fx_type       = GObject.Property(type=int, default=0)
+    fx_type_idx   = GObject.Property(type=int, default=-1)
+    fx_status     = GObject.Property(type=int, default=0)
+    fx_bank_sel   = GObject.Property(type=int, default=0)
+    fx_bank_G     = GObject.Property(type=int, default=0)
+    fx_bank_R     = GObject.Property(type=int, default=0)
+    fx_bank_Y     = GObject.Property(type=int, default=0)
+    
+    def __init__(self, device, ctrl, name="Mod"):
         super().__init__()
-        self.name = "Delay"
+        self.name = name
         self.ctrl = ctrl
         self.device = device
 
-        self.map = Map("params/delay.yaml")
-        self.set_mry_map()
+        self.map = Map("params/mod.yaml") # params/modfx.yaml
+        #self.set_mry_map()
 
         self.banks=['G', 'R', 'Y']
 
-        self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
         self.notify_id = self.connect("notify", self.on_param_changed)
+        self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
+
         self.device.connect("load-maps", self.load_map)
 
     def load_map(self, ctrl):
-        self.emit("delay-map-ready", self.map['Types'])
+        self.emit(self.name + "-map-ready", self.map['Types'])
 
-    def on_param_changed(self, obj, pspec):
-        name = pspec.name
-        value = self.get_property(name)
+    def set_mry_map(self):
+        for addr, prop in self.map.recv.items():
+            self.device.mry.map[addr] = ( self, prop ) 
+
+    def on_param_changed(self, name, value):
         name = name.replace('-', '_')
         log.debug(f">>> {name} = {value}")
         if not isinstance(value, (int, bool, float)):
@@ -108,9 +99,9 @@ class Delay(GObject.GObject):
             log.debug(f"missing DEF for '{name}'")
 
     def direct_set(self, prop, value):
-        self.handler_block_by_func(self.on_param_changed)
+        self.handler_block_by_func(self._on_any_property_changed)
         self.set_property(prop, value)
-        self.handler_unblock_by_func(self.on_param_changed)
+        self.handler_unblock_by_func(self._on_any_property_changed)
 
     def get_bank_var(self, var):
         log.debug(f"{self.delay_status=}")
@@ -132,16 +123,12 @@ class Delay(GObject.GObject):
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
             #log.debug(f"{prop}: {addr} = {to_str(value)}")
-            if prop in ['time_lvl', 'd1_time_lvl']:
-                value = mry.read_from_str(addr, 2)
+            if prop in ['dc_rep_lvl']:
+                value = mry.read_from_str(addr, 3)
                 self.direct_set(prop, value)
             else:
                 if value is not None and value >= 0:
                     self.direct_set(prop, value)
         self.set_bank_type()
-
-    def set_mry_map(self):
-        for addr, prop in self.map.recv.items():
-            self.device.mry.map[addr] = ( self, prop ) 
 
 

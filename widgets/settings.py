@@ -64,7 +64,7 @@ class KS_Settings(Gtk.Box):
             self.append(self.delay)
 
         else:
-            self.slider = Slider( "Level", 50)
+            self.slider = Slider( "Level", "normal")
             self.append(self.slider)
 
 class Settings(Gtk.Box):

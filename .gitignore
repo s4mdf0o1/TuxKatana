@@ -1,4 +1,5 @@
 .*.swp
+.*.swo
 test*
 tmp/
 __pycache__
