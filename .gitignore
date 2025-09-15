@@ -5,5 +5,5 @@ tmp/
 __pycache__
 sysex.log
 tuxkatana.log
-grep-n
+grep
 .vim/

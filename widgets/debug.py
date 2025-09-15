@@ -48,11 +48,12 @@ class Debug(Gtk.Box):
         but_send = Gtk.Button(label="SEND to AMP")
         but_send.connect("clicked", self.send)
 
-        but_test = Gtk.Button(label="TEST")
-        but_test.connect("clicked", self.test)
+        but_read_mry = Gtk.Button(label="READ Memory")
+        but_read_mry.connect("clicked", self.read_memory)
 
-        but_cfg = Gtk.Button(label="READ Memory")
-        but_cfg.connect("clicked", self.read_memory)
+        but_save_mry = Gtk.Button(label="Save Mry to File")
+        but_save_mry.connect("clicked", self.save_mry)
+
 
         h_box3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         label = Gtk.Label(label="Log Note: ")
@@ -78,10 +79,10 @@ class Debug(Gtk.Box):
         self.append(h_box1)
         self.append(h_box2)
         self.append(but_send)
-        self.append(but_cfg)
+        self.append(but_read_mry)
+        self.append(but_save_mry)
         self.append(h_box3)
         self.append(h_box4)
-        self.append(but_test)
 
     def test(self, but):
         self.ctrl.device.amplifier.amp_type = 12
@@ -96,7 +97,7 @@ class Debug(Gtk.Box):
         log.info(f"Archived: {archived}")
 
     def switch_mode( self, button ):
-        header = self.ctrl.fsem.header
+        header = self.ctrl.se_msg.header
         self.midi.set_active(0)
         if button.get_active():
             log.debug(f"Set Edit mode: active: 1")
@@ -106,7 +107,7 @@ class Debug(Gtk.Box):
 
     def send(self, button, cmd=None, addr=None, val=None):
         mode = self.midi.get_active_text()
-        msg_obj = self.ctrl.fsem
+        msg_obj = self.ctrl.se_msg
         if mode == "SysEx":
             header = msg_obj.header
             if not cmd:
@@ -137,7 +138,9 @@ class Debug(Gtk.Box):
             self.ctrl.port.send(self.ctrl.cc)
 
     def read_memory(self, button):
-        #self.cmd.set_active(0)
         addr = from_str(self.address.get_text())
         value = self.ctrl.device.mry.read(addr)
         self.value.set_text(to_str(value))
+
+    def save_mry(self, filename="mry_dump.bin"):
+        self.ctrl.device.mry.save_to_file()

@@ -43,7 +43,7 @@ class Reverb(GObject.GObject):
 
         self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self.on_param_changed)
+        self.notify_id = self.connect("notify", self.set_from_ui)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
 
         self.device.connect("load-maps", self.load_map)
@@ -51,7 +51,21 @@ class Reverb(GObject.GObject):
     def load_map(self, ctrl):
         self.emit("reverb-map-ready", self.map['Types'], self.map['Modes'])
 
-    def on_param_changed(self, obj, pspec):
+    def set_from_msg(self, name, value):
+        name = name.replace('-', '_')
+        log.debug(f">>> {name} = {value}")
+        svalue = to_str(value)
+        if name == 'reverb_type':
+            num = list(self.map['Types'].values()).index(svalue)
+            self.direct_set("type_idx", num)
+        #elif 'mode' in name and name.split('_')[1] in self.banks:
+            
+        #    num = list(self.map['Modes'].values()).index(svalue)
+        #    self.direct_set('model_idx', num)
+        else:
+            self.direct_set(name, value)
+
+    def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
         name = name.replace('-', '_')
@@ -61,26 +75,21 @@ class Reverb(GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
-        return
-        if name == 'reverb_type':
-            num = list(self.map['Types'].values()).index(to_str(value))
-            self.direct_set("type_idx", num)
-        elif name == 'type_idx':
+        if name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
             addr  = self.map.send["reverb_type"]
-            #log.debug(f"name: {addr} {model_val}")
             self.device.send(from_str(addr), from_str(model_val))
-        elif 'mode' in name and name.split('_')[1] in self.banks:
-            num = list(self.map['Modes'].values()).index(to_str(value))
-            self.direct_set("mode_idx", num)
+        # elif 'mode' in name and name.split('_')[1] in self.banks:
+        #     num = list(self.map['Modes'].values()).index(to_str(value))
+        #     self.direct_set("mode_idx", num)
         elif name == 'mode_idx':
             mode_val = list(self.map['Modes'].values())[value]
             bank = self.get_bank_var("mode_")
             addr  = self.map.send[bank]
             #log.debug(f"{name}: {addr} -> {val}")
             self.device.send(from_str(addr), from_str(mode_val))
-        elif name == 'reverb_status':
-            self.direct_set(name, value)
+        # elif name == 'reverb_status':
+        #     self.direct_set(name, value)
         elif 'lvl' in name or name == 'bank_select':
             if name == 'pre_delay_lvl':
                 value = int_to_midi_bytes(value, 2)
@@ -95,9 +104,9 @@ class Reverb(GObject.GObject):
             self.device.send(addr, [value])
 
     def direct_set(self, prop, value):
-        self.handler_block_by_func(self.on_param_changed)
+        self.handler_block_by_func(self.set_from_ui)
         self.set_property(prop, value)
-        self.handler_unblock_by_func(self.on_param_changed)
+        self.handler_unblock_by_func(self.set_from_ui)
 
     def get_bank_var(self, var):
         if self.reverb_status <= 0:

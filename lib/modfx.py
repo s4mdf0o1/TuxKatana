@@ -52,7 +52,18 @@ class ModFx(AntiFlood, GObject.GObject):
 
     def set_mry_map(self):
         for addr, prop in self.map.recv.items():
-            self.device.mry.map[addr] = ( self, prop ) 
+            self.device.mry.map[addr] = (self, prop)
+
+    def set_from_msg(self, name, value):
+        name = name.replace('-', '_')
+        log.debug(f">>> {name} = {value}")
+        if 'type' in name:
+            svalue = to_str(value)
+            num = list(self.map['Types'].values()).index(svalue)
+            self.set_property(self.prefix + '_idx', num)
+        else:# 'lvl' in name:
+            self.set_property(name, value)
+
 
     def on_param_changed(self, name, value):
         name = name.replace('-', '_')

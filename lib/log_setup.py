@@ -18,10 +18,10 @@ logging.Logger.sysex = sysex
 class LevelFormatter(logging.Formatter):
     FORMATS = {
         logging.DEBUG:    "%(filename)s:%(lineno)d-%(funcName)s: %(message)s",
-        logging.INFO:     "[INFO] %(message)s",
-        logging.WARNING:  "⚠️ WARNING: %(message)s",
-        logging.ERROR:    "❌ ERROR: %(message)s",
-        logging.CRITICAL: "🔥 CRITICAL: %(message)s",
+        logging.INFO:     "[\033[32mINFO\033[0m] %(message)s",
+        logging.WARNING:  "⚠️ \033[33mWARNING\033[0m: %(message)s",
+        logging.ERROR:    "❌\033[31mERROR\033[0m: %(message)s",
+        logging.CRITICAL: "🔥\033[5m\033[31mCRITICAL\033[0m: %(message)s",
         SYSEX:            ">>> %(message)s",
     }
 

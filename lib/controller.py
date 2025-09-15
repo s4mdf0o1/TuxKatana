@@ -26,7 +26,7 @@ class Controller(GObject.GObject):
     }
     def __init__(self, parent):
         self.parent = parent
-        self.fsem = FormatMessage()
+        self.se_msg = FormatMessage()
         self.device = Device(self)
         self.port = KatanaPort()
         with open("params/midi.yaml", "r") as f:
@@ -48,7 +48,9 @@ class Controller(GObject.GObject):
             if not self.pause_queue:
                 msg = self.msg_queue.get(.1)
             #if not self.listener_callback:
-                GLib.idle_add(self.device.mry.received_msg, msg)
+                log.sysex(f"{msg.hex()}")
+                addr, data =  self.se_msg.get_addr_data(msg)
+                GLib.idle_add(self.device.on_received_msg, addr, data)
             else:
                 sleep(.1)
             #    GLib.idle_add(self.listener_callback, msg)
@@ -78,14 +80,14 @@ class Controller(GObject.GObject):
 
     def scan_devices(self):
         #log.debug(f"-")
-        self.sysex.data = from_str(self.fsem.addrs['SCAN_REQ'])
+        self.sysex.data = from_str(self.se_msg.addrs['SCAN_REQ'])
         self.send(self.sysex)
         self.set_device(self.wait_msg())
 
     def set_device(self, msg):
         #log.debug(msg)
         data = list(msg.data)
-        if data[0:4] == from_str(self.fsem.addrs['SCAN_REP']):
+        if data[0:4] == from_str(self.se_msg.addrs['SCAN_REP']):
             infos = data[4:]
             man = [infos[0]]
             dev = [0]
@@ -95,7 +97,7 @@ class Controller(GObject.GObject):
             self.device.device = to_str(dev)
             self.device.model = sq(to_str(mod))
             self.device.number = to_str(num)
-            self.fsem.header = man + dev + mod
+            self.se_msg.header = man + dev + mod
         self.device.get_name()
         self.device.get_presets()
         self.device.dump_memory()

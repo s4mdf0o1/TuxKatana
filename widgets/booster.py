@@ -11,14 +11,15 @@ from lib.log_setup import LOGGER_NAME
 from lib.tools import from_str
 log = logging.getLogger(LOGGER_NAME)
 
-class Booster(Gtk.Box):
-    def __init__(self, ctrl):
+class BoosterUI(Gtk.Box):
+    def __init__(self, own_ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.ctrl = ctrl
-        self.own_ctrl = self.ctrl.device.booster
+        #self.ctrl = ctrl
+        #self.own_ctrl = self.ctrl.device.booster
+        self.own_ctrl = own_ctrl
         
         banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
-        self.bank_select = Bank("BOOSTER", banks, ctrl)
+        self.bank_select = Bank("BOOSTER", banks)
         self.bank_select.buttons[0].set_status_id(1)
         self.bank_select.buttons[2].set_status_id(3)
         self.append(self.bank_select)

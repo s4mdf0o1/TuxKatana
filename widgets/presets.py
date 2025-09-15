@@ -47,7 +47,7 @@ class PresetsView(Gtk.Box):
         #log.debug(f"{preset_bytes=}")
         preset_name= ''.join([chr(v) for v in preset_bytes])
         index = self.find_index_by_text(self.selection, preset_name)
-        self.ctrl.device.emit("channel-changed", index+1)
+        self.ctrl.device.emit("channel-changed", int(index+1))
 
     def on_selection_changed(self, selection, position, n_items):
         index = selection.get_selected()

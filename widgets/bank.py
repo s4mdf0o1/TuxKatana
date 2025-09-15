@@ -12,7 +12,7 @@ class Bank(Gtk.Box):
     selected = GObject.Property(type=int, default=-1)
     single_list = GObject.Property(type=object)
 
-    def __init__(self, label, buttons, ctrl, single=False):
+    def __init__(self, label, buttons, single=False):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.get_style_context().add_class("inner")
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
@@ -22,7 +22,7 @@ class Bank(Gtk.Box):
         self.append(label)
         self.append(box)
         #self.append(grid)
-        self.ctrl = ctrl
+        #self.ctrl = ctrl
         self.buttons = []
         for i, b in enumerate(buttons):
             button = Toggle( b, buttons[b] )

@@ -16,10 +16,10 @@ dbg=logging.getLogger("debug")
 from .slider import Slider
 
 from .presets import PresetsView
-from .amplifier import Amplifier
-from .booster import Booster
-from .reverb import Reverb
-from .delay import Delay
+from .amplifier import AmplifierUI
+from .booster import BoosterUI
+from .reverb import ReverbUI
+from .delay import DelayUI
 from .debug import Debug
 
 class KS_TabbedPanel(Gtk.Box):
@@ -51,16 +51,16 @@ class KS_Settings(Gtk.Box):
             debug = Debug(ctrl)
             self.append(debug)
         elif name == "PRE-AMP":
-            self.amplifier = Amplifier(ctrl)
+            self.amplifier = AmplifierUI(ctrl.device.amplifier)
             self.append(self.amplifier) 
         elif name == "BOOSTER":
-            self.booster = Booster(ctrl)
+            self.booster = BoosterUI(ctrl.device.booster)
             self.append(self.booster)
         elif name == "REVERB":
-            self.reverb = Reverb(ctrl)
+            self.reverb = ReverbUI(ctrl.device.reverb)
             self.append(self.reverb)
         elif name == "DELAY":
-            self.delay = Delay(ctrl)
+            self.delay = DelayUI(ctrl.device.delay)
             self.append(self.delay)
 
         else:

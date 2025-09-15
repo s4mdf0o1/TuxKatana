@@ -10,14 +10,15 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 from lib.tools import from_str, midi_str_to_int
-class Reverb(Gtk.Box):
-    def __init__(self, ctrl):
+class ReverbUI(Gtk.Box):
+    def __init__(self, own_ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.ctrl = ctrl
-        self.own_ctrl = self.ctrl.device.reverb
+        #self.ctrl = ctrl
+        #self.own_ctrl = self.ctrl.device.reverb
+        self.own_ctrl = own_ctrl
         
         banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
-        self.bank_select = Bank("REVERB", banks, ctrl)
+        self.bank_select = Bank("REVERB", banks)
         self.bank_select.buttons[0].set_status_id(1)
         self.bank_select.buttons[2].set_status_id(3)
         self.append(self.bank_select)

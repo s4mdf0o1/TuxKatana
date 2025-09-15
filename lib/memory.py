@@ -11,18 +11,17 @@ class Memory(GObject.GObject):
         "mry-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         #"channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
     }
-
-    def __init__(self, ctrl):#device, sysex):
+    def __init__(self, mry_start):
         super().__init__()
-        self.ctrl = ctrl
-        self.sysex = ctrl.fsem #sysex
+        self.mry_start = mry_start
         self.memory = []
         self.loading = False
         self.base_addr = None
         self.map = {}
 
     def add_block(self, addr_start, data):
-        if addr_start == from_str(self.sysex.addrs['MEMORY']):
+        if addr_start == self.mry_start:
+                    #from_str(self.sysex.addrs['MEMORY']):
             self.loading = True
             self.memory = []
             self.base_addr = addr_start[:]
@@ -54,6 +53,7 @@ class Memory(GObject.GObject):
             return midi_str_to_int(to_str(value))
 
     def write_from_str(self, saddr, data):
+        log.debug(f"{saddr} {to_str(data)}")
         self.write( from_str(saddr), data)
     def write(self, addr, data):
         if not self.base_addr:
@@ -65,6 +65,11 @@ class Memory(GObject.GObject):
             raise IndexError("Write exceeds memory size")
         self.memory[offset:offset + len(data)] = data
 
+    def save_to_file(self, filename="memory_dump.bin"):
+        with open(filename, "wb") as f:
+            f.write(bytes(self.memory))
+        log.info(f"✅ Mermory saved to {filename}")
+
     def get_preset_name(self):
         mry_bytes=self.read_from_str('60 00 00 00', 16)
         preset_bytes = int_to_midi_bytes(mry_bytes, 16)
@@ -72,39 +77,6 @@ class Memory(GObject.GObject):
         preset_name= ''.join([chr(v) for v in preset_bytes])
         return preset_name
 
-
-    def received_msg(self, msg):
-        log.sysex(f"{msg.hex()}")
-        addr, data =  self.sysex.get_addr_data(msg)
-        if len(data) > 63:
-            self.add_block(addr, data)
-        else:
-            #self.write(addr, data)
-            saddr = to_str(addr)
-            sdata = to_str(data)
-            #self.emit("mry-changed", saddr)
-            #log.debug(f"{saddr=}: {sdata=}")
-            if saddr in self.map:
-                obj, prop = self.map[saddr]
-                #obj = mapping["obj"]
-                #prop = mapping["prop"]
-                value = None
-                if isinstance(getattr(obj, prop), bool):
-                    value = bool(data[0])
-                else:
-                    value = int(data[0])
-                setattr(obj, prop, value)
-                if saddr in obj.map.recv:
-                    self.write(addr, data)
-                log.debug(f"{saddr=}: {sdata=}\n\
-                    {obj.name}: {prop}={value}")
-
-            elif saddr == '00 01 00 00':
-                log.debug(f"emit channel-changed {data}")
-                self.ctrl.device.emit("channel-changed", data[1])
-            else:
-                log.warning(f"Memory.received_msg: {saddr=}: not implemented")
-            #self.ctrl.recv_event.set()
 
     def addr_to_offset(self, addr):
         offset = 0

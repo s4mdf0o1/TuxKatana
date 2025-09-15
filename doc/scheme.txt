@@ -1,29 +1,74 @@
 TuxKatana
-   |
-   -> MainWindow
-   |     |
-   |     -> Controller
-   |           |
-   |            -> Port
-   |           |
-   |           -> FormatMessage
-   |           |     
-   |           -> Device
-   |                 |
-   |                 -> Memory
-   |                 |     |
-   |                 |     -> map = {}
-   |                 -> Presets
-   |                 |
-   |                 -> Amplifier
-   |                 |     |
-   |                 |     -> Map
-   |                 -> Booster
-   |
-   |
-   |
-   |
-   |
-   |
-   |
-   -> 
+ ├── MainWindow
+ └── Controller
+
+Controller
+ ├── Port                     # Midi
+ ├── FormatMessage            # SysEx Format
+ └── Device
+       ├── Memory             # Real Dump
+       │    └── map = {}      # dict{ '60 00 XX XX': obj, 'property'}
+       ├── Presets
+       │    
+       ├── Amplifier    
+       │    └── Map()         # load yaml, give map to Memory
+       ├── Booster
+       │    └── Map()
+       ├── Reverb
+       │    └── Map()
+       ├── Delay
+       │    └── Map()
+       ├── Mod
+       │    └── Map()
+       └── Fx
+            └── Map()
+
+Maindow
+ ├── Switcher
+ └── Settings
+      ├── Presets
+      ├── Amplifier
+      ├── Booster
+      ├── Reverb
+      ├── Delay
+      ├── Mod
+      └── Fx
+
+┌───────────────────┐
+│     Setting       │
+├───────────────────┤
+│ - map: dict       │ ← YAML chargé
+│ - ui_binding      │
+├───────────────────┤
+│ + update_from_mem │
+│ + request_change  │
+└─────────┬─────────┘
+          │
+   ┌──────┼───────────────────────────────┐
+   ▼      ▼        ▼        ▼       ▼     ▼
+Amplifier Booster Reverb  Delay   Mod    Fx
+
+
+# Signals Init Maps:
+
+MainWindow.__init__(app)
+│  └ app.emit("main-ready")
+│        │
+│        ▼
+│     Device.on_main_ready()
+│     └ emit("load-maps")
+│        ├──────────────────────────┬──────────────────────────┬──── ┄ 
+│        ▼                          ▼                          ▼       
+│        Amplifier                  Booster                    Reverb
+│        └ load_map()               └ load_map()               └ load_map()
+│           └ emit("amp-map-ready")    └ emit("amp-map-ready")
+│              │                          │
+└─ Settings    ▼                          │
+   ├────────── Amplifier/UI               │
+   │            └ on_amp_models_loaded    │
+   │                 └ store.append       ▼
+   ├───────────────────────────────────── Booster/UI
+   │                                      └ on_amp_models_loaded
+                                             └ store.append
+   ┆
+

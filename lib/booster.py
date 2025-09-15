@@ -39,7 +39,7 @@ class Booster(GObject.GObject):
 
         self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self.on_param_changed)
+        self.notify_id = self.connect("notify", self.set_from_ui)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
 
         self.device.connect("load-maps", self.load_map)
@@ -47,7 +47,17 @@ class Booster(GObject.GObject):
     def load_map(self, ctrl):
         self.emit("booster-map-ready", self.map['Models'])
 
-    def on_param_changed(self, obj, pspec):
+    def set_from_msg(self, name, value):
+        name = name.replace('-', '_')
+        log.debug(f">>> {name} = {value}")
+        if name == 'booster_model':
+            svalue = to_str(value)
+            num = list(self.map['Models'].values()).index(svalue)
+            self.direct_set('model_idx', num)
+        else:
+            self.direct_set(name, value)
+        
+    def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
         log.debug(f">>> {name} = {value}")
@@ -57,16 +67,12 @@ class Booster(GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
-        return
-        if name == 'booster_model':
-            num = list(self.map['Models'].values()).index(to_str(value))
-            self.direct_set("model_idx", num)
-        elif name == 'model_idx':
+        if name == 'model_idx':
             model_val = list(self.map['Models'].values())[value]
             addr  = self.map.send["booster_model"]
             self.device.send(from_str(addr), from_str(model_val))
-        elif name == 'booster_status':
-            self.direct_set(name, value)
+        #elif name == 'booster_status':
+        #    self.direct_set(name, value)
         elif 'lvl' in name or name == 'bank_select':
             self.device.send(addr, [value])
         elif 'sw' in name:
@@ -74,9 +80,9 @@ class Booster(GObject.GObject):
             self.device.send(addr, [value])
 
     def direct_set(self, prop, value):
-        self.handler_block_by_func(self.on_param_changed)
+        self.handler_block_by_func(self.set_from_ui)
         self.set_property(prop, value)
-        self.handler_unblock_by_func(self.on_param_changed)
+        self.handler_unblock_by_func(self.set_from_ui)
 
     def set_bank_model(self):
         bank = self.banks[self.booster_status - 1]

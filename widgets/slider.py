@@ -95,6 +95,7 @@ class Slider(AntiFlood, Gtk.Box):
             if f_min ==0:
                 f_min = 1
             freq = freq = f_min * ((f_max / f_min) ** (v / v_max))
+            freq = int(round(freq))
             if freq < 1000:
                 return self.vals['unit'].format(freq=freq)
             else:
@@ -105,6 +106,9 @@ class Slider(AntiFlood, Gtk.Box):
             a = (y2 - y1) / (x2 - x1)
             b = y1 - a * x1
             time = a * v + b
+            #if time < 1.0:
+            time = int(round(time))
+            #log.debug(time)
             if time < 1000:
                 return self.vals['unit'].format(time=time)
             else:

@@ -27,7 +27,7 @@ time_10s:
   valmin: 1
   valmax: 10000
   unit: "{time} ms"
-  kilo: "{time} s"
+  kilo: "{time:.1f} s"
 
 time_4ms:
   vmin: 0

@@ -54,13 +54,23 @@ class Delay(GObject.GObject):
         self.banks=['G', 'R', 'Y']
 
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        self.notify_id = self.connect("notify", self.on_param_changed)
+        self.notify_id = self.connect("notify", self.set_from_ui)
         self.device.connect("load-maps", self.load_map)
 
     def load_map(self, ctrl):
         self.emit("delay-map-ready", self.map['Types'])
 
-    def on_param_changed(self, obj, pspec):
+    def set_from_msg(self, name, value):
+        name = name.replace('-', '_')
+        log.debug(f">>> {name} = {value}")
+        if name == 'delay_type':
+            svalue = to_str(value)
+            num = list(self.map['Types'].values()).index(svalue)
+            self.direct_set("type_idx", num)
+        else:
+            self.direct_set(name, value)
+ 
+    def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
         name = name.replace('-', '_')
@@ -70,20 +80,14 @@ class Delay(GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         addr = self.map.get_addr(name)
-        return
         if 'sw' in name:
             value = 1 if value else 0
             #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
             self.device.send(addr, [value])
-        elif name == 'delay_status':
-            self.direct_set(name, value)
-        elif name == 'delay_type':
-            num = list(self.map['Types'].values()).index(to_str(value))
-            self.direct_set("type_idx", num)
         elif name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
             addr  = self.map.send["delay_type"]
-            #log.debug(f"{name} {addr} {model_val}")
+            log.debug(f"{name} {addr} {model_val}")
             self.device.send(from_str(addr), from_str(model_val))
         #elif 'mode' in name and name.split('_')[1] in self.banks:
         #    num = list(self.map['Modes'].values()).index(to_str(value))
@@ -105,12 +109,12 @@ class Delay(GObject.GObject):
                 #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
                 self.device.send(addr, [value])
         else:
-            log.debug(f"missing DEF for '{name}'")
+            log.warning(f"missing DEF for '{name}'")
 
     def direct_set(self, prop, value):
-        self.handler_block_by_func(self.on_param_changed)
+        self.handler_block_by_func(self.set_from_ui)
         self.set_property(prop, value)
-        self.handler_unblock_by_func(self.on_param_changed)
+        self.handler_unblock_by_func(self.set_from_ui)
 
     def get_bank_var(self, var):
         log.debug(f"{self.delay_status=}")

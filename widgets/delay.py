@@ -11,14 +11,15 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 from lib.tools import from_str, midi_str_to_int
 
-class Delay(Gtk.Box):
-    def __init__(self, ctrl):
+class DelayUI(Gtk.Box):
+    def __init__(self, own_ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.ctrl = ctrl
-        self.own_ctrl = self.ctrl.device.delay
+        #self.ctrl = ctrl
+        #self.own_ctrl = self.ctrl.device.delay
+        self.own_ctrl = own_ctrl
         
         banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
-        self.bank_select = Bank("REVERB", banks, ctrl)
+        self.bank_select = Bank("REVERB", banks)
         self.bank_select.buttons[0].set_status_id(1)
         self.bank_select.buttons[2].set_status_id(3)
         self.append(self.bank_select)
@@ -27,15 +28,6 @@ class Delay(Gtk.Box):
             "bank_select", self.bank_select, "selected",
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
-        ### Show/Hide Boxes and +
-        self.bank_dual = Bank("DUAL DELAY", {'DELAY_1':'1', 'DELAY_2':'2'}, ctrl)
-        self.bank_dual.buttons[0].set_active(True)
-        self.bank_dual.hide()
-        self.bank_dual.buttons[0].connect("toggled", self.on_delay_toggled)
-        for but in self.bank_dual.buttons:
-            but.get_style_context().add_class('smaller')
-        self.append(self.bank_dual)
-
 
         box_sel = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
         self.types_store = Gtk.ListStore(int, str, str)
@@ -51,7 +43,16 @@ class Delay(Gtk.Box):
         box_sel.append(self.types)
         self.types.connect("changed", self.on_type_changed)
         self.append(box_sel)
-        
+ 
+        ### Show/Hide Boxes and +
+        self.bank_dual = Bank("DUAL DELAY", {'DELAY_1':'1', 'DELAY_2':'2'})
+        self.bank_dual.buttons[0].set_active(True)
+        self.bank_dual.hide()
+        self.bank_dual.buttons[0].connect("toggled", self.on_delay_toggled)
+        for but in self.bank_dual.buttons:
+            but.get_style_context().add_class('smaller')
+        self.append(self.bank_dual)
+
         ### Box Delay ###
         self.box_dly = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
         self.box_dly.get_style_context().add_class('inner')
