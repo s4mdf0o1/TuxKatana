@@ -21,7 +21,6 @@ class PresetRow(Gtk.Box):
         self.label = Gtk.Label()
         self.append(self.num)
         self.append(self.label)
- 
 
 class PresetsView(Gtk.Box):
 
