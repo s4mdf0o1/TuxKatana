@@ -33,7 +33,6 @@ class FormatMessage:
         command = self.addrs[cmd].bytes
         data = Addr.bytes + value
         cks = self.checksum(data)
-        #log.debug(f"{baddr=} {value=} {data=} {cks=}")
         return self.header + command + data + cks
 
 

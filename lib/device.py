@@ -11,14 +11,13 @@ from collections import UserDict
 from .tools import *
 from .address import Address
 #from .presets import Preset
+from .preset import Preset, Presets
 from .amplifier import Amplifier
 from .memory import Memory
 from .booster import Booster
 from .reverb import Reverb
 from .delay import Delay
-from .preset import Preset, Presets
 
-#from lib.map import Map
 from time import sleep
 from queue import Empty
 
@@ -32,11 +31,9 @@ class Device(GObject.GObject):
 
     name = GObject.Property(type=str, default="SETTINGS")
     presets = GObject.Property(type=Gio.ListStore)
-    #amplifier = GObject.Property(type=object)
     def __init__(self, ctrl):
         super().__init__()
         self.ctrl = ctrl
-        #self.se_msg = ctrl.se_msg
         self.mry = Memory( self.ctrl.se_msg.addrs['MEMORY'])
 
         self.presets = Gio.ListStore(item_type=Presets)
@@ -55,7 +52,6 @@ class Device(GObject.GObject):
         self.emit("load-maps")
 
     def send(self, Addr, value):
-        #sval = to_str(value)
         log.debug(f"[{Addr}]: {to_str(value)}")
         msg=self.ctrl.se_msg.get_with_addr('SET', Addr, value)
         self.ctrl.sysex.data=msg
@@ -70,9 +66,7 @@ class Device(GObject.GObject):
             self.mry.add_block(Addr, data)
         else:
             self.mry.write(Addr, data)
-            #saddr = to_str(addr)
-            #sdata = to_str(data)
-            log.debug(f"{str(Addr)=}: {to_str(data)=}")
+            log.debug(f"{str(Addr)=}: {to_str(data)}")
             if str(Addr) in self.mry.map:
                 obj, prop = self.mry.map[str(Addr)]
                 value = None
@@ -81,9 +75,6 @@ class Device(GObject.GObject):
                 else:
                     value = int(data[0])
                 obj.set_from_msg(prop, value)
-                #setattr(obj, prop, value)
-                #if saddr in obj.map.recv:
-                    #self.emit("mry-changed", saddr)
                 log.debug(f"{obj.name}: {prop}={value}")
 
             elif str(Addr) == '00 01 00 00':
@@ -91,7 +82,6 @@ class Device(GObject.GObject):
                 self.emit("channel-changed", data[1])
             else:
                 log.warning(f"Memory.received_msg: {Addr=}: not implemented")
-            #self.ctrl.recv_event.set()
 
     def set_midi_channel(self, data):
         self.send(Address('00 01 00 00'), from_str(data))
@@ -114,7 +104,6 @@ class Device(GObject.GObject):
                 break
         for msg in msgs:
             addr, data = self.ctrl.se_msg.get_addr_data(msg)
-            # log.debug(f"{to_str(addr)}: {len(data)}")
             self.mry.add_block(Address(to_str(addr)), data)
         self.mry.emit("mry-loaded")
         self.ctrl.pause_queue = False
@@ -126,7 +115,6 @@ class Device(GObject.GObject):
         log.debug("-")
 
     def set_edit_mode(self, edit):
-        # log.debug(f"({edit})")
         log.info("Edit Mode")
         val = [1] if edit else [0]
         self.send(Address('7F 00 00 01'), val)
@@ -135,7 +123,7 @@ class Device(GObject.GObject):
         size = [0,0,0,0x10]
         msg = self.ctrl.se_msg.get_from_name( 'GET', 'NAME', size)
         self.ctrl.sysex.data = msg
-        self.ctrl.send(self.ctrl.sysex)#, self.set_name)
+        self.ctrl.send(self.ctrl.sysex)
         self.set_name(self.ctrl.wait_msg())
 
     def set_name(self, msg):
@@ -143,18 +131,15 @@ class Device(GObject.GObject):
         log.info(f"Device name: {name}")
         self.set_property("name", name)
         self.ctrl.listener_callback= None
-        #self.ctrl.end_seq("set_name")
         
     def get_presets(self):
         size = [0,0,0,0x10]
         for i in range(1,9):
-            #if self.ctrl.recv_event.wait(1):
             Addr = Address(self.ctrl.se_msg.addrs['PRESET_'].replace('X', str(i)))
             msg = self.ctrl.se_msg.get_with_addr('GET', Addr, size)
             self.ctrl.sysex.data = msg
-            self.ctrl.send(self.ctrl.sysex)#, self.set_preset)
+            self.ctrl.send(self.ctrl.sysex)
             self.set_preset(self.ctrl.wait_msg())
-        #self.ctrl.listener_callback= None
 
     def set_preset(self, msg):
         addr, data = self.ctrl.se_msg.get_addr_data(msg)
@@ -163,10 +148,5 @@ class Device(GObject.GObject):
         pname = self.ctrl.se_msg.get_str(msg).strip()
         label = pname
         self.presets.append(Presets(name=name, label=label, num=num))
-        #self.ctrl.end_seq("preset")
         self.ctrl.listener_callback = None
-
-
-#    def one_param_changed(self, name, value):
-#        log.debug(f"{name}={value}")
 

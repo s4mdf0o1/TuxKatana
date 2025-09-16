@@ -30,7 +30,6 @@ class MainWindow(Gtk.Window):
         self.set_child(box)
         self.app = app
 
-        #self.settings = Settings( "SETTINGS", config['SETTINGS'], app.ctrl)
         self.settings = Settings( "SETTINGS", app.ctrl)
         box.append(self.settings)
         self.switcher = Switcher( config['SWITCHER'], app.ctrl)
@@ -100,7 +99,6 @@ class TuxKatana(Gtk.Application):
         #self.ctrl.port.close()
         close(self)
         Gtk.Application.do_shutdown(self)
-        #super().do_shutdown(self)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -118,7 +116,7 @@ def main():
 
     app = TuxKatana(debug=args.debug)
     try:
-        app.run(gtk_args)#sys.argv)
+        app.run(gtk_args)
     except KeyboardInterrupt:
         log.info("ctrl+c")
         close()

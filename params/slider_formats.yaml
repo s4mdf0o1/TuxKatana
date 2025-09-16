@@ -5,8 +5,8 @@ normal:
 plus_minus:
   vmin: 0
   vmax: 100     # 64
-  valmin: -50
-  valmax: +50
+  # valmin: -50
+  # valmax: +50
 
 percent:
   vmin: 0

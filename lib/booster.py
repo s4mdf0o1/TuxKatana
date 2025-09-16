@@ -7,7 +7,6 @@ from .tools import to_str, from_str
 from .address import Address
 
 from .map import Map
-#from .anti_flood import AntiFlood
 
 class Booster(GObject.GObject):
     __gsignals__ = {
@@ -34,7 +33,6 @@ class Booster(GObject.GObject):
         self.name = "Booster"
         self.ctrl = ctrl
         self.device = device
-        #self.name = "BOOSTER"
         self.map = Map("params/booster.yaml")
         self.set_mry_map()
 
@@ -70,10 +68,8 @@ class Booster(GObject.GObject):
         Addr = self.map.get_addr(name)
         if name == 'model_idx':
             model_val = list(self.map['Models'].values())[value]
-            Addr  = self.map.get_addr("booster_model")#self.map.send["booster_model"]
+            Addr  = self.map.get_addr("booster_model")
             self.device.send(Addr, from_str(model_val))
-        #elif name == 'booster_status':
-        #    self.direct_set(name, value)
         elif 'lvl' in name or name == 'bank_select':
             self.device.send(Addr, [value])
         elif 'sw' in name:
@@ -95,15 +91,12 @@ class Booster(GObject.GObject):
     def load_from_mry(self, mry):
         for saddr, prop in self.map.recv.items():
             value = mry.read(Address(saddr))
-            # value = mry.read(Addr)
-            #log.debug(f"{prop}: {Addr}: {to_str(value)}")
             if value is not None and value >= 0:
                 self.direct_set(prop, value)
         self.set_bank_model()
 
     def set_mry_map(self):
         for Addr, prop in self.map.recv.items():
-            #log.debug(f"{Addr}: {prop}")
             self.device.mry.map[str(Addr)] = ( self, prop) 
 
 

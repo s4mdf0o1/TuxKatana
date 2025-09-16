@@ -48,13 +48,11 @@ class Controller(GObject.GObject):
         while True:
             if not self.pause_queue:
                 msg = self.msg_queue.get(.1)
-            #if not self.listener_callback:
                 log.sysex(f"{msg.hex()}")
                 addr, data =  self.se_msg.get_addr_data(msg)
                 GLib.idle_add(self.device.on_received_msg, addr, data)
             else:
                 sleep(.1)
-            #    GLib.idle_add(self.listener_callback, msg)
 
     def wait_device(self):
         log.info("Waiting for device...")
@@ -75,7 +73,6 @@ class Controller(GObject.GObject):
         log.sysex(f"SEND: {msg.hex()}")
         log.debug(msg.hex())
         if callback:
-            # log.debug(callback.__name__)
             self.listener_callback = callback
         self.port.output.send( msg )
 

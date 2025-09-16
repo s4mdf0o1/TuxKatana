@@ -1,7 +1,6 @@
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk, GObject
-#import mido
 
 from ruamel.yaml import YAML
 yaml = YAML(typ="safe")
@@ -76,7 +75,6 @@ class Settings(Gtk.Box):
         self.append(self.title)
         ctrl.device.bind_property("name", self.title, \
                 "label", GObject.BindingFlags.DEFAULT)
-        #box=Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         tabs = KS_TabbedPanel()
         for name in ["PRESETS","PRE-AMP", "BOOSTER", "MOD", "FX", "DELAY", "REVERB", "CHAIN", "DEBUG"]:
@@ -89,17 +87,8 @@ class Settings(Gtk.Box):
                 ks_settings = KS_Settings( name, ctrl)
                 page.append(ks_settings)
 
-        #page2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        #page2.append(Gtk.Label(label="Contenu de l’onglet 2"))
-        #tabs.add_tab(page2, "tab2", "MOB")
-
         tabs.set_active_tab("debug")
-        #box.append(tabs)
         self.append(tabs)
         
-        #self.booster = Slider( "Level", 50)
-        #Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 127, 1)
-        #self.bass_slider.connect("value-changed", self.on_bass_changed)
-        #page1.append(self.booster)
 
 

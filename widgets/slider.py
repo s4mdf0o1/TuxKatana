@@ -85,7 +85,7 @@ class Slider(AntiFlood, Gtk.Box):
         if self.format_name in ['normal', 'pattern', 'density']:
             return str(v)
         if self.format_name == 'plus_minus':
-            return str(100 - v)
+            return str(v - 50)
         if self.format_name == 'percent':
             return self.vals['unit'].format(percent=v)
         if 'freq' in self.format_name:
