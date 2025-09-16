@@ -3,6 +3,7 @@ yaml = YAML(typ="rt")
 from collections import UserDict
 
 from .tools import to_str, from_str
+from .address import Address
 
 import logging
 from lib.log_setup import LOGGER_NAME
@@ -13,21 +14,26 @@ class FormatMessage:
         with open("params/sysex.yaml", 'r') as f:
             raw = yaml.load(f)
         self.addrs = raw
+        for k, v in self.addrs.items():
+            if not '0X' in v:
+                self.addrs[k] = Address(v)
+            else:
+                self.addrs[k] = v
 
         self.header = [int(v, 16) for v in "41 00 00 00 00 33".split(' ')]
 
     def get_from_name( self, cmd, name, value ):
-        command = from_str(self.addrs[cmd])
-        addr = from_str(self.addrs[name])
-        data = addr + value
+        command = self.addrs[cmd].bytes
+        baddr = self.addrs[name].bytes
+        data = baddr + value
         cks = self.checksum(data)
         return self.header + command + data + cks
 
-    def get_with_addr( self, cmd, addr, value ):
-        command = from_str(self.addrs[cmd])
-        data = addr + value
+    def get_with_addr( self, cmd, Addr, value ):
+        command = self.addrs[cmd].bytes
+        data = Addr.bytes + value
         cks = self.checksum(data)
-        #log.debug(f"{addr=} {value=} {data=} {cks=}")
+        #log.debug(f"{baddr=} {value=} {data=} {cks=}")
         return self.header + command + data + cks
 
 

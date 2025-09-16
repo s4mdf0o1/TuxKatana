@@ -81,14 +81,14 @@ class Controller(GObject.GObject):
 
     def scan_devices(self):
         #log.debug(f"-")
-        self.sysex.data = from_str(self.se_msg.addrs['SCAN_REQ'])
+        self.sysex.data = self.se_msg.addrs['SCAN_REQ'].bytes
         self.send(self.sysex)
         self.set_device(self.wait_msg())
 
     def set_device(self, msg):
         #log.debug(msg)
         data = list(msg.data)
-        if data[0:4] == from_str(self.se_msg.addrs['SCAN_REP']):
+        if data[0:4] == self.se_msg.addrs['SCAN_REP'].bytes:
             infos = data[4:]
             man = [infos[0]]
             dev = [0]

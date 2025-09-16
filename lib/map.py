@@ -9,6 +9,7 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 from .tools import to_str, from_str
+from .address import Address
 
 class Map(UserDict):
     def __init__(self, filepath):
@@ -28,16 +29,19 @@ class Map(UserDict):
             else:
                 self.data[k] = bidict(data[k])
         self.recv |= self.send.inverse
+        #for k, v in self.recv.items()
 
     def get_addr(self, prop):
-        addr=None
+        Addr=None
         if prop in self.recv.values():
-            addr = from_str(self.recv.inverse[prop])
+            Addr = Address(self.recv.inverse[prop])
+            log.debug(f"{self.recv.inverse[prop]=}")
         elif prop in self.send:
-            addr = from_str(self.send[prop])
-        if not addr and 'idx' not in prop:
+            Addr = Address(self.send[prop])
+            log.debug(f"{self.send[prop]}")
+        if not Addr and 'idx' not in prop:
             log.warning(f"No Address for {prop}")
-        return addr
+        return Addr
 
 
             

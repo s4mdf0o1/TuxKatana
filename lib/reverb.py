@@ -4,6 +4,7 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 from .tools import to_str, from_str, int_to_midi_bytes
+from .address import Address
 
 from .map import Map
 #from .anti_flood import AntiFlood
@@ -74,34 +75,34 @@ class Reverb(GObject.GObject):
             value = from_str(value)
         if isinstance(value, float):
             value = int(value)
-        addr = self.map.get_addr(name)
+        Addr = self.map.get_addr(name)
         if name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
-            addr  = self.map.send["reverb_type"]
-            self.device.send(from_str(addr), from_str(model_val))
+            Addr  = self.map.get_addr("reverb_type")#self.map.send["reverb_type"]
+            self.device.send(Addr, from_str(model_val))
         # elif 'mode' in name and name.split('_')[1] in self.banks:
         #     num = list(self.map['Modes'].values()).index(to_str(value))
         #     self.direct_set("mode_idx", num)
         elif name == 'mode_idx':
             mode_val = list(self.map['Modes'].values())[value]
             bank = self.get_bank_var("mode_")
-            addr  = self.map.send[bank]
-            #log.debug(f"{name}: {addr} -> {val}")
-            self.device.send(from_str(addr), from_str(mode_val))
+            Addr  =  self.map.get_addr(bank)#self.map.send[bank]
+            #log.debug(f"{name}: {Addr} -> {val}")
+            self.device.send(Addr, from_str(mode_val))
         # elif name == 'reverb_status':
         #     self.direct_set(name, value)
         elif 'lvl' in name or name == 'bank_select':
             if name == 'pre_delay_lvl':
                 value = int_to_midi_bytes(value, 2)
                 #log.debug(f"SEND: {name}: {to_str(value)}")
-                self.device.send(addr, value)
+                self.device.send(Addr, value)
             else:
                 #log.debug(f"SEND: {name}: {to_str(value)}")
-                self.device.send(addr, [value])
+                self.device.send(Addr, [value])
         elif 'sw' in name:
             value = 1 if value else 0
-            #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
-            self.device.send(addr, [value])
+            #log.debug(f"{name} {to_str(Addr)} {to_str(value)}")
+            self.device.send(Addr, [value])
 
     def direct_set(self, prop, value):
         self.handler_block_by_func(self.set_from_ui)
@@ -130,11 +131,13 @@ class Reverb(GObject.GObject):
 
 
     def load_from_mry(self, mry):
-        for addr, prop in self.map.recv.items():
-            value = mry.read_from_str(addr)
+        for saddr, prop in self.map.recv.items():
+            value = mry.read(Address(saddr))
+        # for Addr, prop in self.map.recv.items():
+            # value = mry.read(Addr)
             if prop == 'pre_delay_lvl':
                 #log.debug(prop)
-                value = mry.read_from_str(addr, 2)
+                value = mry.read(Address(saddr), 2)
                 self.direct_set(prop, value)
             else:
                 if value is not None and value >= 0:
@@ -143,7 +146,7 @@ class Reverb(GObject.GObject):
         self.set_bank_mode()
 
     def set_mry_map(self):
-        for addr, prop in self.map.recv.items():
-            self.device.mry.map[addr] = ( self, prop) 
+        for Addr, prop in self.map.recv.items():
+            self.device.mry.map[str(Addr)] = ( self, prop) 
 
 

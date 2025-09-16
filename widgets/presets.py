@@ -7,6 +7,7 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 from lib.tools import int_to_midi_bytes, to_str
+from lib.address import Address
 
 class PresetEntry(Gtk.Entry):
     def __init__(self, text):
@@ -42,10 +43,11 @@ class PresetsView(Gtk.Box):
         self.ctrl.device.mry.connect('mry-loaded', self.on_mry_loaded)
 
     def on_mry_loaded(self, mry):
-        mry_preset=self.ctrl.device.mry.read_from_str('60 00 00 00', 16)
-        preset_bytes = int_to_midi_bytes(mry_preset, 16)
+        #mry_preset=self.ctrl.device.mry.read(Address('60 00 00 00'), 16)
+        #preset_bytes = int_to_midi_bytes(mry_preset, 16)
         #log.debug(f"{preset_bytes=}")
-        preset_name= ''.join([chr(v) for v in preset_bytes])
+        #preset_name= ''.join([chr(v) for v in preset_bytes])
+        preset_name = self.ctrl.device.mry.get_preset_name()
         index = self.find_index_by_text(self.selection, preset_name)
         self.ctrl.device.emit("channel-changed", int(index+1))
 

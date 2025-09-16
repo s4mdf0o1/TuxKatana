@@ -1,19 +1,22 @@
 class Address:
     def __init__(self, s: str):
+        if isinstance(s, list):
+            s = " ".join(f"{c:02x}" for c in s).strip()
+            print(f"{s}")
         parts = s.strip().split()
         if not parts:
             raise ValueError("Empty address")
         try:
             vals = [int(p, 16) for p in parts]
         except ValueError:
-            raise ValueError("Invalid Hex byte")
+            raise ValueError(f"Invalid Hex byte: {parts}")
         for v in vals:
             if v < 0 or v > 0x7F:
-                raise ValueError("Invalid MIDI byte: 0 < byte < 0x7F")
+                raise ValueError(f"Invalid MIDI byte: 0 < {v} < 0x7F")
         self.bytes = vals
 
     def __str__(self):
-        return " ".join(f"{b:02X}" for b in self.bytes)
+        return " ".join(f"{b:02x}" for b in self.bytes)
 
     def __repr__(self):
         return f"Address('{self.__str__()}')"
@@ -81,14 +84,4 @@ class Address:
             parts.append((value >> shift) & 0x7F)
         return cls(" ".join(f"{b:02X}" for b in parts))
 
-    def __add__(self, offset: int):
-        if not isinstance(offset, int):
-            return NotImplemented
-        new_val = self.to_int() + offset
-        return Address.from_int(new_val, len(self.bytes))
-
-    def __sub__(self, other):
-        if isinstance(other, Address):
-            return self.to_int() - other.to_int()
-        return NotImplemented
 

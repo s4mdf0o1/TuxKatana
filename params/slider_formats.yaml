@@ -1,16 +1,16 @@
 normal:
   vmin: 0
-  vmax: 64
+  vmax: 100     # 64
 
 plus_minus:
   vmin: 0
-  vmax: 64
+  vmax: 100     # 64
   valmin: -50
   valmax: +50
 
 percent:
   vmin: 0
-  vmax: 64
+  vmax: 100     # 64
   unit: "{percent}%"
 
 long_time:
@@ -23,13 +23,13 @@ long_time:
 
 time_10s:
   vmin: 0
-  vmax: 64
+  vmax: 100     # '64'
   valmin: 1
   valmax: 10000
   unit: "{time} ms"
   kilo: "{time:.1f} s"
 
-time_4ms:
+time_40ms:
   vmin: 0
   vmax: 80      # '50'
   valmin:  0
@@ -45,7 +45,7 @@ time_500ms:
 
 low_freq:
   vmin: 0
-  vmax: 10
+  vmax: 16      # '10'
   valmin: 0
   valmax: 800
   unit: "{freq} Hz"

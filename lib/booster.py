@@ -4,6 +4,7 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 from .tools import to_str, from_str
+from .address import Address
 
 from .map import Map
 #from .anti_flood import AntiFlood
@@ -66,18 +67,18 @@ class Booster(GObject.GObject):
             value = from_str(value)
         if isinstance(value, float):
             value = int(value)
-        addr = self.map.get_addr(name)
+        Addr = self.map.get_addr(name)
         if name == 'model_idx':
             model_val = list(self.map['Models'].values())[value]
-            addr  = self.map.send["booster_model"]
-            self.device.send(from_str(addr), from_str(model_val))
+            Addr  = self.map.get_addr("booster_model")#self.map.send["booster_model"]
+            self.device.send(Addr, from_str(model_val))
         #elif name == 'booster_status':
         #    self.direct_set(name, value)
         elif 'lvl' in name or name == 'bank_select':
-            self.device.send(addr, [value])
+            self.device.send(Addr, [value])
         elif 'sw' in name:
             value = 1 if value else 0
-            self.device.send(addr, [value])
+            self.device.send(Addr, [value])
 
     def direct_set(self, prop, value):
         self.handler_block_by_func(self.set_from_ui)
@@ -92,16 +93,17 @@ class Booster(GObject.GObject):
         self.direct_set("model_idx", num)
 
     def load_from_mry(self, mry):
-        for addr, prop in self.map.recv.items():
-            value = mry.read_from_str(addr)
-            #log.debug(f"{prop}: {addr}: {to_str(value)}")
+        for saddr, prop in self.map.recv.items():
+            value = mry.read(Address(saddr))
+            # value = mry.read(Addr)
+            #log.debug(f"{prop}: {Addr}: {to_str(value)}")
             if value is not None and value >= 0:
                 self.direct_set(prop, value)
         self.set_bank_model()
 
     def set_mry_map(self):
-        for addr, prop in self.map.recv.items():
-            #log.debug(f"{addr}: {prop}")
-            self.device.mry.map[addr] = ( self, prop) 
+        for Addr, prop in self.map.recv.items():
+            #log.debug(f"{Addr}: {prop}")
+            self.device.mry.map[str(Addr)] = ( self, prop) 
 
 

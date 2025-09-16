@@ -9,6 +9,7 @@ yaml = YAML(typ="rt")
 from collections import UserDict
 
 from .tools import *
+from .address import Address
 #from .presets import Preset
 from .amplifier import Amplifier
 from .memory import Memory
@@ -36,7 +37,7 @@ class Device(GObject.GObject):
         super().__init__()
         self.ctrl = ctrl
         #self.se_msg = ctrl.se_msg
-        self.mry = Memory( from_str(self.ctrl.se_msg.addrs['MEMORY']))
+        self.mry = Memory( self.ctrl.se_msg.addrs['MEMORY'])
 
         self.presets = Gio.ListStore(item_type=Presets)
         self.amplifier=Amplifier( self, ctrl )
@@ -53,10 +54,10 @@ class Device(GObject.GObject):
     def on_main_ready(self, main):
         self.emit("load-maps")
 
-    def send(self, addr, value):
-        saddr, sval = to_str(addr), to_str(value)
-        log.debug(f"[{saddr}]: {sval}")
-        msg=self.ctrl.se_msg.get_with_addr('SET', addr, value)
+    def send(self, Addr, value):
+        #sval = to_str(value)
+        log.debug(f"[{Addr}]: {to_str(value)}")
+        msg=self.ctrl.se_msg.get_with_addr('SET', Addr, value)
         self.ctrl.sysex.data=msg
         self.ctrl.send(self.ctrl.sysex)
 
@@ -64,15 +65,16 @@ class Device(GObject.GObject):
         log.debug(f"{saddr} {value}")
 
     def on_received_msg(self, addr, data):
+        Addr = Address(addr)
         if len(data) > 63:
-            self.mry.add_block(addr, data)
+            self.mry.add_block(Addr, data)
         else:
-            self.mry.write(addr, data)
-            saddr = to_str(addr)
-            sdata = to_str(data)
-            log.debug(f"{saddr=}: {sdata=}")
-            if saddr in self.mry.map:
-                obj, prop = self.mry.map[saddr]
+            self.mry.write(Addr, data)
+            #saddr = to_str(addr)
+            #sdata = to_str(data)
+            log.debug(f"{str(Addr)=}: {to_str(data)=}")
+            if str(Addr) in self.mry.map:
+                obj, prop = self.mry.map[str(Addr)]
                 value = None
                 if isinstance(getattr(obj, prop), bool):
                     value = bool(data[0])
@@ -84,22 +86,22 @@ class Device(GObject.GObject):
                     #self.emit("mry-changed", saddr)
                 log.debug(f"{obj.name}: {prop}={value}")
 
-            elif saddr == '00 01 00 00':
+            elif str(Addr) == '00 01 00 00':
                 log.debug(f"emit channel-changed {data}")
                 self.emit("channel-changed", data[1])
             else:
-                log.warning(f"Memory.received_msg: {saddr=}: not implemented")
+                log.warning(f"Memory.received_msg: {Addr=}: not implemented")
             #self.ctrl.recv_event.set()
 
     def set_midi_channel(self, data):
-        self.send(from_str('00 01 00 00'), from_str(data))
+        self.send(Address('00 01 00 00'), from_str(data))
 
     def dump_memory(self):
         self.ctrl.pause_queue = True
         log.debug("TODO: yaml datas")
-        addr = [0x60,0,0,0]
-        size = [0,0,0x10,0]
-        msg = self.ctrl.se_msg.get_with_addr('GET', addr, size)
+        Addr = Address('60 00 00 00')
+        size = from_str('00 00 0f 00')
+        msg = self.ctrl.se_msg.get_with_addr('GET', Addr, size)
         self.ctrl.sysex.data = msg
         self.ctrl.send(self.ctrl.sysex)
         sleep(.1)
@@ -113,7 +115,7 @@ class Device(GObject.GObject):
         for msg in msgs:
             addr, data = self.ctrl.se_msg.get_addr_data(msg)
             # log.debug(f"{to_str(addr)}: {len(data)}")
-            self.mry.add_block(addr, data)
+            self.mry.add_block(Address(to_str(addr)), data)
         self.mry.emit("mry-loaded")
         self.ctrl.pause_queue = False
         self.preset_name = self.mry.get_preset_name()
@@ -127,7 +129,7 @@ class Device(GObject.GObject):
         # log.debug(f"({edit})")
         log.info("Edit Mode")
         val = [1] if edit else [0]
-        self.send([0x7F,0,0,1], val)
+        self.send(Address('7F 00 00 01'), val)
 
     def get_name(self):
         size = [0,0,0,0x10]
@@ -147,8 +149,8 @@ class Device(GObject.GObject):
         size = [0,0,0,0x10]
         for i in range(1,9):
             #if self.ctrl.recv_event.wait(1):
-            addr = from_str(self.ctrl.se_msg.addrs['PRESET_'].replace('X', str(i)))
-            msg = self.ctrl.se_msg.get_with_addr('GET', addr, size)
+            Addr = Address(self.ctrl.se_msg.addrs['PRESET_'].replace('X', str(i)))
+            msg = self.ctrl.se_msg.get_with_addr('GET', Addr, size)
             self.ctrl.sysex.data = msg
             self.ctrl.send(self.ctrl.sysex)#, self.set_preset)
             self.set_preset(self.ctrl.wait_msg())

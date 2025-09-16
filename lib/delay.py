@@ -4,6 +4,7 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 from .tools import to_str, from_str, int_to_midi_bytes
+from .address import Address
 
 from .map import Map
 #from .anti_flood import AntiFlood
@@ -79,16 +80,16 @@ class Delay(GObject.GObject):
             value = from_str(value)
         if isinstance(value, float):
             value = int(value)
-        addr = self.map.get_addr(name)
+        Addr = self.map.get_addr(name)
         if 'sw' in name:
             value = 1 if value else 0
-            # log.debug(f"{name} {to_str(addr)} {to_str(value)}")
-            self.device.send(addr, [value])
+            # log.debug(f"{name} {str(Addr)} {to_str(value)}")
+            self.device.send(Addr, [value])
         elif name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
-            addr  = self.map.send["delay_type"]
-            # log.debug(f"{name} {addr} {model_val}")
-            self.device.send(from_str(addr), from_str(model_val))
+            Addr  = self.map.get_addr("delay_type")#self.map.send["delay_type"]
+            # log.debug(f"{name} {Addr} {model_val}")
+            self.device.send(Addr, from_str(model_val))
         #elif 'mode' in name and name.split('_')[1] in self.banks:
         #    num = list(self.map['Modes'].values()).index(to_str(value))
         #    self.direct_set("mode_idx", num)
@@ -98,16 +99,16 @@ class Delay(GObject.GObject):
         #    addr  = self.map.send[bank]
         #    self.device.send(from_str(addr), from_str(mode_val))
         elif name == 'bank_select':
-            self.device.send(addr, [value])
+            self.device.send(Addr, [value])
         elif 'lvl' in name or name == 'bank_select':
             if name in ['time_lvl', 'd1_time_lvl', 'd2_time_lvl']:
                 value = int_to_midi_bytes(int(value), 2)
                 
                 # log.debug(f"{name} {to_str(addr)} {to_str(value)}")
-                self.device.send(addr, value)
+                self.device.send(Addr, value)
             else:
                 # log.debug(f"{name} {to_str(addr)} {to_str(value)}")
-                self.device.send(addr, [value])
+                self.device.send(Addr, [value])
         else:
             log.warning(f"missing DEF for '{name}'")
 
@@ -133,11 +134,13 @@ class Delay(GObject.GObject):
 
     def load_from_mry(self, mry):
         log.debug("-")
-        for addr, prop in self.map.recv.items():
-            value = mry.read_from_str(addr)
-            # log.debug(f"{prop}: {addr} = {to_str(value)}")
+        for saddr, prop in self.map.recv.items():
+            value = mry.read(Address(saddr))
+        # for Addr, prop in self.map.recv.items():
+            # value = mry.read(Addr)
+            # log.debug(f"{prop}: {Addr} = {to_str(value)}")
             if prop in ['time_lvl', 'd1_time_lvl']:
-                value = mry.read_from_str(addr, 2)
+                value = mry.read(Address(saddr), 2)
                 self.direct_set(prop, value)
             else:
                 if value is not None and value >= 0:
@@ -145,7 +148,7 @@ class Delay(GObject.GObject):
         self.set_bank_type()
 
     def set_mry_map(self):
-        for addr, prop in self.map.recv.items():
-            self.device.mry.map[addr] = ( self, prop ) 
+        for Addr, prop in self.map.recv.items():
+            self.device.mry.map[str(Addr)] = ( self, prop ) 
 
 

@@ -45,14 +45,13 @@ class TSLFile(GObject.GObject):
         ps = infos['paramSet']
         offset = 0
         for k, size in self.map.items():
-            if k == 'UserPatch%PatchName':
-                ps[k] = self.device.preset_name
-            else:
-                log.debug(f"{to_str(self.device.mry.offset_to_addr(offset))=}")
-                saddr = to_str(self.device.mry.offset_to_addr(offset))
-                ps[k] = self.device.mry.get_block(saddr, size)
+            #log.debug(f"{to_str(self.device.mry.offset_to_addr(offset))=}")
+            Addr = self.device.mry.Addr_start + offset
+            # log.debug(f"{Addr} {offset=}")
+            #to_str(self.device.mry.offset_to_addr(offset))
+            ps[k] = self.device.mry.read(Addr, size, True).split(' ')
             offset += size
-        log.debug(tsl)
+        # log.debug(tsl)
         return tsl
 
 

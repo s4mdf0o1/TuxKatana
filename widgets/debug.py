@@ -111,14 +111,14 @@ class Debug(Gtk.Box):
         if mode == "SysEx":
             header = msg_obj.header
             if not cmd:
-	            cmd = msg_obj.addrs[self.cmd.get_active_text()]
+	            cmd = msg_obj.addrs[self.cmd.get_active_text()].bytes
             else:
-	            cmd = msg_obj.addrs[cmd]
+	            cmd = msg_obj.addrs[cmd].bytes
             if not addr and not val:
-	            addr = from_str( self.address.get_text() )
+	            addr = Address( self.address.get_text() ).bytes
 	            val = from_str( self.value.get_text() )
             else:
-	            addr = from_str( addr )
+	            addr = Address( addr ).bytes
 	            val = from_str( val )
 	
             cks = msg_obj.checksum(addr + val)

@@ -51,8 +51,8 @@ class ModFx(AntiFlood, GObject.GObject):
         self.emit(self.name + "-map-ready", self.map['Types'])
 
     def set_mry_map(self):
-        for addr, prop in self.map.recv.items():
-            self.device.mry.map[addr] = (self, prop)
+        for Addr, prop in self.map.recv.items():
+            self.device.mry.map[str(Addr)] = (self, prop)
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
@@ -72,12 +72,12 @@ class ModFx(AntiFlood, GObject.GObject):
             value = from_str(value)
         if isinstance(value, float):
             value = int(value)
-        addr = self.map.get_addr(name)
+        Addr = self.map.get_addr(name)
         return
         if 'sw' in name:
             value = 1 if value else 0
-            #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
-            self.device.send(addr, [value])
+            #log.debug(f"{name} {Addr} {to_str(value)}")
+            self.device.send(Addr, [value])
         elif name == 'delay_status':
             self.direct_set(name, value)
         elif name == 'delay_type':
@@ -85,9 +85,9 @@ class ModFx(AntiFlood, GObject.GObject):
             self.direct_set("type_idx", num)
         elif name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
-            addr  = self.map.send["delay_type"]
-            #log.debug(f"{name} {addr} {model_val}")
-            self.device.send(from_str(addr), from_str(model_val))
+            Addr  = self.map.send["delay_type"]
+            #log.debug(f"{name} {Addr} {model_val}")
+            self.device.send(Addr, from_str(model_val))
         #elif 'mode' in name and name.split('_')[1] in self.banks:
         #    num = list(self.map['Modes'].values()).index(to_str(value))
         #    self.direct_set("mode_idx", num)
@@ -97,16 +97,16 @@ class ModFx(AntiFlood, GObject.GObject):
         #    addr  = self.map.send[bank]
         #    self.device.send(from_str(addr), from_str(mode_val))
         elif name == 'bank_select':
-            self.device.send(addr, [value])
+            self.device.send(Addr, [value])
         elif 'lvl' in name or name == 'bank_select':
             if name in ['time_lvl', 'd1_time_lvl', 'd2_time_lvl']:
                 value = int_to_midi_bytes(int(value), 2)
                 
-                log.debug(f"{name} {to_str(addr)} {to_str(value)}")
-                self.device.send(addr, value)
+                log.debug(f"{name} {Addr} {to_str(value)}")
+                self.device.send(Addr, value)
             else:
-                #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
-                self.device.send(addr, [value])
+                #log.debug(f"{name} {Addr} {to_str(value)}")
+                self.device.send(Addr, [value])
         else:
             log.debug(f"missing DEF for '{name}'")
 
@@ -131,12 +131,14 @@ class ModFx(AntiFlood, GObject.GObject):
         self.direct_set("type_idx", num)
 
     def load_from_mry(self, mry):
-        log.debug("-")
-        for addr, prop in self.map.recv.items():
-            value = mry.read_from_str(addr)
-            #log.debug(f"{prop}: {addr} = {to_str(value)}")
+        # log.debug("-")
+        for saddr, prop in self.map.recv.items():
+            value = mry.read(Address(saddr))
+        # for Addr, prop in self.map.recv.items():
+            # value = mry.read(Addr)
+            #log.debug(f"{prop}: {Addr} = {to_str(value)}")
             if prop in ['dc_rep_lvl']:
-                value = mry.read_from_str(addr, 3)
+                value = mry.read(Addr, 3)
                 self.direct_set(prop, value)
             else:
                 if value is not None and value >= 0:
