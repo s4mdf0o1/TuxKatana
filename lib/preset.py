@@ -11,10 +11,10 @@ class Presets(GObject.GObject):
     label = GObject.Property(type=str)
     num = GObject.Property(type=int)
 
-class Preset():#GObject.GObject):
+class Preset(TSLFile, GObject.GObject):
     def __init__(self, device):
-        #super().__init__()
-        self.tsl = TSLFile(device)
+        super().__init__(device)
+        #self.tsl = TSLFile(device)
 
     def gen(self):
-        self.tsl.save()
+        self.save()
