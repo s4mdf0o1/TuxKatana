@@ -37,6 +37,8 @@ def midi_bytes_to_int(data):
 
 def midi_str_to_int(s: str) -> int:
     parts = s.split(' ')
+    if '' in parts:
+        print(f"'{parts}'")
     bytes_msb = [int(p, 16) & 0x7F for p in parts]
     value = 0
     for i, b in enumerate(reversed(bytes_msb)):

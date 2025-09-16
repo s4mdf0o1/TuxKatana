@@ -9,12 +9,13 @@ yaml = YAML(typ="rt")
 from collections import UserDict
 
 from .tools import *
-from .presets import Preset
+#from .presets import Preset
 from .amplifier import Amplifier
 from .memory import Memory
 from .booster import Booster
 from .reverb import Reverb
 from .delay import Delay
+from .preset import Preset, Presets
 
 #from lib.map import Map
 from time import sleep
@@ -37,11 +38,12 @@ class Device(GObject.GObject):
         #self.se_msg = ctrl.se_msg
         self.mry = Memory( from_str(self.ctrl.se_msg.addrs['MEMORY']))
 
-        self.presets = Gio.ListStore(item_type=Preset)
+        self.presets = Gio.ListStore(item_type=Presets)
         self.amplifier=Amplifier( self, ctrl )
         self.booster = Booster( self, ctrl )
         self.reverb = Reverb( self, ctrl )
         self.delay = Delay( self, ctrl )
+        self.preset = Preset(self)
 
         self.is_loading_params = False
 
@@ -84,7 +86,7 @@ class Device(GObject.GObject):
 
             elif saddr == '00 01 00 00':
                 log.debug(f"emit channel-changed {data}")
-                self.ctrl.emit("channel-changed", data[1])
+                self.emit("channel-changed", data[1])
             else:
                 log.warning(f"Memory.received_msg: {saddr=}: not implemented")
             #self.ctrl.recv_event.set()
@@ -96,7 +98,7 @@ class Device(GObject.GObject):
         self.ctrl.pause_queue = True
         log.debug("TODO: yaml datas")
         addr = [0x60,0,0,0]
-        size = [0,0,0x0f,0]
+        size = [0,0,0x10,0]
         msg = self.ctrl.se_msg.get_with_addr('GET', addr, size)
         self.ctrl.sysex.data = msg
         self.ctrl.send(self.ctrl.sysex)
@@ -110,15 +112,19 @@ class Device(GObject.GObject):
                 break
         for msg in msgs:
             addr, data = self.ctrl.se_msg.get_addr_data(msg)
-            log.debug(f"{to_str(addr)}: {len(data)}")
+            # log.debug(f"{to_str(addr)}: {len(data)}")
             self.mry.add_block(addr, data)
+        self.mry.emit("mry-loaded")
         self.ctrl.pause_queue = False
+        self.preset_name = self.mry.get_preset_name()
+        self.preset.gen()
+
 
     def set_selected_channel(self):
         log.debug("-")
 
     def set_edit_mode(self, edit):
-        #log.debug(f"({edit})")
+        # log.debug(f"({edit})")
         log.info("Edit Mode")
         val = [1] if edit else [0]
         self.send([0x7F,0,0,1], val)
@@ -154,7 +160,7 @@ class Device(GObject.GObject):
         name = "PRESET_"+str(num)
         pname = self.ctrl.se_msg.get_str(msg).strip()
         label = pname
-        self.presets.append(Preset(name=name, label=label, num=num))
+        self.presets.append(Presets(name=name, label=label, num=num))
         #self.ctrl.end_seq("preset")
         self.ctrl.listener_callback = None
 

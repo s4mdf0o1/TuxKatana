@@ -82,12 +82,12 @@ class Delay(GObject.GObject):
         addr = self.map.get_addr(name)
         if 'sw' in name:
             value = 1 if value else 0
-            #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
+            # log.debug(f"{name} {to_str(addr)} {to_str(value)}")
             self.device.send(addr, [value])
         elif name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
             addr  = self.map.send["delay_type"]
-            log.debug(f"{name} {addr} {model_val}")
+            # log.debug(f"{name} {addr} {model_val}")
             self.device.send(from_str(addr), from_str(model_val))
         #elif 'mode' in name and name.split('_')[1] in self.banks:
         #    num = list(self.map['Modes'].values()).index(to_str(value))
@@ -103,10 +103,10 @@ class Delay(GObject.GObject):
             if name in ['time_lvl', 'd1_time_lvl', 'd2_time_lvl']:
                 value = int_to_midi_bytes(int(value), 2)
                 
-                log.debug(f"{name} {to_str(addr)} {to_str(value)}")
+                # log.debug(f"{name} {to_str(addr)} {to_str(value)}")
                 self.device.send(addr, value)
             else:
-                #log.debug(f"{name} {to_str(addr)} {to_str(value)}")
+                # log.debug(f"{name} {to_str(addr)} {to_str(value)}")
                 self.device.send(addr, [value])
         else:
             log.warning(f"missing DEF for '{name}'")
@@ -117,7 +117,7 @@ class Delay(GObject.GObject):
         self.handler_unblock_by_func(self.set_from_ui)
 
     def get_bank_var(self, var):
-        log.debug(f"{self.delay_status=}")
+        # log.debug(f"{self.delay_status=}")
         if self.delay_status == 0:
             log.warning(f"{self.delay_status=}")
             return var + self.banks[0]
@@ -128,14 +128,14 @@ class Delay(GObject.GObject):
         bank_name = self.get_bank_var("bank_")
         d_type = self.get_property(bank_name)
         num = list(self.map['Types'].values()).index(to_str(d_type))
-        log.debug(f"{bank_name} {to_str(d_type)} idx={num}")
+        # log.debug(f"{bank_name} {to_str(d_type)} idx={num}")
         self.direct_set("type_idx", num)
 
     def load_from_mry(self, mry):
         log.debug("-")
         for addr, prop in self.map.recv.items():
             value = mry.read_from_str(addr)
-            #log.debug(f"{prop}: {addr} = {to_str(value)}")
+            # log.debug(f"{prop}: {addr} = {to_str(value)}")
             if prop in ['time_lvl', 'd1_time_lvl']:
                 value = mry.read_from_str(addr, 2)
                 self.direct_set(prop, value)

@@ -25,6 +25,7 @@ class Controller(GObject.GObject):
         "recvd-sysex": (GObject.SignalFlags.RUN_FIRST, None, (object, object)),
     }
     def __init__(self, parent):
+        super().__init__()
         self.parent = parent
         self.se_msg = FormatMessage()
         self.device = Device(self)
@@ -74,7 +75,7 @@ class Controller(GObject.GObject):
         log.sysex(f"SEND: {msg.hex()}")
         log.debug(msg.hex())
         if callback:
-            log.debug(callback.__name__)
+            # log.debug(callback.__name__)
             self.listener_callback = callback
         self.port.output.send( msg )
 

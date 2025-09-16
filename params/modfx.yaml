@@ -1,16 +1,16 @@
 SEND:
   mod_sw:       "60 00 01 00"
   mod_type:     "60 00 01 01"
-  mod_bank_sel: "60 00 06 3a"
   mod_bank_G:   "60 00 06 27"
   mod_bank_R:   "60 00 06 28"
   mod_bank_Y:   "60 00 06 29"
+  mod_bank_sel: "60 00 06 3a"
   fx_sw:        "60 00 03 00"
   fx_type:      "60 00 03 01"
-  fx_bank_sel:  "60 00 06 3b"
   fx_bank_G:    "60 00 06 2a"
   fx_bank_R:    "60 00 06 2b"
   fx_bank_Y:    "60 00 06 2c"
+  fx_bank_sel:  "60 00 06 3b"
 
 # Touch_Wah
   tw_filt_sw:   "60 00 01 02" # Low/Band Pass

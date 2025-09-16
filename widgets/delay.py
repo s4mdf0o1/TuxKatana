@@ -348,7 +348,7 @@ class DelayUI(Gtk.Box):
             #log.debug(f"{dn=}")
             for i in range(4):
                 name = duals[i + dn*4].name
-                log.debug(name)
+                # log.debug(name)
                 duals[i + dn*4].show()
         elif idx == 10:
             for i in [0,1,2,3,8]:

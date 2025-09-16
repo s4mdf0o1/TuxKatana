@@ -60,7 +60,7 @@ class Amplifier(GObject.GObject):
             model_val = list(self.map['Models'].values())[value]
             addr  = self.map.send["amp_model"]
             self.device.send(from_str(addr), from_str(model_val))
-            log.debug(f"{addr} {value}")
+            # log.debug(f"{addr} {value}")
         elif name in ["amp_variation", "amp_num"]:
             num = value if name == 'amp_num' else self.amp_num
             var = value if name == 'amp_variation' else self.amp_variation
