@@ -60,6 +60,8 @@ class Memory(GObject.GObject):
     def write(self, Addr, data):
         if not len(self.memory):
             raise RuntimeError("Empty Memory")
+        if Addr == Address('00 01 00 00'):
+            return
         offset = Addr - self.Addr_start #addr_to_offset(addr)
         if isinstance(data, int):
             data = [data]

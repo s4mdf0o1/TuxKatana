@@ -26,6 +26,7 @@ class TSLFile:#(GObject.GObject):
         self.revision = "0002"      # to understand
         self.device_name = "KATANA Mk2"  # to get from device name
         self.memo = ""              # can be used
+        self.dir_path = os.getcwd() + "/presets"
 
     def load(self, filename):
         self.filename = filename
@@ -58,7 +59,9 @@ class TSLFile:#(GObject.GObject):
 
     def save(self, filename="test.tsl"):
         self.filename = filename
-        with open(filename, 'w') as f:
+        file_path = self.dir_path + '/' + filename
+        with open(file_path, 'w') as f:
             json.dump(self.generate(), f)
+        log.info(f"Preset saved to: {file_path}")
 
 

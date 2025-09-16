@@ -11,10 +11,10 @@ class ConnectWait(Gtk.Dialog):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         box.get_style_context().add_class("bordered")
 
-        label = Gtk.Label(label="Appareil Déconnecté...")
+        label = Gtk.Label(label="Waiting for Device...")
         spinner = Gtk.Spinner()
         spinner.start()
-        button=Gtk.Button(label="Quitter")
+        button=Gtk.Button(label="Quit")
         button.connect("clicked", lambda *_: app.quit())
 
         box.append(label)
