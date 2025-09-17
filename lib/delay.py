@@ -62,7 +62,7 @@ class Delay(GObject.GObject):
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f">>> {name} = {value}")
         if name == 'delay_type':
             svalue = to_str(value)
             num = list(self.map['Types'].values()).index(svalue)
@@ -74,7 +74,7 @@ class Delay(GObject.GObject):
         name = pspec.name
         value = self.get_property(name)
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f">>> {name} = {value}")
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
         if isinstance(value, float):
@@ -117,7 +117,7 @@ class Delay(GObject.GObject):
         self.direct_set("type_idx", num)
 
     def load_from_mry(self, mry):
-        log.debug("-")
+        # log.debug("-")
         for saddr, prop in self.map.recv.items():
             value = mry.read(Address(saddr))
             if prop in ['time_lvl', 'd1_time_lvl']:

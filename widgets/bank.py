@@ -45,7 +45,7 @@ class Bank(Gtk.Box):
 
            
     def on_toggled(self, widget, idx):
-        #log.debug(f"{widget.name}: {widget.get_active()}" )
+        log.debug(f"{widget.name}: {widget.get_active()}" )
         if not self.single or hasattr(self, "f_bank"):
             self.selected = idx
             self.set_inactives( widget )

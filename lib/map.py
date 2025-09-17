@@ -35,10 +35,10 @@ class Map(UserDict):
         Addr=None
         if prop in self.recv.values():
             Addr = Address(self.recv.inverse[prop])
-            log.debug(f"{self.recv.inverse[prop]=}")
+            # log.debug(f"{self.recv.inverse[prop]=}")
         elif prop in self.send:
             Addr = Address(self.send[prop])
-            log.debug(f"{self.send[prop]}")
+            # log.debug(f"{self.send[prop]}")
         if not Addr and 'idx' not in prop:
             log.warning(f"No Address for {prop}")
         return Addr

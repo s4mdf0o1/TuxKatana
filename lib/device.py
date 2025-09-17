@@ -52,13 +52,13 @@ class Device(GObject.GObject):
         self.emit("load-maps")
 
     def send(self, Addr, value):
-        log.debug(f"[{Addr}]: {to_str(value)}")
+        # log.debug(f"[{Addr}]: {to_str(value)}")
         msg=self.ctrl.se_msg.get_with_addr('SET', Addr, value)
         self.ctrl.sysex.data=msg
         self.ctrl.send(self.ctrl.sysex)
 
-    def on_value_changed(self, saddr, value):
-        log.debug(f"{saddr} {value}")
+    # def on_value_changed(self, saddr, value):
+        # log.debug(f"{saddr} {value}")
 
     def on_received_msg(self, addr, data):
         Addr = Address(addr)
@@ -75,7 +75,7 @@ class Device(GObject.GObject):
                 else:
                     value = int(data[0])
                 obj.set_from_msg(prop, value)
-                log.debug(f"{obj.name}: {prop}={value}")
+                # log.debug(f"{obj.name}: {prop}={value}")
 
             elif str(Addr) == '00 01 00 00':
                 log.debug(f"emit channel-changed {data}")
@@ -98,14 +98,14 @@ class Device(GObject.GObject):
         msgs = []
         while True:
             try:
-                msg = self.ctrl.msg_queue.get(timeout=0.5)
+                msg = self.ctrl.msg_queue.get(timeout=0.3)
                 msgs.append(msg)
             except Empty:
                 break
         for msg in msgs:
             addr, data = self.ctrl.se_msg.get_addr_data(msg)
             self.mry.add_block(Address(to_str(addr)), data)
-        self.mry.emit("mry-loaded")
+        #self.mry.emit("mry-loaded")
         self.ctrl.pause_queue = False
         self.preset_name = self.mry.get_preset_name()
         self.preset.gen()

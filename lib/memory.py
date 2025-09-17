@@ -14,16 +14,27 @@ class Memory(GObject.GObject):
     }
     def __init__(self, mry_start):
         super().__init__()
+        self._timer_id = None
         self.Addr_start = mry_start #Address(mry_start)
         self.memory = []
-        #self.loading = False
+        self.loading = False
         self.base_addr = None
         self.map = {}
 
+    def _on_timeout(self):
+        self._timer_id = None
+        self.emit("mry-loaded")
+        return False
+
     def add_block(self, Addr_start, data):
         log.debug(f"{self.Addr_start} / {Addr_start}: {len(data)=}")
+        if self._timer_id:
+            GLib.source_remove(self._timer_id)
+        self._timer_id = GLib.timeout_add(200, self._on_timeout)
+
         if Addr_start == self.Addr_start:
-            #self.loading = True
+
+            self.loading = True
             self.memory = data #[]
             self.base_addr = Addr_start[:]
             return
@@ -31,13 +42,13 @@ class Memory(GObject.GObject):
         Addr_next = self.Addr_start + len(self.memory)
 
         if Addr_start > Addr_next:
-            log.debug(f"{Addr_start} > {Addr_next}")
+            # log.debug(f"{Addr_start} > {Addr_next}")
             diff = Addr_next - Addr_start
-            log.debug(f"{len(self.memory)=}")
+            # log.debug(f"{len(self.memory)=}")
             self.memory.extend([0] * diff)
             log.debug(f"{diff=} -> {len(self.memory)=}")
             self.memory.extend(data)
-            log.debug(f"{len(self.memory)=}")
+            # log.debug(f"{len(self.memory)=}")
             #self.emit("mry-loaded")
         elif Addr_start == Addr_next:
             # log.debug(f"{Addr_start} == {Addr_next}")
@@ -80,42 +91,5 @@ class Memory(GObject.GObject):
         # log.debug(f"{preset_bytes=}")
         preset_name= ''.join([chr(v) for v in preset_bytes])
         return preset_name
-
-    # def addr_to_offset(self, addr):
-    #     offset = 0
-    #     mult = 1
-    #     for a, b in zip(reversed(addr), reversed(self.mry_start)):
-    #         offset += (a - b) * mult
-    #         mult *= 128
-    #     return offset
-
-    # def offset_diff_addrs(self, addr_end, addr_start):
-    #     offset = 0
-    #     mult = 1
-    #     for a, b in zip(reversed(addr_end), reversed(addr_start)):
-    #         offset += (a - b) * mult
-    #         mult *= 128
-    #     return offset
-
-    # def offset_to_addr(self, offset):
-    #     b = self.mry_start[:]
-    #     for i in range(len(b)-1, -1, -1):
-    #         b[i] += offset % 128
-    #         carry = b[i] // 128
-    #         b[i] %= 128
-    #         offset //= 128
-    #         if carry and i > 0:
-    #             b[i-1] += carry
-    #     return b
-
-    # def incr_base128(self, addr, n=1):
-    #     b = addr[:]
-    #     for _ in range(n):
-    #         for i in range(len(b)-1, -1, -1):
-    #             b[i] += 1
-    #             if b[i] < 128:
-    #                 break
-    #             b[i] = 0
-    #     return b
 
 

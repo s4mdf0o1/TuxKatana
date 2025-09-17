@@ -39,7 +39,7 @@ class Amplifier(GObject.GObject):
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f">>> {name} = {value}")
         if name == 'amp_model':
             svalue = to_str(value)
             num = list(self.map['Models'].values()).index(svalue)
@@ -51,7 +51,7 @@ class Amplifier(GObject.GObject):
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
@@ -63,7 +63,7 @@ class Amplifier(GObject.GObject):
             model_val = list(self.map['Models'].values())[value]
             Addr  = self.map.get_addr("amp_model")
             #Address(self.map.send["amp_model"])
-            log.debug(f"{Addr=} {value}")
+            # log.debug(f"{Addr=} {value}")
             self.device.send(Addr, from_str(model_val))
         elif name in ["amp_variation", "amp_num"]:
             num = value if name == 'amp_num' else self.amp_num

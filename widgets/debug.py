@@ -11,9 +11,10 @@ yaml = YAML(typ="safe")
 config = ""
 with open("params/config.yaml", "r") as f:
     config = yaml.load(f)
+dots = config['DOTS']
 
 from lib.tools import from_str, to_str
-dots = config['DOTS']
+from lib.address import Address
 
 class Debug(Gtk.Box):
     def __init__(self, ctrl):
@@ -122,7 +123,7 @@ class Debug(Gtk.Box):
 	            val = from_str( val )
 	
             cks = msg_obj.checksum(addr + val)
-            data = header + [int(cmd, 16)] + addr + val + cks
+            data = header + cmd + addr + val + cks
             log.debug(data)
             self.ctrl.sysex.data = data
             self.ctrl.send(self.ctrl.sysex)

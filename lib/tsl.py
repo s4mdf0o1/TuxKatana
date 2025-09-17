@@ -37,7 +37,7 @@ class TSLFile:#(GObject.GObject):
         tsl = {}
         tsl['name'] = self.preset_name
         tsl['formatRev'] = self.revision
-        tsl['device'] = self.device_name
+        tsl['device'] = self.device_name.replace('2', 'II')
         tsl['data'] = [[]]
         tsl['data'][0].append({})
         infos = tsl['data'][0][0]

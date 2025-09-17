@@ -52,7 +52,7 @@ class Reverb(GObject.GObject):
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f">>> {name} = {value}")
         svalue = to_str(value)
         if name == 'reverb_type':
             num = list(self.map['Types'].values()).index(svalue)
@@ -64,7 +64,7 @@ class Reverb(GObject.GObject):
         name = pspec.name
         value = self.get_property(name)
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f">>> {name} = {value}")
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
         if isinstance(value, float):
