@@ -108,7 +108,11 @@ class BoosterUI(Gtk.Box):
         self.own_ctrl.connect("booster-map-ready", self.on_booster_models_loaded)
 
     def on_slider_changed( self, slider, value):
-        self.own_ctrl.set_property(slider.name, int(value))
+        old_val = self.own_ctrl.get_property(slider.name)
+        value = int(value)
+        # log.debug(f"{old_val} {value}")
+        if value != old_val:
+            self.own_ctrl.set_property(slider.name, value)
 
     def on_booster_models_loaded(self, device, models):
         i = 0

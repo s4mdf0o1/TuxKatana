@@ -41,22 +41,22 @@ class Switcher(Gtk.Box):
                 
                 #log.debug(but.name)
                 if but.name == 'BOOSTER':
-                    self.ctrl.device.booster.bind_property(
+                    but.bind_id = self.ctrl.device.booster.bind_property(
                         "booster_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
                 elif but.name == 'REVERB':
-                    self.ctrl.device.reverb.bind_property(
+                    but.bind_id = self.ctrl.device.reverb.bind_property(
                         "reverb_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
                 elif but.name == 'DELAY':
-                    self.ctrl.device.delay.bind_property(
+                    but.bind_id = self.ctrl.device.delay.bind_property(
                         "delay_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
-                #else:
-                but.toggled_id = but.connect("toggled", self.callback_toggled)
+                else:
+                    but.toggled_id = but.connect("toggled", self.callback_toggled)
             #self.ctrl.device.booster.connect("notify::booster_sw", lambda o,p: print("booster_sw changed:", o.booster_sw))
 
     def on_status_changed(self, obj, pspec):
@@ -69,20 +69,24 @@ class Switcher(Gtk.Box):
                 but.set_status_id(status)
 
     def callback_toggled( self, button):
-        #log.debug(button.path)
+        log.debug(f"{button.name}: {button.path}")
         if button.get_active():
-            #self.ctrl.set_on( button.path )
             if 'CH_' in button.name:
                 self.ctrl.device.set_midi_channel(button.path)
-            #else:
-            #    log.debug(f"{button.name}")
 
     def on_channel_changed(self, obj, ch_num):
-        #log.debug(f"{ch_num=}")
+        # log.debug(f"{obj} {ch_num=}")
         if ch_num <= 4:
-            self.bank_a.buttons[ch_num-1].set_active(True)
+            but = self.bank_a.buttons[ch_num-1]
+            but.handler_block(but.toggled_id)
+            but.set_active(True)
+            but.handler_unblock(but.toggled_id)
         else:
-            self.bank_b.buttons[ch_num-5].set_active(True)
+            but = self.bank_b.buttons[ch_num-5]
+            but.handler_block(but.toggled_id)
+            but.set_active(True)
+            but.handler_unblock(but.toggled_id)
+            # self.bank_b.buttons[ch_num-5].set_active(True)
         #self.presets[ch_num-1].set_active(True)
 
 

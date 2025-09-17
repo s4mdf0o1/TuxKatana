@@ -139,8 +139,8 @@ class Debug(Gtk.Box):
             self.ctrl.port.send(self.ctrl.cc)
 
     def read_memory(self, button):
-        addr = from_str(self.address.get_text())
-        value = self.ctrl.device.mry.read(addr)
+        Addr = Address(self.address.get_text())
+        value = self.ctrl.device.mry.read(Addr)
         self.value.set_text(to_str(value))
 
     def save_mry(self, filename="mry_dump.bin"):

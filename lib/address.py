@@ -2,7 +2,6 @@ class Address:
     def __init__(self, s: str):
         if isinstance(s, list):
             s = " ".join(f"{c:02x}" for c in s).strip()
-            print(f"{s}")
         parts = s.strip().split()
         if not parts:
             raise ValueError("Empty address")

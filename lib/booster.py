@@ -48,7 +48,7 @@ class Booster(GObject.GObject):
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        # log.debug(f">>> {name} = {value}")
+        log.debug(f">>> {name} = {value}")
         if name == 'booster_model':
             svalue = to_str(value)
             num = list(self.map['Models'].values()).index(svalue)
@@ -59,7 +59,7 @@ class Booster(GObject.GObject):
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
-        # log.debug(f">>> {name} = {value}")
+        log.debug(f">>> {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)

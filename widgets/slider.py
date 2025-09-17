@@ -127,43 +127,4 @@ class Slider(AntiFlood, Gtk.Box):
             repeat = a * v + b
             return self.vals['unit'].format(repeat=repeat)
 
-#        if valmin in vals:
-#            self.valmin = vals['valmin']
-#        if valmax in vals:
-#            self.valmax = vals['valmax']
-#
-#
-#        #fmt = self.format[format_name]
-#        #self.scale.set_lower(fmt['vmin'])
-#        #self.scale.set_upper(fmt['vmax'])
-#        format_func = getattr(self, "format_"+format_name)
-#        self.scale.set_format_value_func(format_func)
-#
-#    def format_high_freq(self, scale, v):
-#        return self.format_freq(scale, v, 630, 12500, 0x0e)
-#    def format_freq(self, scale, v, f_min, f_max, upper):
-#        adj = scale.get_adjustment()
-#        v_min = int(adj.get_lower())
-#        v_max = int(adj.get_upper())
-#        freq = f_min * ((f_max / f_min) ** (v / upper))
-#        if freq >= 1000:
-#            return f"{freq/1000:.1f} kHz"
-#        else:
-#            return f"{int(freq)} Hz"
-#
-#    def format_t_time(self, scale, v):
-#        return self.format_time(scale, v, 1000)
-#    def format_time(self, scale, v, div=1):
-#        adj = scale.get_adjustment()
-#        v_min = int(adj.get_lower())
-#        v_max = int(adj.get_upper())
-#        if div > 1:
-#            v /= div
-#        if v < 1.0:
-#            return f"{int(round(v*1000))} ms"
-#        else:
-#            return f"{v:.2f} s"
-#
-#    def format_percent(self, scale, v):
-#        return f"{v:.2f} %"
 

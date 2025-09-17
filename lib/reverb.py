@@ -64,7 +64,7 @@ class Reverb(GObject.GObject):
         name = pspec.name
         value = self.get_property(name)
         name = name.replace('-', '_')
-        # log.debug(f">>> {name} = {value}")
+        log.debug(f">>> {name} = {value}")
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
         if isinstance(value, float):

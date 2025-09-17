@@ -57,7 +57,11 @@ class AmplifierUI(Gtk.Box):
         self.own_ctrl.connect("amp-map-ready", self.on_amp_models_loaded)
 
     def on_slider_changed( self, slider, value):
-        self.own_ctrl.set_property(slider.name, int(value))
+        old_val = self.own_ctrl.get_property(slider.name)
+        value = int(value)
+        # log.debug(f"{old_val} {value}")
+        if value != old_val:
+            self.own_ctrl.set_property(slider.name, int(value))
 
     def on_amp_models_loaded(self, device, amp_models):
         i = 0
@@ -65,14 +69,4 @@ class AmplifierUI(Gtk.Box):
         for name, code in amp_models.items():
             self.amp_store.append([i,name, code])
             i += 1
-
-    # def on_combo_changed(self, combo):
-    #     idx = combo.get_active()
-    #     if idx >= 0:  # -1 si rien de sélectionné
-    #         name, code = self.amp_store[idx][:2]
-    #         self.own_ctrl.set_property("model_idx", idx)
-
-    # def on_toggle_changed( self, toggle):
-    #     self.own_ctrl.set_property(toggle.name, toggle.get_active())
-
 

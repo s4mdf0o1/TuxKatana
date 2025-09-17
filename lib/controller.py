@@ -35,7 +35,7 @@ class Controller(GObject.GObject):
         self.pc = mido.Message('program_change')
         self.cc = mido.Message('control_change')
         self.sysex = mido.Message('sysex')
-        self.listener_callback = None
+        # self.listener_callback = None
         self.msg_queue = Queue()
         self.pause_queue = True
         self.thread_watch = Thread(target=self.queue_watcher, daemon=True).start()
@@ -50,7 +50,7 @@ class Controller(GObject.GObject):
                 msg = self.msg_queue.get(.1)
                 log.sysex(f"{msg.hex()}")
                 addr, data =  self.se_msg.get_addr_data(msg)
-                GLib.idle_add(self.device.on_received_msg, addr, data)
+                GLib.idle_add(self.device.on_received_msg, addr, data,priority=GLib.PRIORITY_DEFAULT)
             else:
                 sleep(.1)
 
@@ -69,11 +69,13 @@ class Controller(GObject.GObject):
         if msg.type == 'sysex':
             self.msg_queue.put(msg)
 
-    def send( self, msg, callback=None ):
+    def send( self, msg):#, callback=None ):
+        #self.device.comm=1
         log.sysex(f"SEND: {msg.hex()}")
-        log.debug(msg.hex())
-        if callback:
-            self.listener_callback = callback
+        # log.debug(msg.hex())
+        # if callback:
+            # log.debug("has callback")
+            # self.listener_callback = callback
         self.port.output.send( msg )
 
     def scan_devices(self):
@@ -84,6 +86,7 @@ class Controller(GObject.GObject):
 
     def set_device(self, msg):
         #log.debug(msg)
+        self.device.set_charging(2, 1000)
         data = list(msg.data)
         if data[0:4] == self.se_msg.addrs['SCAN_REP'].bytes:
             infos = data[4:]
@@ -98,7 +101,7 @@ class Controller(GObject.GObject):
             self.se_msg.header = man + dev + mod
         self.device.get_name()
         self.device.get_presets()
-        self.device.dump_memory()
-        self.device.set_selected_channel()
         self.device.set_edit_mode(True)
+        self.device.dump_memory()
+        # self.device.set_selected_channel()
 

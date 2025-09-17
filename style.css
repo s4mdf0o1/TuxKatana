@@ -58,3 +58,13 @@ box.slider scale{
    margin:0px;
    min-height: 20px;
 }
+.edit-mode {
+   font-size: 8pt;
+    min-width: 15px;
+    min-height: 15px;
+    margin: 0px;
+    padding: 0px;
+}
+.comm {
+   padding-left: 8px;
+}

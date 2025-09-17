@@ -284,7 +284,11 @@ class DelayUI(Gtk.Box):
                 base_widgets[i].show()
 
     def on_slider_changed( self, slider, value):
-        self.own_ctrl.set_property(slider.name, int(value))
+        old_val = self.own_ctrl.get_property(slider.name)
+        value = int(value)
+        # log.debug(f"{old_val} {value}")
+        if value != old_val:
+            self.own_ctrl.set_property(slider.name, value)
 
     def on_delay_loaded(self, device, types):
         i = 0

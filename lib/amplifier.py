@@ -39,7 +39,7 @@ class Amplifier(GObject.GObject):
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        # log.debug(f">>> {name} = {value}")
+        log.debug(f">>> {name} = {value}")
         if name == 'amp_model':
             svalue = to_str(value)
             num = list(self.map['Models'].values()).index(svalue)
@@ -51,7 +51,7 @@ class Amplifier(GObject.GObject):
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
-        # log.debug(f">>> {name} = {value}")
+        log.debug(f"<<< {name} = {value}")
         name = name.replace('-', '_')
         if not isinstance(value, (int, bool, float)):
             value = from_str(value)
@@ -62,8 +62,6 @@ class Amplifier(GObject.GObject):
         if name == 'model_idx':
             model_val = list(self.map['Models'].values())[value]
             Addr  = self.map.get_addr("amp_model")
-            #Address(self.map.send["amp_model"])
-            # log.debug(f"{Addr=} {value}")
             self.device.send(Addr, from_str(model_val))
         elif name in ["amp_variation", "amp_num"]:
             num = value if name == 'amp_num' else self.amp_num
@@ -71,7 +69,7 @@ class Amplifier(GObject.GObject):
             index = num if not var else num + 5
             amp_model = list(self.map['Models'].values())[index]
             # Addr = Address(self.map.send["amp_model"])
-            Addr = self.map.get_addr("amp_model")#send["amp_model"])
+            Addr = self.map.get_addr("amp_model")
             self.direct_set("amp_model", from_str(amp_model)[0])
             if not self.switch_model:
                 self.device.send(Addr, from_str(amp_model))
@@ -91,6 +89,7 @@ class Amplifier(GObject.GObject):
             self.device.mry.map[str(Addr)] = ( self, prop )
 
     def direct_set(self, prop, value):
+        # log.debug(prop)
         self.handler_block_by_func(self.set_from_ui)
         self.set_property(prop, value)
         self.handler_unblock_by_func(self.set_from_ui)
