@@ -45,17 +45,25 @@ class TSLFile:#(GObject.GObject):
         infos['paramSet'] = {}
         ps = infos['paramSet']
         offset = 0
-        for k, size in self.map.items():
+        old_Addr = self.device.mry.Addr_start
+        old_size = 0
+        for k, vals in self.map.items():
             #log.debug(f"{to_str(self.device.mry.offset_to_addr(offset))=}")
-            Addr = self.device.mry.Addr_start + offset
-            # log.debug(f"{Addr} {offset=}")
-            #to_str(self.device.mry.offset_to_addr(offset))
-            ps[k] = self.device.mry.read(Addr, size, True).split(' ')
-            offset += size
+            Addr = self.device.mry.Addr_start
+            offset += vals['offset']
+            Addr += offset
+            old_Addr = Addr - old_size
+            #log.debug(f"{old_Addr} = {Addr} - {old_size}")
+            old_size = vals['size']
+            #log.debug(f"{Addr} / size:{vals['size']} ofs:{vals['offset']}")
+            data = self.device.mry.read(Addr, vals['size'], True).upper().split(' ')
+            log.debug(f"{k}:> '{Addr}': {len(data)} {vals['offset']}")
+            if len(data) < vals['size']:
+                log.debug(data)
+            ps[k] = self.device.mry.read(Addr, vals['size'], True).upper().split(' ')
+            offset += vals['size']
         # log.debug(tsl)
         return tsl
-
-
 
     def save(self, filename="test.tsl"):
         self.filename = filename

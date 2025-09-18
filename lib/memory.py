@@ -66,9 +66,11 @@ class Memory(GObject.GObject):
         elif dump:
             return to_str(value)
         else:
+            #return to_str(value)
             return midi_str_to_int(to_str(value))
 
     def write(self, Addr, data):
+        log.debug(f"{Addr} {to_str(data)}")
         if not len(self.memory):
             raise RuntimeError("Empty Memory")
         if Addr == Address('00 01 00 00'):

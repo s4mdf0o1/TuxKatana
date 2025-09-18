@@ -47,6 +47,7 @@ class PresetsView(Gtk.Box):
     def on_mry_loaded(self, mry):
         preset_name = self.ctrl.device.mry.get_preset_name()
         index = self.find_index_by_text(self.selection, preset_name)
+        log.debug(f"index={index}, index+1={index+1}")
         self.ctrl.device.emit("channel-changed", int(index+1))
 
     def on_selection_changed(self, selection, position, n_items):
@@ -62,8 +63,11 @@ class PresetsView(Gtk.Box):
             preset=model.get_item(i)
             #log.debug(f"{preset.label=} {text_to_find.strip()=}")
             if text_to_find.strip() in preset.label.strip():
+                if i>8:
+                    log.warning(f"bad index : {i}")
+                    return 0
                 return i
-        return Gtk.INVALID_LIST_POSITION
+        return 0 #Gtk.INVALID_LIST_POSITION
 
     def on_setup(self, factory, list_item):
         row = PresetRow()

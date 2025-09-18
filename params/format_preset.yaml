@@ -1,22 +1,72 @@
-UserPatch%PatchName: 16
-UserPatch%Patch_0: 72
-UserPatch%Fx(1): 221
-UserPatch%Fx(2): 221
-UserPatch%Delay(1): 26
-UserPatch%Delay(2): 26
-UserPatch%Patch_1: 91
-UserPatch%Patch_2: 36
-UserPatch%Status: 18
-UserPatch%KnobAsgn: 33
-UserPatch%ExpPedalAsgn: 33
-UserPatch%ExpPedalAsgnMinMax: 76
-UserPatch%GafcExp1Asgn: 33
-UserPatch%GafcExp1AsgnMinMax: 76
-UserPatch%GafcExp2Asgn: 33
-UserPatch%GafcExp2AsgnMinMax: 76
-UserPatch%FsAsgn: 2
-UserPatch%Patch_Mk2V2: 22
-UserPatch%Contour(1): 2
-UserPatch%Contour(2): 2
-UserPatch%Contour(3): 2
-UserPatch%Eq(2): 24
+UserPatch%PatchName:
+  addr: '60 00 00 00'
+  size: 16
+  offset: 0
+UserPatch%Patch_0:
+  addr: '60 00 00 10'
+  size: 72
+  offset: 0
+UserPatch%Fx(1):
+  addr: '60 00 01 00'
+  size: 221
+  offset: 40
+UserPatch%Fx(2):
+  addr: '60 00 03 00'
+  size: 221
+  offset: 35
+UserPatch%Delay(1): 
+  size: 26
+  offset: 35
+UserPatch%Delay(2): 
+  size: 26
+  offset: 6
+UserPatch%Patch_1: 
+  size: 91
+  offset: 6
+UserPatch%Patch_2:
+  size: 36
+  offset: 5
+UserPatch%Status: 
+  size: 18
+  offset: 12
+UserPatch%KnobAsgn: 
+  size: 33
+  offset: 14 #
+UserPatch%ExpPedalAsgn: 
+  size: 33
+  offset: 15
+UserPatch%ExpPedalAsgnMinMax: 
+  size: 76
+  offset: 15
+UserPatch%GafcExp1Asgn: 
+  size: 33
+  offset: 4
+UserPatch%GafcExp1AsgnMinMax: 
+  size: 76
+  offset: 15
+UserPatch%GafcExp2Asgn: 
+  size: 33
+  offset: 4
+UserPatch%GafcExp2AsgnMinMax: 
+  size: 76
+  offset: 15
+UserPatch%FsAsgn: 
+  size: 2
+  offset: 4
+UserPatch%Patch_Mk2V2: 
+  size: 22
+  offset: 14
+UserPatch%Contour(1): 
+  size: 2
+  offset: 10
+UserPatch%Contour(2): 
+  size: 2
+  offset: 14
+UserPatch%Contour(3): 
+  size: 2
+  offset: 14
+UserPatch%Eq(2): 
+  addr: '60 00 00 60'
+  size: 24
+  offset: 14
+  

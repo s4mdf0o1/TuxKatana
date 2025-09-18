@@ -13,7 +13,7 @@ with open("params/config.yaml", "r") as f:
     config = yaml.load(f)
 dots = config['DOTS']
 
-from lib.tools import from_str, to_str
+from lib.tools import *
 from lib.address import Address
 
 class Debug(Gtk.Box):
@@ -140,8 +140,9 @@ class Debug(Gtk.Box):
 
     def read_memory(self, button):
         Addr = Address(self.address.get_text())
-        value = self.ctrl.device.mry.read(Addr)
-        self.value.set_text(to_str(value))
+        size = int(self.value.get_text())
+        value = self.ctrl.device.mry.read(Addr, size, True)
+        self.value.set_text(value)
 
     def save_mry(self, filename="mry_dump.bin"):
         self.ctrl.device.mry.save_to_file()
