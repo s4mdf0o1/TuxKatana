@@ -1,7 +1,7 @@
 from gi.repository import GLib, GObject, Gio
 
 from lib.tools import to_str, from_str, midi_str_to_int, int_to_midi_bytes
-from .address import Address
+from .midi_bytes import Address, MIDIBytes
 
 import logging
 from lib.log_setup import LOGGER_NAME

@@ -14,7 +14,7 @@ with open("params/config.yaml", "r") as f:
 dots = config['DOTS']
 
 from lib.tools import *
-from lib.address import Address
+from lib.midi_bytes import Address, MIDIBytes
 
 class Debug(Gtk.Box):
     def __init__(self, ctrl):

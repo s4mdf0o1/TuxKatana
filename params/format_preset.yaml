@@ -15,21 +15,26 @@ UserPatch%Fx(2):
   size: 221
   offset: 35
 UserPatch%Delay(1): 
+  addr: '60 00 05 00'
   size: 26
   offset: 35
-UserPatch%Delay(2): 
+UserPatch%Delay(2):
+  addr: '60 00 05 20'
   size: 26
   offset: 6
-UserPatch%Patch_1: 
+UserPatch%Patch_1:
+  addr: '60 00 05 40'
   size: 91
   offset: 6
 UserPatch%Patch_2:
+  addr: '60 00 06 20'
   size: 36
   offset: 5
-UserPatch%Status: 
+UserPatch%Status:
+  addr: '60 00 06 50'
   size: 18
   offset: 12
-UserPatch%KnobAsgn: 
+UserPatch%KnobAsgn:
   size: 33
   offset: 14 #
 UserPatch%ExpPedalAsgn: 
@@ -66,7 +71,6 @@ UserPatch%Contour(3):
   size: 2
   offset: 14
 UserPatch%Eq(2): 
-  addr: '60 00 00 60'
   size: 24
   offset: 14
-  
+

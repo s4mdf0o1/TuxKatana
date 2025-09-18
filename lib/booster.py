@@ -4,7 +4,7 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 from .tools import to_str, from_str
-from .address import Address
+from .midi_bytes import Address, MIDIBytes
 
 from .map import Map
 

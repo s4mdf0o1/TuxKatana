@@ -9,8 +9,7 @@ yaml = YAML(typ="rt")
 from collections import UserDict
 
 from .tools import *
-from .address import Address
-#from .presets import Preset
+from .midi_bytes import Address, MIDIBytes
 from .preset import Preset, Presets
 from .amplifier import Amplifier
 from .memory import Memory
@@ -167,7 +166,10 @@ class Device(GObject.GObject):
     def get_presets(self):
         size = [0,0,0,0x10]
         for i in range(1,9):
-            Addr = Address(self.ctrl.se_msg.addrs['PRESET_'].replace('X', str(i)))
+            addr = self.ctrl.se_msg.addrs['PRESET_'+str(i)]
+            log.debug(f"{addr=}")
+            Addr = self.ctrl.se_msg.addrs['PRESET_'+str(i)]
+                           #.replace('X', str(i)))
             msg = self.ctrl.se_msg.get_with_addr('GET', Addr, size)
             self.ctrl.sysex.data = msg
             self.ctrl.send(self.ctrl.sysex)

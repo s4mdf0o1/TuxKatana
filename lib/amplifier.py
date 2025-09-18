@@ -4,11 +4,9 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 from .tools import from_str, to_str
-from .address import Address
-#import numpy as np
+from .midi_bytes import Address, MIDIBytes
 
 from .map import Map
-#from .anti_flood import AntiFlood
 
 class Amplifier(GObject.GObject):
     __gsignals__ = {
