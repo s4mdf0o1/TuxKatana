@@ -14,7 +14,7 @@ SEND:
   bank_Y:      "60 00 06 26"
 
 RECV:
-  "60 00 06 5d":  "booster_status"
+  "60 00 06 5D":  "booster_status"
 
 Models:
   'Mid Boost':    '00'
@@ -26,12 +26,12 @@ Models:
   'Fat DS':       '06'
   'Metal DS':     '08'
   'Oct Fuzz':     '09'
-  'Blues Drive':  '0a'
-  'Over Drive':   '0b'
-  'TubeScreamer': '0c'
-  'Turbo OD':     '0d'
-  'Distortion':   '0e'
-  'Rat':          '0f'
+  'Blues Drive':  '0A'
+  'Over Drive':   '0B'
+  'TubeScreamer': '0C'
+  'Turbo OD':     '0D'
+  'Distortion':   '0E'
+  'Rat':          '0F'
   'GuV DS':       '10'
   'DTS+':         '11'
   'Metal Zone':   '12'

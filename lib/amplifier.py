@@ -3,7 +3,6 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-from .tools import from_str, to_str
 from .midi_bytes import Address, MIDIBytes
 
 from .map import Map
@@ -37,9 +36,9 @@ class Amplifier(GObject.GObject):
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f">>> {name} = {value}, {type(value)}")
         if name == 'amp_model':
-            svalue = to_str(value)
+            svalue = str(MIDIBytes(value))
             num = list(self.map['Models'].values()).index(svalue)
             self.direct_set('model_idx', num)
         else:
@@ -49,37 +48,34 @@ class Amplifier(GObject.GObject):
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
-        log.debug(f"<<< {name} = {value}")
+        # log.debug(f"<<< {name} = {value}, {type(value)}")
         name = name.replace('-', '_')
-        if not isinstance(value, (int, bool, float)):
-            value = from_str(value)
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
-        #log.debug(f"{Addr}, {self.map}")
         if name == 'model_idx':
             model_val = list(self.map['Models'].values())[value]
             Addr  = self.map.get_addr("amp_model")
-            self.device.send(Addr, from_str(model_val))
+            self.ctrl.send(Addr, model_val, True)
         elif name in ["amp_variation", "amp_num"]:
             num = value if name == 'amp_num' else self.amp_num
             var = value if name == 'amp_variation' else self.amp_variation
             index = num if not var else num + 5
             amp_model = list(self.map['Models'].values())[index]
-            # Addr = Address(self.map.send["amp_model"])
             Addr = self.map.get_addr("amp_model")
-            self.direct_set("amp_model", from_str(amp_model)[0])
+            amp_model = MIDIBytes(amp_model)
+            self.direct_set("amp_model", amp_model.int)
             if not self.switch_model:
-                self.device.send(Addr, from_str(amp_model))
+                self.ctrl.send(Addr, amp_model, True)
                 self.direct_set("model_idx", index)
         elif 'lvl' in name:
-            self.device.send(Addr, [value])
+            self.ctrl.send(Addr, value, True)
 
     def set_amp_model(self):
-        #log.debug(f"{to_str(self.amp_model)=}")
         amp_model = self.device.mry.read(Address("60 00 00 21"))
-        self.direct_set("amp_model", amp_model)
-        num = list(self.map['Models'].values()).index(to_str(self.amp_model))
+        self.direct_set("amp_model", amp_model.int)
+        amp_model_code = str(MIDIBytes(self.amp_model))
+        num = list(self.map['Models'].values()).index(amp_model_code)
         self.direct_set("model_idx", num)
  
     def set_mry_map(self):
@@ -96,7 +92,8 @@ class Amplifier(GObject.GObject):
         #log.debug(self.map.recv.items())
         for saddr, prop in self.map.recv.items():
             value = mry.read(Address(saddr))
-            if value is not None and value >= 0:
-                self.direct_set(prop, value)
+            # log.debug(f"{saddr} {value.int=}")
+            if value is not None and value.int >= 0:
+                self.direct_set(prop, value.int)
         self.set_amp_model()
 

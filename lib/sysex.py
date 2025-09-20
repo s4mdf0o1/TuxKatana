@@ -1,73 +1,111 @@
 from .midi_bytes import MIDIBytes, Address
 
-class SysEx:
-    DEFAULT_HEADER = MIDIBytes('41 00 00 00 00 33').bytes
+import mido
+from mido.messages.messages import SysexData
 
-    def __init__(self, *args):
-        if len(args) == 1 and hasattr(args[0], "type") and args[0].type == "sysex":
-            # Parsing mido.Message('sysex')
-            msg = args[0]
-            self.header, self.command, self.address, self.data = self._parse_sysex(msg)
-        elif len(args) == 3:
-            # Prepare mido message
-            self.command, self.address, self.data = args
-            self.header = self.DEFAULT_HEADER
-        else:
-            raise ValueError("Invalid SysEx constructor usage")
+import logging
+from lib.log_setup import LOGGER_NAME
+log = logging.getLogger(LOGGER_NAME)
 
-        self.checksum = self._compute_checksum(self.address.bytes + self.data.bytes)
+class SysEx(MIDIBytes):
+    GET = MIDIBytes('11')
+    SET = MIDIBytes('12')
 
-    def _compute_checksum(self, data: list[int]) -> list[int]:
-        return [(128 - (sum(data) % 128)) % 128]
+    def __init__(self, body=None):
+        self.mido = mido.Message('sysex')
+        self.received = False
+        if not body:
+            return
+        # if isinstance(body, tuple):
+        #     body = list(body)
+        # if isinstance(mb, SysexData):
+        #     self.bytes = list(body)
+        #     return
 
-    def _parse_sysex(self, msg):
-        raw = msg.data
-        # extract header
-        header_size = len(self.DEFAULT_HEADER)
-        header = raw[:header_size]
-        body = raw[header_size:]
-        if len(body) < 5:
-            raise ValueError("Message too short")
+        super().__init__(body)
 
-        command = MIDIBytes(body[0])
-        address = Address(" ".join(f"{b:02x}" for b in body[1:5]))
-        data = MIDIBytes(" ".join(f"{b:02x}" for b in body[5:]))
-        return header, command, address, data
+    def recvd(self, msg):
+        self.received = True
+        if isinstance(msg, SysexData):
+            msg = MIDIBytes(list(msg))
+        if msg[:4] == MIDIBytes('7E 00 06 02').bytes:
+            self.header = self._set_header(msg.bytes)
+            return self
 
-    def get_addr_data(self):
-        return self.address.bytes, self.data.bytes
+        self.addr, self.data, self.checksum = self._get_addr_data(msg.bytes)
+        return self
 
-    def get_mido_message(self):
-        from mido import Message
-        body = self.command.bytes + self.address.bytes + self.data.bytes + self.checksum
-        return Message('sysex', data=self.header + body)
+    def get(self, addr, data=None, SET=False):
+        self.received = False
+        baddr = addr
+        bdata = data
+        if not isinstance(addr, Address):
+            baddr = Address(addr)
+        if not isinstance(data, MIDIBytes):
+            bdata = MIDIBytes(data)
+        command = self.GET if not SET else self.SET
+        if str(baddr) == '7E 00 06 01':
+            self.mido.data = baddr
+            return self.mido
+        msg = self.header
+        checksum = self._checksum(baddr + bdata)
+        self.mido.data = self.header + command + baddr + bdata + checksum
+        self.command = command
+        self.addr = baddr
+        self.data = bdata
+        self.checksum = checksum
+        return  self.mido
 
-    def __repr__(self):
-        return f"<SysEx cmd={self.command} addr={self.address} data={self.data}>"
+    def values(self):
+        return (self.addr, self.data)
+
+    def copy(self):
+        new = SysEx()#self.bytes[:])  
+        if hasattr(self, "header"):
+            new.header = MIDIBytes(self.header.bytes[:])
+        if hasattr(self, "addr"):
+            new.addr = Address(self.addr.bytes[:])
+        if hasattr(self, "data"):
+            new.data = MIDIBytes(self.data.bytes[:])
+        # if hasattr(self, "checksum"):
+            # new.checksum = MIDIBytes(self.checksum.bytes[:])
+        return new
 
     def __str__(self):
-        full_list = [0xF0]+self.header+self.command.bytes+self.address.bytes+self.data.bytes+self.checksum+[0xF7]
-        return ' '.join(f"{b:02x}" for b in full_list)
+        if hasattr(self, "addr"):
+            saddr = " ".join(f"{b:02X}" for b in self.addr)
+            if hasattr(self, "data"):
+                sdata = " ".join(f"{b:02X}" for b in self.data)
+                rec = "◁" if self.received else "▷"
+                return f"[{saddr}]{rec} _{sdata}_ ({len(self.data)})"
+        elif hasattr(self, "header"):
+            s_head = " ".join(f"{b:02X}" for b in self.header.bytes)
+            return f"<{s_head}>"
+        return "Empty SysEx"
 
-class SysExFactory:
-    def __init__(self, yaml_path="params/sysex.yaml"):
-        with open(yaml_path, 'r') as f:
-            raw = yaml.load(f, Loader=yaml.FullLoader)
-        self.addrs = {}
-        for k, v in raw.items():
-            #if '0X' in v:
-            #    self.addrs[k] = MIDIBytes(int(v, 16))
-            #else:
-            self.addrs[k] = Address(v)
 
-    def create(self, cmd_name: str, addr_name: str, value: list[int] | MIDIBytes) -> SysEx:
-        command = self.addrs[cmd_name]  if isinstance(self.addrs[cmd_name], MIDIBytes) \
-                                            else MIDIBytes(self.addrs[cmd_name])
-        address = self.addrs[addr_name] if isinstance(self.addrs[addr_name], Address) \
-                                            else Address(self.addrs[addr_name])
-        if isinstance(value, list):
-            data = MIDIBytes(' '.join(f"{v:02X}" for v in value))
-        else:
-            data = value
-        return SysEx(command, address, data)
+    def to_chars(self) -> str:
+        chars = ''.join(chr(b) for b in self.data)
+        return chars.strip()
+
+    def _get_addr_data(self, body):
+        body=list(body)
+        checksum = body.pop(-1)
+        if body[:len(self.header)] == self.header.bytes:
+            body = body[len(self.header):]
+        command = body.pop(0)
+        return Address(body[:4]), MIDIBytes(body[4:]), checksum
+
+    def _checksum(self, body):
+        return MIDIBytes([(128 - (sum(body) % 128)) % 128])
+
+
+    def _set_header(self, body):
+        checksum = body.pop(-1)
+        addr, data = body[:4], body[4:]
+        manufacturer = [data[0]]
+        device = [0]
+        model = [0,0,0, data[1]]
+        version = data[2]
+        return MIDIBytes(manufacturer) + MIDIBytes(device) + MIDIBytes(model)
 

@@ -3,8 +3,6 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-from .tools import to_str, from_str, int_to_midi_bytes
-
 from .map import Map
 from .anti_flood import AntiFlood
 
@@ -31,21 +29,17 @@ class ModFx(AntiFlood, GObject.GObject):
     fx_R          = GObject.Property(type=int, default=0)
     fx_Y          = GObject.Property(type=int, default=0)
     
-    def __init__(self, device, ctrl, name="Mod"):
+    def __init__(self, device, ctrl, name="TouchWah"):
         super().__init__()
         self.name = name
         self.ctrl = ctrl
         self.device = device
-
-        self.map = Map("params/mod.yaml") # params/modfx.yaml
-        #self.set_mry_map()
-
+        self.map = Map("params/touchwah.yaml")
         self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self._on_any_property_changed)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-
         self.device.connect("load-maps", self.load_map)
+        self.notify_id = self.connect("notify", self.set_from_ui)
 
     def load_map(self, ctrl):
         self.emit(self.name + "-map-ready", self.map['Types'])
@@ -61,52 +55,37 @@ class ModFx(AntiFlood, GObject.GObject):
             svalue = to_str(value)
             num = list(self.map['Types'].values()).index(svalue)
             self.set_property(self.prefix + '_idx', num)
-        else:# 'lvl' in name:
+        else:
             self.set_property(name, value)
 
 
-    def on_param_changed(self, name, value):
+    def set_from_ui(self, name, value):
         name = name.replace('-', '_')
         log.debug(f">>> {name} = {value}")
-        if not isinstance(value, (int, bool, float)):
-            value = from_str(value)
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
         return
         if 'sw' in name:
             value = 1 if value else 0
-            #log.debug(f"{name} {Addr} {to_str(value)}")
-            self.device.send(Addr, [value])
-        elif name == 'delay_status':
-            self.direct_set(name, value)
+            self.ctrl.send(Addr, value, True)
         elif name == 'delay_type':
             num = list(self.map['Types'].values()).index(to_str(value))
             self.direct_set("type_idx", num)
         elif name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
             Addr  = self.map.send["delay_type"]
-            #log.debug(f"{name} {Addr} {model_val}")
-            self.device.send(Addr, from_str(model_val))
-        #elif 'mode' in name and name.split('_')[1] in self.banks:
-        #    num = list(self.map['Modes'].values()).index(to_str(value))
-        #    self.direct_set("mode_idx", num)
-        #elif name == 'mode_idx':
-        #    mode_val = list(self.map['Modes'].values())[value]
-        #    bank = self.get_bank_var("mode_")
-        #    addr  = self.map.send[bank]
-        #    self.device.send(from_str(addr), from_str(mode_val))
+            self.ctrl.send(Addr, model_val, True)
         elif name == 'bank_select':
-            self.device.send(Addr, [value])
+            self.ctrl.send(Addr, value, True)
         elif 'lvl' in name or name == 'bank_select':
             if name in ['time_lvl', 'd1_time_lvl', 'd2_time_lvl']:
                 value = int_to_midi_bytes(int(value), 2)
                 
                 log.debug(f"{name} {Addr} {to_str(value)}")
-                self.device.send(Addr, value)
+                self.ctrl.send(Addr, value, True)
             else:
-                #log.debug(f"{name} {Addr} {to_str(value)}")
-                self.device.send(Addr, [value])
+                self.ctrl.send(Addr, value, True)
         else:
             log.debug(f"missing DEF for '{name}'")
 
@@ -134,15 +113,12 @@ class ModFx(AntiFlood, GObject.GObject):
         # log.debug("-")
         for saddr, prop in self.map.recv.items():
             value = mry.read(Address(saddr))
-        # for Addr, prop in self.map.recv.items():
-            # value = mry.read(Addr)
-            #log.debug(f"{prop}: {Addr} = {to_str(value)}")
             if prop in ['dc_rep_lvl']:
                 value = mry.read(Addr, 3)
-                self.direct_set(prop, value)
+                self.direct_set(prop, value.int)
             else:
                 if value is not None and value >= 0:
-                    self.direct_set(prop, value)
+                    self.direct_set(prop, value.int)
         self.set_bank_type()
 
 

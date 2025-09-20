@@ -13,7 +13,6 @@ with open("params/config.yaml", "r") as f:
     config = yaml.load(f)
 dots = config['DOTS']
 
-from lib.tools import *
 from lib.midi_bytes import Address, MIDIBytes
 
 class Debug(Gtk.Box):
@@ -21,8 +20,6 @@ class Debug(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
 
-        self.edit = Gtk.ToggleButton(label="Edit Mode")
-        self.edit.connect("toggled", self.switch_mode)
         self.midi = Gtk.ComboBoxText()
         self.midi.append_text("SysEx")
         self.midi.append_text("Program_Change")
@@ -46,15 +43,17 @@ class Debug(Gtk.Box):
         self.value = Gtk.Entry()
         h_box2.append(self.value)
 
-        but_send = Gtk.Button(label="SEND to AMP")
-        but_send.connect("clicked", self.send)
+        h_bbut = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        but_send_amp = Gtk.Button(label="SEND to AMP")
+        but_send_amp.connect("clicked", self.send)
+        h_bbut.append(but_send_amp)
 
         but_read_mry = Gtk.Button(label="READ Memory")
         but_read_mry.connect("clicked", self.read_memory)
+        h_bbut.append(but_read_mry)
 
         but_save_mry = Gtk.Button(label="Save Mry to File")
         but_save_mry.connect("clicked", self.save_mry)
-
 
         h_box3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         label = Gtk.Label(label="Log Note: ")
@@ -75,12 +74,10 @@ class Debug(Gtk.Box):
         h_box4.append(but_store)
 
         self.append(self.midi)
-        self.append(self.edit)
         self.append(self.cmd)
         self.append(h_box1)
         self.append(h_box2)
-        self.append(but_send)
-        self.append(but_read_mry)
+        self.append(h_bbut)
         self.append(but_save_mry)
         self.append(h_box3)
         self.append(h_box4)
@@ -97,36 +94,14 @@ class Debug(Gtk.Box):
         archived = rotate_log(filename)
         log.info(f"Archived: {archived}")
 
-    def switch_mode( self, button ):
-        header = self.ctrl.se_msg.header
-        self.midi.set_active(0)
-        if button.get_active():
-            log.debug(f"Set Edit mode: active: 1")
-            self.send(None, 'SET', '7F 00 00 01', '01')
-        else:
-            self.send(None, 'SET', '7F 00 00 01', '00')
-
     def send(self, button, cmd=None, addr=None, val=None):
         mode = self.midi.get_active_text()
-        msg_obj = self.ctrl.se_msg
         if mode == "SysEx":
-            header = msg_obj.header
-            if not cmd:
-	            cmd = msg_obj.addrs[self.cmd.get_active_text()].bytes
-            else:
-	            cmd = msg_obj.addrs[cmd].bytes
-            if not addr and not val:
-	            addr = Address( self.address.get_text() ).bytes
-	            val = from_str( self.value.get_text() )
-            else:
-	            addr = Address( addr ).bytes
-	            val = from_str( val )
-	
-            cks = msg_obj.checksum(addr + val)
-            data = header + cmd + addr + val + cks
-            log.debug(data)
-            self.ctrl.sysex.data = data
-            self.ctrl.send(self.ctrl.sysex)
+            cmd = self.cmd.get_active_text()
+            cmd = True if cmd == 'SET' else False
+            Addr = Address( self.address.get_text() )
+            Data = MIDIBytes( self.value.get_text() )
+            self.ctrl.send( Addr, Data, cmd )
         elif mode == "Program_Change":
             program = int(self.address.get_text())
             self.ctrl.pc.program = program

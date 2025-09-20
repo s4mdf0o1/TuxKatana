@@ -1,6 +1,6 @@
 SEND:
   delay_sw:     "60 00 05 00"
-  bank_select:  "60 00 06 3c"
+  bank_select:  "60 00 06 3C"
   delay_type:   "60 00 05 01"
   time_lvl:     "60 00 05 02" # '00 01' -> '0f 50'=1ms->2s
   feedback_lvl: "60 00 05 04" 
@@ -9,18 +9,18 @@ SEND:
   effect_lvl:   "60 00 05 06"
   dirmix_lvl:   "60 00 05 07"
   d1_time_lvl:  "60 00 05 09" # '00 01' -> '0f 50'=1ms->2s
-  d1_fb_lvl:    "60 00 05 0b"
-  d1_h_cut_lvl: "60 00 05 0c"
-  d1_eff_lvl:   "60 00 05 0d"
-  d2_time_lvl:  "60 00 05 0e" # '00 01' -> '0f 50'=1ms->2s
+  d1_fb_lvl:    "60 00 05 0B"
+  d1_h_cut_lvl: "60 00 05 0C"
+  d1_eff_lvl:   "60 00 05 0D"
+  d2_time_lvl:  "60 00 05 0E" # '00 01' -> '0f 50'=1ms->2s
   d2_fb_lvl:    "60 00 05 10"
   d2_h_cut_lvl: "60 00 05 11"
   d2_eff_lvl:   "60 00 05 12"
   mod_rate_lvl: "60 00 05 13"
   mod_depth_lvl: "60 00 05 14"
-  bank_G:       "60 00 06 2d"
-  bank_R:       "60 00 06 2e"
-  bank_Y:       "60 00 06 2f"
+  bank_G:       "60 00 06 2D"
+  bank_R:       "60 00 06 2E"
+  bank_Y:       "60 00 06 2F"
   sde_vint_lpf_sw: "60 00 05 15" # Off|On
   sde_fb_phase_sw: "60 00 05 17" # Normal|Inverse
   sde_ef_phase_sw: "60 00 05 18" # Normal|Inverse
@@ -28,8 +28,9 @@ SEND:
   sde_modul_sw:   "60 00 05 19"  # Off|On
 
 RECV:
-  "60 00 06 2d":  delay_return
+  "60 00 06 2D":  delay_return
   "60 00 06 60":  delay_status
+  # "60 00 06 5A":  glob_mix_lvl
 
 Types:
   "Digital":      '00'
@@ -42,7 +43,7 @@ Types:
   "Analog":       '07'
   "Tap Echo":     '08'
   "Modulate":     '09'
-  "SDE-3000":     '0a'
+  "SDE-3000":     '0A'
 
 #Digital: 0
 #  Delay: (time, feedback)

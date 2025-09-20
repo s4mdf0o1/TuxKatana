@@ -3,7 +3,6 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-from .tools import to_str, from_str, int_to_midi_bytes
 from .midi_bytes import Address, MIDIBytes
 
 from .map import Map
@@ -64,7 +63,7 @@ class Delay(GObject.GObject):
         name = name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
         if name == 'delay_type':
-            svalue = to_str(value)
+            svalue = str(MIDIBytes(value))
             num = list(self.map['Types'].values()).index(svalue)
             self.direct_set("type_idx", num)
         else:
@@ -74,27 +73,19 @@ class Delay(GObject.GObject):
         name = pspec.name
         value = self.get_property(name)
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}")
-        if not isinstance(value, (int, bool, float)):
-            value = from_str(value)
+        # log.debug(f"<<< {name} = {value}")
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
         if 'sw' in name:
             value = 1 if value else 0
-            self.device.send(Addr, [value])
+            self.ctrl.send(Addr, value, True)
         elif name == 'type_idx':
             model_val = list(self.map['Types'].values())[value]
             Addr  = self.map.get_addr("delay_type")
-            self.device.send(Addr, from_str(model_val))
-        elif name == 'bank_select':
-            self.device.send(Addr, [value])
+            self.ctrl.send(Addr, model_val, True)
         elif 'lvl' in name or name == 'bank_select':
-            if name in ['time_lvl', 'd1_time_lvl', 'd2_time_lvl']:
-                value = int_to_midi_bytes(int(value), 2)
-                self.device.send(Addr, value)
-            else:
-                self.device.send(Addr, [value])
+            self.ctrl.send(Addr, value, True)
         else:
             log.warning(f"missing DEF for '{name}'")
 
@@ -113,7 +104,8 @@ class Delay(GObject.GObject):
     def set_bank_type(self):
         bank_name = self.get_bank_var("bank_")
         d_type = self.get_property(bank_name)
-        num = list(self.map['Types'].values()).index(to_str(d_type))
+        d_type = str(MIDIBytes(d_type))
+        num = list(self.map['Types'].values()).index(d_type)
         self.direct_set("type_idx", num)
 
     def load_from_mry(self, mry):
@@ -122,10 +114,10 @@ class Delay(GObject.GObject):
             value = mry.read(Address(saddr))
             if prop in ['time_lvl', 'd1_time_lvl']:
                 value = mry.read(Address(saddr), 2)
-                self.direct_set(prop, value)
+                self.direct_set(prop, value.int)
             else:
-                if value is not None and value >= 0:
-                    self.direct_set(prop, value)
+                if value is not None and value.int >= 0:
+                    self.direct_set(prop, value.int)
         self.set_bank_type()
 
     def set_mry_map(self):

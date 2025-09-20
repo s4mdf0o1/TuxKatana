@@ -9,7 +9,7 @@ from .toggle import Toggle
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
-from lib.tools import from_str, midi_str_to_int
+
 class ReverbUI(Gtk.Box):
     def __init__(self, own_ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)

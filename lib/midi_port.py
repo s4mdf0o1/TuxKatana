@@ -13,7 +13,7 @@ class KatanaPort:
         self.name = None
 
     def check_online( self ):
-        log.debug("check_online")
+        # log.debug("check_online")
         ports = mido.get_output_names()
         self.has_device = any("katana" in p.lower() for p in ports)
         return True
@@ -46,9 +46,9 @@ class KatanaPort:
             self.is_connected = False
             raise Exception(f"Impossible de se connecter au port {self.name}: {e}")
 
-    def send( self, message):
-        log.debug(f"send: {message.hex()}")
-        self.output.send( message )
+#    def send( self, message):
+#        log.debug(f"send: {message.hex()}")
+#        self.output.send( message )
 
     def close( self ):
         if hasattr(self, 'output'):

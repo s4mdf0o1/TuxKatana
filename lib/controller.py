@@ -10,10 +10,10 @@ from time import sleep
 from threading import Thread, Event
 from queue import Queue, Empty
 
-from .message import FormatMessage
 from .midi_port import KatanaPort
 from .device import Device
-from .tools import to_str, from_str
+from .midi_bytes import Address, MIDIBytes
+from .sysex import SysEx
 
 import logging
 from lib.log_setup import LOGGER_NAME
@@ -27,30 +27,40 @@ class Controller(GObject.GObject):
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
-        self.se_msg = FormatMessage()
-        self.device = Device(self)
-        self.port = KatanaPort()
+        self.sysex = SysEx()
+        self.addrs = {}
         with open("params/midi.yaml", "r") as f:
             self.midi= yaml.load(f)
+        for k, v in self.midi['SysEx'].items():
+            if len(v.split()) == 4:
+                self.addrs[k] = Address(v)
+            else:
+                self.addrs[k] = MIDIBytes(v)
+        self.device = Device(self)
+        self.port = KatanaPort()
+
         self.pc = mido.Message('program_change')
         self.cc = mido.Message('control_change')
-        self.sysex = mido.Message('sysex')
-        # self.listener_callback = None
         self.msg_queue = Queue()
         self.pause_queue = True
         self.thread_watch = Thread(target=self.queue_watcher, daemon=True).start()
         GLib.timeout_add_seconds(1, self.wait_device)
     
-    def wait_msg(self):
-        return self.msg_queue.get(timeout=0.5)
+    def wait_msg(self, timeout=0.5):
+        msg = self.msg_queue.get(timeout=timeout)
+        self.sysex.recvd(msg.data)
+        log.sysex(f"{self.sysex.mido.hex()}")
+        return self.sysex
 
     def queue_watcher(self):
         while True:
             if not self.pause_queue:
                 msg = self.msg_queue.get(.1)
                 log.sysex(f"{msg.hex()}")
-                addr, data =  self.se_msg.get_addr_data(msg)
-                GLib.idle_add(self.device.on_received_msg, addr, data,priority=GLib.PRIORITY_DEFAULT)
+                self.sysex.recvd(msg.data)
+                addr, data = self.sysex.addr, self.sysex.data
+                log.debug(f"{addr}: {data}")
+                GLib.idle_add(self.device.on_received_msg, addr, data)
             else:
                 sleep(.1)
 
@@ -69,39 +79,26 @@ class Controller(GObject.GObject):
         if msg.type == 'sysex':
             self.msg_queue.put(msg)
 
-    def send( self, msg):#, callback=None ):
-        #self.device.comm=1
+    def send( self, Addr, data=None, SET=False):
+        self.device.set_charging(1, 50)
+        msg = self.sysex.get(Addr, data, SET)
         log.sysex(f"SEND: {msg.hex()}")
-        # log.debug(msg.hex())
-        # if callback:
-            # log.debug("has callback")
-            # self.listener_callback = callback
+        log.debug(self.sysex)
         self.port.output.send( msg )
 
     def scan_devices(self):
         #log.debug(f"-")
-        self.sysex.data = self.se_msg.addrs['SCAN_REQ'].bytes
-        self.send(self.sysex)
+        self.pause_queue = True
+        scan_req = self.addrs['SCAN_REQ']
+        self.send(scan_req)
         self.set_device(self.wait_msg())
+        self.pause_queue = False
 
-    def set_device(self, msg):
-        #log.debug(msg)
+    def set_device(self, sx_msg):
         self.device.set_charging(2, 1000)
-        data = list(msg.data)
-        if data[0:4] == self.se_msg.addrs['SCAN_REP'].bytes:
-            infos = data[4:]
-            man = [infos[0]]
-            dev = [0]
-            mod = [0,0,0,infos[1]]
-            num = [infos[2]]
-            self.device.manufacturer = to_str(man)
-            self.device.device = to_str(dev)
-            self.device.model = sq(to_str(mod))
-            self.device.number = to_str(num)
-            self.se_msg.header = man + dev + mod
+        # log.debug(sx_msg)
         self.device.get_name()
         self.device.get_presets()
         self.device.set_edit_mode(True)
         self.device.dump_memory()
-        # self.device.set_selected_channel()
 

@@ -9,7 +9,6 @@ from .toggle import Toggle
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
-from lib.tools import from_str, midi_str_to_int
 
 class ModFxUI(Gtk.Box):
     def __init__(self, own_ctrl, name):
@@ -29,4 +28,17 @@ class ModFxUI(Gtk.Box):
             prefix + "_select", self.bank_select, "selected",
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
+        
+        self.types_store = Gtk.ListStore(int, str, str)
+        self.types = Gtk.ComboBox.new_with_model(self.types_store)
+        self.types.set_hexpand(True)
+        renderer = Gtk.CellRendererText()
+        self.types.pack_start(renderer, True)
+        self.types.add_attribute(renderer, "text", 1)
+        self.own_ctrl.bind_property(
+            "type_idx", self.types, "active", 
+            GObject.BindingFlags.SYNC_CREATE |\
+            GObject.BindingFlags.BIDIRECTIONAL )
+        box_sel.append(self.types)
 
+    

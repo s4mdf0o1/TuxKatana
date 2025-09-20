@@ -1,0 +1,12 @@
+# Touch_Wah
+  ## Effect
+  tw_filt_sw:   "60 00 01 02" # Low/Band Pass
+  tw_polar_sw:  "60 00 01 03" # Down/Up
+  ## Touch Wah
+  tw_peak_lvl:  "60 00 01 06" # Peak
+  tw_freq_lvl:  "60 00 01 05" # Freq
+  tw_sens_lvl:  "60 00 01 04" # Sens
+  ## Level
+  tw_eff_lvl:   "60 00 01 07" # Effect
+  tw_dmix_lvl:  "60 00 01 08" # Direct Mix
+

@@ -8,7 +8,6 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-from .tools import to_str, from_str
 from lib.midi_bytes import Address, MIDIBytes
 
 class Map(UserDict):
@@ -20,7 +19,6 @@ class Map(UserDict):
         self.send = {}
         with open(filepath, 'r') as f:
             data = yaml.load(f)
-        #self.data = raw
         for k in data:
             if k == 'SEND':
                 self.send = bidict(data[k])
@@ -29,7 +27,6 @@ class Map(UserDict):
             else:
                 self.data[k] = bidict(data[k])
         self.recv |= self.send.inverse
-        #for k, v in self.recv.items()
 
     def get_addr(self, prop):
         Addr=None

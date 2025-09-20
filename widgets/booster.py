@@ -5,9 +5,10 @@ from gi.repository import Gtk, GLib, Gdk, GObject
 from .slider import Slider
 from .bank import Bank
 from .toggle import Toggle
-import logging
+
+from lib.midi_bytes import Address, MIDIBytes
 from lib.log_setup import LOGGER_NAME
-from lib.tools import from_str
+import logging
 log = logging.getLogger(LOGGER_NAME)
 
 class BoosterUI(Gtk.Box):
@@ -47,7 +48,7 @@ class BoosterUI(Gtk.Box):
         self.drive_lvl = Slider( "Drive", "normal", self.own_ctrl, "drive_lvl" )
         self.drive_lvl.name = "drive_lvl"
         adj = self.drive_lvl.scale.get_adjustment()
-        adj.set_upper(from_str('78')[0]) # max 125
+        adj.set_upper(MIDIBytes('7D').int) # max 100+25
         self.drive_lvl.connect("delayed-value", self.on_slider_changed)
         box_drive.append(self.drive_lvl)
 

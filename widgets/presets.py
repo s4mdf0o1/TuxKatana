@@ -45,7 +45,7 @@ class PresetsView(Gtk.Box):
 
 
     def on_mry_loaded(self, mry):
-        preset_name = self.ctrl.device.mry.get_preset_name()
+        preset_name = self.ctrl.device.mry.get_actual_preset()
         index = self.find_index_by_text(self.selection, preset_name)
         log.debug(f"index={index}, index+1={index+1}")
         self.ctrl.device.emit("channel-changed", int(index+1))

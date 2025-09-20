@@ -7,57 +7,40 @@ from .midi_bytes import Address, MIDIBytes
 
 from .map import Map
 
-class Reverb(GObject.GObject):
+class TouchWah(GObject.GObject):
     __gsignals__ = {
-        "reverb-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
+        "touchwah-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
     }
-    reverb_sw       = GObject.Property(type=bool, default=False)
-    reverb_type     = GObject.Property(type=int, default=0)
-    type_idx        = GObject.Property(type=int, default=0)
-    reverb_status   = GObject.Property(type=int, default=0)
-    bank_select     = GObject.Property(type=int, default=0)
-    bank_G          = GObject.Property(type=int, default=0)
-    bank_R          = GObject.Property(type=int, default=0)
-    bank_Y          = GObject.Property(type=int, default=0)
-    mode_idx        = GObject.Property(type=int, default=0)
-    mode_G          = GObject.Property(type=int, default=0)
-    mode_R          = GObject.Property(type=int, default=0)
-    mode_Y          = GObject.Property(type=int, default=0)
-    pre_delay_lvl   = GObject.Property(type=float, default=0.0)
-    time_lvl        = GObject.Property(type=float, default=0.0)
-    density_lvl     = GObject.Property(type=float, default=0.0)
-    low_cut_lvl     = GObject.Property(type=float, default=0.0)
-    high_cut_lvl    = GObject.Property(type=float, default=0.0)
-    effect_lvl      = GObject.Property(type=float, default=0.0)
-    dir_mix_lvl     = GObject.Property(type=float, default=0.0)
+    tw_filt_sw      = GObject.Property(type=bool, default=False)
+    tw_polar_sw     = GObject.Property(type=bool, default=False)
+    tw_peak_lvl     = GObject.Property(type=float, default=0.0)
+    tw_sens_lvl     = GObject.Property(type=float, default=0.0)
+    tw_freq_lvl     = GObject.Property(type=float, default=0.0)
+    tw_eff_lvl      = GObject.Property(type=float, default=0.0)
+    tw_dmix_lvl     = GObject.Property(type=float, default=0.0)
 
     def __init__(self, device, ctrl):
         super().__init__()
-        self.name = "Reverb"
+        self.name = "Touch Wah"
         self.ctrl = ctrl
         self.device = device
-        self.map = Map("params/reverb.yaml")
+        self.map = Map("params/touch_wah.yaml")
         self.set_mry_map()
 
         self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self.set_from_ui)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
+        self.notify_id = self.connect("notify", self.set_from_ui)
 
         self.device.connect("load-maps", self.load_map)
 
     def load_map(self, ctrl):
-        self.emit("reverb-map-ready", self.map['Types'], self.map['Modes'])
+        self.emit("touch-map-ready", self.map['Types'], self.map['Modes'])
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
-        if name == 'reverb_type':
-            svalue = str(MIDIBytes(value))
-            num = list(self.map['Types'].values()).index(svalue)
-            self.direct_set("type_idx", num)
-        else:
-            self.direct_set(name, value)
+        self.direct_set(name, value)
 
     def set_from_ui(self, obj, pspec):
         name = pspec.name
@@ -67,16 +50,7 @@ class Reverb(GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
-        if name == 'type_idx':
-            model_val = list(self.map['Types'].values())[value]
-            Addr  = self.map.get_addr("reverb_type")
-            self.ctrl.send(Addr, model_val, True)
-        elif name == 'mode_idx':
-            mode_val = list(self.map['Modes'].values())[value]
-            bank = self.get_bank_var("mode_")
-            Addr  =  self.map.get_addr(bank)
-            self.ctrl.send(Addr, mode_val, True)
-        elif 'lvl' in name or name == 'bank_select':
+        if 'lvl' in name or name == 'bank_select':
             if name == 'pre_delay_lvl':
                 value = MIDIBytes(value, 2)
                 self.ctrl.send(Addr, value, True)

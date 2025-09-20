@@ -17,7 +17,6 @@ class Slider(AntiFlood, Gtk.Box):
     }
 
     def __init__(self, name, format_name="normal", own_ctrl=None, bind_prop=""):
-        #AntiFlood.__init__(self)
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         self.format_name = format_name
         adjustment = Gtk.Adjustment(
@@ -33,7 +32,6 @@ class Slider(AntiFlood, Gtk.Box):
         self.scale.set_value_pos(Gtk.PositionType.RIGHT)
         self.scale.set_hexpand(True)
         self.set_format()
-        #self.scale.name = ""
         label = Gtk.Label(label=name)
         label.set_size_request(80, -1)
         self.append(label)
@@ -43,14 +41,13 @@ class Slider(AntiFlood, Gtk.Box):
         if own_ctrl:
             own_ctrl.bind_property(
                 bind_prop, self, "value",\
-                GObject.BindingFlags.SYNC_CREATE )#|\
-                #GObject.BindingFlags.BIDIRECTIONAL )
+                GObject.BindingFlags.SYNC_CREATE )
         self.scale.connect("value-changed", self._on_scale_changed)
 
     def _on_scale_changed(self, scale):
         val = scale.get_value()
-        self.set_property("value", val)   # met à jour la propriété GObject
-        self.schedule_value(val)          # déclenche l’anti-flood
+        self.set_property("value", val)
+        self.schedule_value(val)          # start AntiFlood
 
     @GObject.Property(type=float, default=0.0)
     def value(self):
@@ -67,9 +64,6 @@ class Slider(AntiFlood, Gtk.Box):
     @name.setter
     def name(self, val):
         self.scale.name = val
-
-    #def connect(self, name, *args, **kwargs):
-    #    return self.scale.connect(name, *args, **kwargs)
 
     def set_format(self):
         vals = {}
@@ -106,7 +100,6 @@ class Slider(AntiFlood, Gtk.Box):
             a = (y2 - y1) / (x2 - x1)
             b = y1 - a * x1
             time = a * v + b
-            #if time < 1.0:
             time = int(round(time))
             #log.debug(time)
             if time < 1000:

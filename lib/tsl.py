@@ -10,8 +10,6 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-from .tools import *
-
 class TSLFile:#(GObject.GObject):
     # __gsignals__ = {
     #     "modfx-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),

@@ -3,8 +3,7 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 class MIDIBytes:
-    def __init__(self, mb, length: int = None):
-        log.debug(f"{mb=}")
+    def __init__(self, mb=None, length: int = None):
         if mb is None or mb == '':
             self.bytes = []
             return
@@ -13,12 +12,11 @@ class MIDIBytes:
                 length = max(1, (mb.bit_length() + 6) // 7)
             mb = self.int_to_hexstring(mb, length)
         if isinstance(mb, list):
-            mb = " ".join(f"{c:02x}" for c in mb).strip()
+            mb = " ".join(f"{c:02X}" for c in mb).strip()
         parts = mb.strip().split()
         if not parts:
             self.bytes = []
             return
-            raise ValueError("Empty value")
         try:
             vals = [int(p, 16) for p in parts]
         except ValueError:
@@ -26,16 +24,20 @@ class MIDIBytes:
         for v in vals:
             if v < 0 or v > 0x7F:
                 raise ValueError(f"Invalid MIDI byte: 0 < {v} < 0x7F")
+        if length and len(vals) < length:
+            diff = length - len(vals)
+            vals = [0]*diff + vals
+            self.length = length
         self.bytes = vals
 
     def __str__(self):
-        return " ".join(f"{b:02x}" for b in self.bytes)
+        return " ".join(f"{b:02X}" for b in self.bytes)
 
     def __repr__(self):
         return f"{self.__class__.__name__}('{self.__str__()}')"
 
     def __eq__(self, other):
-        if not isinstance(other, Address):
+        if not isinstance(other, (Address,MIDIBytes,)):
             return NotImplemented
         return self.bytes == other.bytes
 
@@ -59,22 +61,50 @@ class MIDIBytes:
             return NotImplemented
         return self.to_int() >= other.to_int()
 
-    def __add__(self, offset: int):
-        if not isinstance(offset, int):
+    def __add__(self, other):
+        if not isinstance(other, (int, MIDIBytes,)):
             return NotImplemented
-        value = self.to_int() + offset
-        return MIDIBytes.from_int(value, len(self.bytes))
-
-    def __sub__(self, other):
-        if isinstance(other, MIDIBytes):
-            return abs(self.to_int() - other.to_int())
-        elif isinstance(other, int):
-            value = self.to_int() - other
-            return MIDIBytes.from_int(value, len(self.bytes))
-        return NotImplemented
+        else:
+            if isinstance(other, int):
+                value = self.to_int() + other
+                return MIDIBytes.from_int(value, len(self.bytes))
+            else:
+                return MIDIBytes(self.bytes + other.bytes)
 
     def __getitem__(self, i):
         return self.bytes[i]
+
+    def __setitem__(self, i, value):
+        if isinstance(i, slice):
+            if isinstance(value, MIDIBytes):
+                self.bytes[i] = value.bytes
+            elif isinstance(value, list):
+                self.bytes[i] = value
+            else:
+                raise TypeError("slice assignment requires list or MIDIBytes")
+        else:
+            if isinstance(value, int):
+                if not (0 <= value <= 0x7F):
+                    raise ValueError("MIDI byte must be in 0..127")
+                self.bytes[i] = value
+            else:
+                raise TypeError("single item must be int")
+
+    def __len__(self):
+        return len(self.bytes)
+
+    def __iter__(self):
+        return iter(self.bytes)
+
+    @property
+    def int(self) -> int:
+        return self.to_int()
+
+    @property
+    def bool(self) -> bool:
+        if len(self.bytes) > 1:
+            raise ValueError(f"Cannot convert multi-byte {self} to bool")
+        return self.bytes[0] != 0
 
     def to_int(self) -> int:
         value = 0
@@ -111,7 +141,29 @@ class MIDIBytes:
         return cls(cls.int_to_hexstring(value, length))
 
 class Address(MIDIBytes):
-    def __init__(self, addr):
+    def __init__(self, addr=None):
+        if isinstance(addr, Address):
+            log.debug(f"Double declaration of {addr}")
+            return
         super().__init__(addr, length=4)
+
+    def __add__(self, other):
+        if not isinstance(other, (int, MIDIBytes,)):
+            return NotImplemented
+        if isinstance(other, int):
+            value = self.to_int() + other
+            return Address.from_int(value, len(self.bytes))
+        if isinstance(other, MIDIBytes):
+            return MIDIBytes(self.bytes + other.bytes)
+       
+    def __sub__(self, other):
+        if isinstance(other, Address):
+            val_s = self.to_int()
+            val_o = other.to_int()
+            return abs(val_s - val_o)
+        elif isinstance(other, int):
+            value = self.to_int() - other
+            return Address.from_int(value, len(self.bytes))
+        return NotImplemented
 
 

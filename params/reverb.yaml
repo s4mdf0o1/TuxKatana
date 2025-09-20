@@ -1,6 +1,6 @@
 SEND:
   reverb_type:  "60 00 05 41"
-  bank_select:  "60 00 06 3d"
+  bank_select:  "60 00 06 3D"
   reverb_sw:    "60 00 05 40"
   bank_G:       "60 00 06 30"
   bank_R:       "60 00 06 31"

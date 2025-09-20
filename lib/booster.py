@@ -3,7 +3,6 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-from .tools import to_str, from_str
 from .midi_bytes import Address, MIDIBytes
 
 from .map import Map
@@ -38,19 +37,18 @@ class Booster(GObject.GObject):
 
         self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self.set_from_ui)
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-
         self.device.connect("load-maps", self.load_map)
+        self.notify_id = self.connect("notify", self.set_from_ui)
 
     def load_map(self, ctrl):
         self.emit("booster-map-ready", self.map['Models'])
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f">>> {name} = {value}")
         if name == 'booster_model':
-            svalue = to_str(value)
+            svalue = str(MIDIBytes(value))
             num = list(self.map['Models'].values()).index(svalue)
             self.direct_set('model_idx', num)
         else:
@@ -59,22 +57,20 @@ class Booster(GObject.GObject):
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
-        log.debug(f">>> {name} = {value}")
+        # log.debug(f"<<< {name} = {value}")
         name = name.replace('-', '_')
-        if not isinstance(value, (int, bool, float)):
-            value = from_str(value)
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
         if name == 'model_idx':
             model_val = list(self.map['Models'].values())[value]
             Addr  = self.map.get_addr("booster_model")
-            self.device.send(Addr, from_str(model_val))
+            self.ctrl.send(Addr, model_val)
         elif 'lvl' in name or name == 'bank_select':
-            self.device.send(Addr, [value])
+            self.ctrl.send(Addr, value, True)
         elif 'sw' in name:
             value = 1 if value else 0
-            self.device.send(Addr, [value])
+            self.ctrl.send(Addr, value, True)
 
     def direct_set(self, prop, value):
         self.handler_block_by_func(self.set_from_ui)
@@ -85,14 +81,15 @@ class Booster(GObject.GObject):
         bank = self.banks[self.booster_status - 1]
         bank_name = "bank_"+bank
         model = self.get_property(bank_name)
-        num = list(self.map['Models'].values()).index(to_str(model))
+        smodel = str(MIDIBytes(model))
+        num = list(self.map['Models'].values()).index(smodel)
         self.direct_set("model_idx", num)
 
     def load_from_mry(self, mry):
         for saddr, prop in self.map.recv.items():
             value = mry.read(Address(saddr))
-            if value is not None and value >= 0:
-                self.direct_set(prop, value)
+            if value is not None and value.int >= 0:
+                self.direct_set(prop, value.int)
         self.set_bank_model()
 
     def set_mry_map(self):
