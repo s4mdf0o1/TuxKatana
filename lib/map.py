@@ -15,8 +15,8 @@ class Map(UserDict):
         super().__init__()
         self.filepath = filepath
         data = None
-        self.recv = {}
-        self.send = {}
+        self.recv = bidict()
+        self.send = bidict()
         with open(filepath, 'r') as f:
             data = yaml.load(f)
         for k in data:
@@ -42,9 +42,9 @@ class Map(UserDict):
 
 
             
-    def save(self):
-        with open(self.filepath, 'w') as f:
+    def save(self, filename):
+        with open(filename, 'w') as f:
             yaml.dump(self.data, f)
-        log.info(f"{self.filepath} saved")
+        log.info(f"{filename} saved")
 
 

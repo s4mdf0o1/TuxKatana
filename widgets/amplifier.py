@@ -44,14 +44,14 @@ class AmplifierUI(Gtk.Box):
             GObject.BindingFlags.BIDIRECTIONAL )
         self.append(self.amp_variation)
 
-        self.amp_gain = Slider( "Gain", "normal", self.own_ctrl, "gain_lvl" )
-        self.amp_gain.name = "gain_lvl"
-        self.amp_gain.connect("delayed-value", self.on_slider_changed)
+        self.amp_gain = Slider( "Gain", "normal", self.own_ctrl, "amp_gain_lvl" )
+        # self.amp_gain.name = "gain_lvl"
+        # self.amp_gain.connect("delayed-value", self.on_slider_changed)
         self.append(self.amp_gain)
 
-        self.amp_volume = Slider( "Volume", "normal", self.own_ctrl, 'volume_lvl' )
-        self.amp_volume.name = "volume_lvl"
-        self.amp_volume.connect("delayed-value", self.on_slider_changed)
+        self.amp_volume = Slider( "Volume", "normal", self.own_ctrl, 'amp_vol_lvl' )
+        # self.amp_volume.name = "volume_lvl"
+        # self.amp_volume.connect("delayed-value", self.on_slider_changed)
         self.append(self.amp_volume)
 
         self.own_ctrl.connect("amp-map-ready", self.on_amp_models_loaded)

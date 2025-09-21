@@ -5,9 +5,6 @@ log = logging.getLogger(LOGGER_NAME)
 
 from .map import Map
 from .midi_bytes import Address, MIDIBytes
-from ruamel.yaml import YAML
-yaml = YAML(typ="rt")
-
 
 class ModFx(GObject.GObject):
     __gsignals__ = {
@@ -18,21 +15,23 @@ class ModFx(GObject.GObject):
     mod_sw      = GObject.Property(type=bool, default=False)
     mod_type    = GObject.Property(type=int, default=0)
     mod_idx     = GObject.Property(type=int, default=-1)
-    mod_status  = GObject.Property(type=int, default=0)
-    mod_bank_sel= GObject.Property(type=int, default=0)
     mod_bank_G  = GObject.Property(type=int, default=0)
     mod_bank_R  = GObject.Property(type=int, default=0)
     mod_bank_Y  = GObject.Property(type=int, default=0)
+    mod_bank_sel= GObject.Property(type=int, default=0)
+    mod_status  = GObject.Property(type=int, default=0)
+    mod_vol_lvl = GObject.Property(type=int, default=0)
     fx_sw       = GObject.Property(type=bool, default=False)
     fx_type     = GObject.Property(type=int, default=0)
     fx_idx      = GObject.Property(type=int, default=-1)
-    fx_status   = GObject.Property(type=int, default=0)
-    fx_bank_sel = GObject.Property(type=int, default=0)
     fx_bank_G   = GObject.Property(type=int, default=0)
     fx_bank_R   = GObject.Property(type=int, default=0)
     fx_bank_Y   = GObject.Property(type=int, default=0)
-    mod_unknown_1 = GObject.Property(type=int, default=0)
-    fx_unknown_1  = GObject.Property(type=int, default=0)
+    fx_bank_sel = GObject.Property(type=int, default=0)
+    fx_status   = GObject.Property(type=int, default=0)
+    fx_vol_lvl  = GObject.Property(type=int, default=0)
+    #mod_unknown_1 = GObject.Property(type=int, default=0)
+    #fx_unknown_1  = GObject.Property(type=int, default=0)
     
     def __init__(self, device, ctrl, name):
         super().__init__()
@@ -52,29 +51,32 @@ class ModFx(GObject.GObject):
         self.notify_id = self.connect("notify", self.set_from_ui)
 
     def load_map(self, ctrl):
-        self.emit("modfx-map-ready", self.map['Types'])
+        self.emit("modfx-map-ready", self.map['MFTypes'])
 
     def set_mry_map(self):
         for Addr, prop in self.map.recv.items():
             if self.prefix in prop:
                 self.device.mry.map[str(Addr)] = (self, prop)
-
-        mry_map = self.device.mry.map.copy()
-        for k, v in mry_map.items():
-            obj, prop = v
-            mry_map[k]= (obj.name, prop)
-        with open(self.prefix+"map.log", 'w') as f:
-            yaml.dump(mry_map, f)
-
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        log.debug(f">>> {self.prefix} {name} = {value}, {type(value)}")
-        if name in ['mod_type', 'fx_type']:
+        log.debug(f">>> {name} = {value}, {type(value)}")
+        # log.debug(f"{self.setting=}")
+        if name == self.prefix + 'type':
             svalue = str(MIDIBytes(value))
-            num = list(self.map['Types'].values()).index(svalue)
+            num = list(self.map['MFTypes'].values()).index(svalue)
             self.direct_set(self.prefix + 'idx', num)
-        else:
+        elif name == self.prefix + 'status':
             self.direct_set(name, value)
+            bank_prop = self.get_bank_var()
+            log.debug(f"{bank_prop}: {self.get_property(bank_prop)}")
+            bank_val = self.get_property(bank_prop)
+            self.direct_set("type_idx", bank_val )
+            # self.type_idx = bank_val
+        elif '_vol_lvl' in name or 'bank' in name:
+            self.direct_set(name, value)
+        else:
+            log.warning(f"NEED PRECISE: {name}={value}")
+            # self.direct_set(name, value)
 
     def set_from_ui(self, obj, pspec):
         name = pspec.name
@@ -84,8 +86,10 @@ class ModFx(GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
-        if 'idx' in name:
-            type_val = list(self.map['Types'].values())[value]
+        # if name == self.prefix + 'idx':
+        if 'idx' in name:# == self.prefix + 'idx':
+            log.debug(f"{name=}")
+            type_val = list(self.map['MFTypes'].values())[value]
             Addr  = self.map.send[self.prefix + "type"]
             self.ctrl.send(Addr, type_val, True)
         elif name == self.prefix + 'bank_sel':
@@ -95,18 +99,9 @@ class ModFx(GObject.GObject):
             self.ctrl.send(Addr, value, True)
             #else:
             #    self.ctrl.send(Addr, value, True)
-
-        else:
-            log.debug(f"missing DEF for '{name}'")
-        return
-        if 'lvl' in name or name == 'bank_select':
-            if name in ['time_lvl', 'd1_time_lvl', 'd2_time_lvl']:
-                value = int_to_midi_bytes(int(value), 2)
-                
-                log.debug(f"{name} {Addr} {to_str(value)}")
-                self.ctrl.send(Addr, value, True)
-            else:
-                self.ctrl.send(Addr, value, True)
+        elif self.prefix+"bank_" in name or '_vol_lvl' in name:
+            log.debug(f"{name}: {Addr}: {value}")
+            self.ctrl.send(Addr, value, True)
         else:
             log.debug(f"missing DEF for '{name}'")
 
@@ -115,7 +110,7 @@ class ModFx(GObject.GObject):
                 not hasattr(self, prop):
             # log.warning(f"ModFx: Unknown Property: {prop}={value}")
             return
-        # log.debug(f"{prop}={value}")
+        log.debug(f"{prop}={value}")
         self.handler_block_by_func(self.set_from_ui)
         self.set_property(prop, value)
         self.handler_unblock_by_func(self.set_from_ui)
@@ -129,7 +124,7 @@ class ModFx(GObject.GObject):
         bank_name = self.get_bank_var()
         d_type = self.get_property(bank_name)
         d_type = str(MIDIBytes(d_type))
-        num = list(self.map['Types'].values()).index(d_type)
+        num = list(self.map['MFTypes'].values()).index(d_type)
         self.direct_set("type_idx", num)
 
     def load_from_mry(self, mry):

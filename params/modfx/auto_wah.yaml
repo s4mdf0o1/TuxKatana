@@ -1,0 +1,10 @@
+# Auto_Wah
+SEND:
+  aw_filt_sw:   "60 00 01 09" # Low / Band
+  aw_freq_lvl:  "60 00 01 0A" # Freq
+  aw_peak_lvl:  "60 00 01 0B" # Peak
+  aw_rate_lvl:  "60 00 01 0C" # Rate
+  aw_depth_lvl: "60 00 01 0D" # Depth
+  aw_eff_lvl:   "60 00 01 0E" # Effet
+  aw_dmix_lvl:  "60 00 01 0F" # Direct Mix
+

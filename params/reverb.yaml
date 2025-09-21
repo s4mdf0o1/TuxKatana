@@ -19,7 +19,7 @@ SEND:
 RECV:
   "60 00 06 61": "reverb_status"
 
-Types:
+ReverbTypes:
     'Ambience': '00'
     'Room':     '01'
     'Hall 1':   '02'

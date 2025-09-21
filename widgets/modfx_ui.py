@@ -17,12 +17,13 @@ class ModFxUI(Gtk.Box):
     def __init__(self, ctrl, own_ctrl, name):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
+        self.name = name
         #self.own_ctrl = self.ctrl.device.modfx
         self.own_ctrl = own_ctrl
         self.prefix = name.lower()
 
         self.stack = Gtk.Stack()
-        self.stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        # self.stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
  
         banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
         self.bank_select = Bank(name, banks)
@@ -51,6 +52,10 @@ class ModFxUI(Gtk.Box):
             GObject.BindingFlags.BIDIRECTIONAL )
         box_sel.append(self.types)
         self.append(box_sel)
+
+        self.vol_lvl = Slider( "Volume", "normal", self.own_ctrl, self.prefix+"_vol_lvl" )
+        box_sel.append(self.vol_lvl)
+
         self.append(self.stack)
 
         self.own_ctrl.connect("modfx-map-ready", self.on_modfx_loaded)
@@ -61,10 +66,17 @@ class ModFxUI(Gtk.Box):
                     "notify::"+self.prefix+"-bank"+bank,
                     self.on_bank_changed
                 )
-        #self.stack.connect(
-        #        "notify::visible-child",
-        #        self.on_bank_selected
-        #    )
+
+        self.own_ctrl.connect("notify::type-idx", self.on_type_changed)
+
+    def on_type_changed(self, obj, pspec):
+        idx = self.own_ctrl.type_idx
+        children = self.get_stack_children(self.stack)
+        if 0 <= idx < len(children):
+            self.stack.set_visible_child(children[idx])
+        else:
+            log.debug("Not implemented")
+
     def get_stack_children(self, stack: Gtk.Stack):
         children = []
         child = stack.get_first_child()
@@ -75,18 +87,12 @@ class ModFxUI(Gtk.Box):
 
     def on_bank_changed(self, obj, pspec):
         idx = getattr(obj, pspec.name.replace("-", "_"))
-        #children = self.stack.get_children()
         children = self.get_stack_children(self.stack)
-        # children = []
-        # self.stack.foreach(lambda child: children.append(child))
-        log.debug(f"{idx=} {children}") 
+        log.debug(f"{idx=} {children.__class__.__name__}") 
         if 0 <= idx < len(children):
             self.stack.set_visible_child(children[idx])
         else:
             log.debug(f"Not implemented")
-
-    def on_bank_selected(self, obj, pspec):
-        log.debug(f"{obj.name}:{pspec.name}")
 
     def on_modfx_loaded(self, device, types):
         i = 0
@@ -102,7 +108,7 @@ class ModFxUI(Gtk.Box):
         filename = name.lower().replace(" ", "_")
         lib_name = "".join(w.capitalize() for w in name.split())
         ui_name = lib_name + "UI"
-        # log.debug(f"{module_name} {class_name}")
+        log.debug(f"{filename} {lib_name} {ui_name}")
         try:
             ui = importlib.import_module("widgets.modfx."+filename)
             ui_cls = getattr(ui, ui_name)
@@ -117,10 +123,12 @@ class ModFxUI(Gtk.Box):
         except (ModuleNotFoundError, AttributeError) as e:
             log.warning(f"lib.modfx.{filename}.{lib_name}' not found {e}")
             return None
-
         lib_obj = lib_cls(self.ctrl.device, self.ctrl)
-        self.own_ctrl.libs[filename] = lib_obj
+        lib_obj.prefix = self.prefix
+        lib_obj.set_mry_map()
+        self.own_ctrl.libs[self.prefix+'_'+filename] = lib_obj
+        log.debug(self.own_ctrl.libs)
         ui_obj = ui_cls(lib_obj)
-        # log.debug(ui_obj)
+        log.debug(f"{self.name} {ui_obj.__class__.__name__} {lib_obj.prefix=}")
         return ui_obj
 

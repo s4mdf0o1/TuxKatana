@@ -38,11 +38,23 @@ class Slider(AntiFlood, Gtk.Box):
         self.append(self.scale)
         self.get_style_context().add_class('slider')
         
+        if bind_prop:
+            self.name = bind_prop
+        
         if own_ctrl:
+            self.own_ctrl = own_ctrl
             own_ctrl.bind_property(
                 bind_prop, self, "value",\
                 GObject.BindingFlags.SYNC_CREATE )
+            self.connect("delayed-value", self.on_slider_changed)
         self.scale.connect("value-changed", self._on_scale_changed)
+
+    def on_slider_changed( self, slider, value):
+        old_val = self.own_ctrl.get_property(slider.name)
+        value = int(value)
+        # log.debug(f"{old_val} {value}")
+        if value != old_val:
+            self.own_ctrl.set_property(slider.name, int(value))
 
     def _on_scale_changed(self, scale):
         val = scale.get_value()

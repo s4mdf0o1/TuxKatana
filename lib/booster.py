@@ -11,21 +11,21 @@ class Booster(GObject.GObject):
     __gsignals__ = {
         "booster-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
-    booster_sw      = GObject.Property(type=bool, default=False)
-    booster_model   = GObject.Property(type=int, default=0)
-    model_idx       = GObject.Property(type=int, default=0)
-    solo_sw         = GObject.Property(type=bool, default=False)
-    solo_lvl        = GObject.Property(type=float, default=50.0)
-    drive_lvl       = GObject.Property(type=float, default=50.0)
-    bottom_lvl      = GObject.Property(type=float, default=50.0)
-    tone_lvl        = GObject.Property(type=float, default=50.0)
-    effect_lvl      = GObject.Property(type=float, default=50.0)
-    dir_mix_lvl     = GObject.Property(type=float, default=50.0)
-    bank_select     = GObject.Property(type=int, default=0)
-    bank_G         = GObject.Property(type=int, default=0)
-    bank_R         = GObject.Property(type=int, default=0)
-    bank_Y         = GObject.Property(type=int, default=0)
-    booster_status  = GObject.Property(type=int, default=0)
+    boost_sw            = GObject.Property(type=bool, default=False)
+    boost_model         = GObject.Property(type=int, default=0)
+    model_idx           = GObject.Property(type=int, default=0)
+    boost_solo_sw       = GObject.Property(type=bool, default=False)
+    boost_solo_lvl      = GObject.Property(type=float, default=50.0)
+    boost_drive_lvl     = GObject.Property(type=float, default=50.0)
+    boost_botm_lvl      = GObject.Property(type=float, default=50.0)
+    boost_tone_lvl      = GObject.Property(type=float, default=50.0)
+    boost_eff_lvl       = GObject.Property(type=float, default=50.0)
+    boost_dmix_lvl      = GObject.Property(type=float, default=50.0)
+    boost_bank_sel      = GObject.Property(type=int, default=0)
+    boost_bank_G        = GObject.Property(type=int, default=0)
+    boost_bank_R        = GObject.Property(type=int, default=0)
+    boost_bank_Y        = GObject.Property(type=int, default=0)
+    boost_status  = GObject.Property(type=int, default=0)
 
     def __init__(self, device, ctrl):
         super().__init__()
@@ -47,7 +47,7 @@ class Booster(GObject.GObject):
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
-        if name == 'booster_model':
+        if name == 'boost_model':
             svalue = str(MIDIBytes(value))
             num = list(self.map['Models'].values()).index(svalue)
             self.direct_set('model_idx', num)
@@ -64,9 +64,9 @@ class Booster(GObject.GObject):
         Addr = self.map.get_addr(name)
         if name == 'model_idx':
             model_val = list(self.map['Models'].values())[value]
-            Addr  = self.map.get_addr("booster_model")
+            Addr  = self.map.get_addr("boost_model")
             self.ctrl.send(Addr, model_val)
-        elif 'lvl' in name or name == 'bank_select':
+        elif 'lvl' in name or name == 'boost_bank_sel':
             self.ctrl.send(Addr, value, True)
         elif 'sw' in name:
             value = 1 if value else 0
@@ -78,8 +78,8 @@ class Booster(GObject.GObject):
         self.handler_unblock_by_func(self.set_from_ui)
 
     def set_bank_model(self):
-        bank = self.banks[self.booster_status - 1]
-        bank_name = "bank_"+bank
+        bank = self.banks[self.boost_status - 1]
+        bank_name = "boost_bank_"+bank
         model = self.get_property(bank_name)
         smodel = str(MIDIBytes(model))
         num = list(self.map['Models'].values()).index(smodel)

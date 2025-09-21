@@ -17,6 +17,7 @@ from .slider import Slider
 from .presets import PresetsView
 from .amplifier import AmplifierUI
 from .booster import BoosterUI
+from .modfx_ui import ModFxUI
 from .reverb import ReverbUI
 from .delay import DelayUI
 from .debug import Debug
@@ -55,6 +56,12 @@ class KS_Settings(Gtk.Box):
         elif name == "BOOSTER":
             self.booster = BoosterUI(ctrl.device.booster)
             self.append(self.booster)
+        elif name == "MOD":
+            self.mod = ModFxUI(ctrl, ctrl.device.mod, name)
+            self.append(self.mod)
+        elif name == "FX":
+            self.fx = ModFxUI(ctrl, ctrl.device.fx, name)
+            self.append(self.fx)
         elif name == "REVERB":
             self.reverb = ReverbUI(ctrl.device.reverb)
             self.append(self.reverb)

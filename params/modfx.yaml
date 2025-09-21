@@ -4,41 +4,22 @@ SEND:
   mod_bank_G:   "60 00 06 27"
   mod_bank_R:   "60 00 06 28"
   mod_bank_Y:   "60 00 06 29"
-  mod_bank_sel: "60 00 06 3a"
+  mod_bank_sel: "60 00 06 3A"
+  mod_vol_lvl:  "60 00 06 58"
+  
   fx_sw:        "60 00 03 00"
   fx_type:      "60 00 03 01"
-  fx_bank_G:    "60 00 06 2a"
-  fx_bank_R:    "60 00 06 2b"
-  fx_bank_Y:    "60 00 06 2c"
-  fx_bank_sel:  "60 00 06 3b"
-
-# Auto_Wah
-  aw_filt_sw:   "60 00 01 09" # Low / Band
-  aw_freq_lvl:  "60 00 01 0a" # Freq
-  aw_peak_lvl:  "60 00 01 0b" # Peak
-  aw_rate_lvl:  "60 00 01 0c" # Rate
-  aw_depth_lvl: "60 00 01 0d" # Depth
-  aw_eff_lvl:   "60 00 01 0e" # Effet
-  aw_dmix_lvl:  "60 00 01 0f" # Direct Mix
-# Pedal_Wah
-  pw_type:      "60 00 01 10"
-  pw_pos_lvl:   "60 00 01 11" # Pedal Pos
-  pw_min_lvl:   "60 00 01 12" # Min
-  pw_max_lvl:   "60 00 01 13" # Max
-  pw_eff_lvl:   "60 00 01 14" # Effect
-  pw_dmix_lvl:  "60 00 01 15" # Diret Mix
-# Compressor
-  co_type:      "60 00 01 16"
-  co_sus_lvl:   "60 00 01 17" # Sustain
-  co_att_lvl:   "60 00 01 18" # Attack
-  co_tone_lvl:  "60 00 01 19" # Tone
-  co_eff_lvl:   "60 00 01 1a" # Effect
+  fx_bank_G:    "60 00 06 2A"
+  fx_bank_R:    "60 00 06 2B"
+  fx_bank_Y:    "60 00 06 2C"
+  fx_bank_sel:  "60 00 06 3B"
+  fx_vol_lvl:   "60 00 06 59"
 # Limiter
-  li_type:      "60 00 01 1b"
-  li_attak_lvl: "60 00 01 1c" # Attack
-  li_thold_lvl: "60 00 01 1d" # Threshold
-  li_rate_lvl:  "60 00 01 1e" # Rate
-  li_rels_lvl:  "60 00 01 1f" # Release
+  li_type:      "60 00 01 1B"
+  li_attak_lvl: "60 00 01 1C" # Attack
+  li_thold_lvl: "60 00 01 1D" # Threshold
+  li_rate_lvl:  "60 00 01 1E" # Rate
+  li_rels_lvl:  "60 00 01 1F" # Release
   li_eff_lvl:   "60 00 01 20" # Effect
 # Graphic EQ
   ge_31h_lvl:   "60 00 01 21" # 00>28=-20dB>+20dB
@@ -50,16 +31,16 @@ SEND:
   ge_2kh_lvl:   "60 00 01 27" # ""
   ge_4kh_lvl:   "60 00 01 28" # ""
   ge_8kh_lvl:   "60 00 01 29" # ""
-  ge_16kh_lvl:  "60 00 01 2a" # ""
-  ge_lev_lvl:   "60 00 01 2b" # Level
+  ge_16kh_lvl:  "60 00 01 2A" # ""
+  ge_lev_lvl:   "60 00 01 2B" # Level
 # Param EQ
-  pe_loco_lvl:  "60 00 01 2c" # Low Cut Off
+  pe_loco_lvl:  "60 00 01 2C" # Low Cut Off
         # 00>11=0Hz>800Hz
-  pe_loga_lvl:  "60 00 01 2d" # Low Gain
+  pe_loga_lvl:  "60 00 01 2D" # Low Gain
         # 00>28=-20dB>+20dB
-  pe_lomf_lvl:  "60 00 01 2e" # Low Mid Freq
+  pe_lomf_lvl:  "60 00 01 2E" # Low Mid Freq
         # 00>1b=20Hz>10kHz
-  pe_lomq_lvl:  "60 00 01 2f" # Low Mid Q
+  pe_lomq_lvl:  "60 00 01 2F" # Low Mid Q
         # 00>05=0.5>16
   pe_lomg_lvl:  "60 00 01 30" # Low Mid Gain
         # 00>28=-20dB>+20dB
@@ -78,14 +59,14 @@ SEND:
   gs_type:      "60 00 01 37"
   gs_low_lvl:   "60 00 01 38" # -50>+50
   gs_high_lvl:  "60 00 01 39" # ""
-  gs_eff_lvl:   "60 00 01 3a" # Effect
-  gs_bod_lvl:   "60 00 01 3b" # Body
+  gs_eff_lvl:   "60 00 01 3A" # Effect
+  gs_bod_lvl:   "60 00 01 3B" # Body
 # Slow_Gear
-  sg_sens_lvl:  "60 00 01 3c" # Sens
-  sg_rise_lvl:  "60 00 01 3d" # Rise Time
-  sg_lev_lvl:   "60 00 01 3e" # Level
+  sg_sens_lvl:  "60 00 01 3C" # Sens
+  sg_rise_lvl:  "60 00 01 3D" # Rise Time
+  sg_lev_lvl:   "60 00 01 3E" # Level
 # Wave Synth
-  ws_type_sw:   "60 00 01 3f" # Saw/Square WF
+  ws_type_sw:   "60 00 01 3F" # Saw/Square WF
   ws_cuto_lvl:  "60 00 01 40" # CutOff Freq
   ws_reso_lvl:  "60 00 01 41" # Reson.
   ws_flts_lvl:  "60 00 01 42" # FLT Sens
@@ -98,21 +79,21 @@ SEND:
   oc_eff_lvl:   "60 00 01 48" # Effect
   of_dmix_lvl:  "60 00 01 49" # Direct Mix
 # Pitch Shifter
-  ps_type_sw:   "60 00 01 4a" # One/Two Voice.s Mono
-  ps_mode:      "60 00 01 4b"
-  ps_pred_lvl:  "60 00 01 4e" # Pre Delay
-  ps_pitch_lvl: "60 00 01 4c" # Pitch
-  ps_fine_lvl:  "60 00 01 4d" # Fine
+  ps_type_sw:   "60 00 01 4A" # One/Two Voice.s Mono
+  ps_mode:      "60 00 01 4B"
+  ps_pred_lvl:  "60 00 01 4E" # Pre Delay
+  ps_pitch_lvl: "60 00 01 4C" # Pitch
+  ps_fine_lvl:  "60 00 01 4D" # Fine
   ps_fb_lvl:    "60 00 01 57" # Feedback
   ps_voc1_lvl:  "60 00 01 50" # Voice 1
   ps_dirc_lvl:  "60 00 01 58" # Direct
 # Harmonist
   
 # Acu Processor
-  ap_type:      "60 00 01 7c"
-  ap_bass_lvl:  "60 00 01 7d" # Bass   -50>+50
-  ap_mid_lvl:   "60 00 01 7e" # Middle -50>+50
-  ap_mfrq_lvl:  "60 00 01 7f" # Middle Freq
+  ap_type:      "60 00 01 7C"
+  ap_bass_lvl:  "60 00 01 7D" # Bass   -50>+50
+  ap_mid_lvl:   "60 00 01 7E" # Middle -50>+50
+  ap_mfrq_lvl:  "60 00 01 7F" # Middle Freq
                 # 00>1b=20Hz>10kHz
   ap_treb_lvl:  "60 00 02 00" # Treble -50>+50
   ap_pres_lvl:  "60 00 02 01" # Presence -50>+50
@@ -125,12 +106,12 @@ SEND:
   ph_reso_lvl:  "60 00 02 07" # Reson.
   ph_stpr_lvl:  "60 00 02 08" # Step Rate
   ph_eff_lvl:   "60 00 02 09" # Effect
-  ph_dmix_lvl:  "60 00 02 0a" # Direct Mix
+  ph_dmix_lvl:  "60 00 02 0A" # Direct Mix
 # Flanger
-  fl_rate_lvl:  "60 00 02 0b" # Rate
-  fl_dept_lvl:  "60 00 02 0c" # Depth
-  fl_man_lvl:   "60 00 02 0d" # Manual
-  fl_reso_lvl:  "60 00 02 0e" # Reson.
+  fl_rate_lvl:  "60 00 02 0B" # Rate
+  fl_dept_lvl:  "60 00 02 0C" # Depth
+  fl_man_lvl:   "60 00 02 0D" # Manual
+  fl_reso_lvl:  "60 00 02 0E" # Reson.
   fl_lowc_lvl:  "60 00 02 10" # Low Cut
                 # 00>0a=0Hz>800Hz
   fl_eff_lvl:   "60 00 02 11" # Effect
@@ -142,11 +123,11 @@ SEND:
   tr_levl_lvl:  "60 00 02 16" # Level
 # Rotary
   ro_rate_lvl:  "60 00 02 19" # Rate
-  ro_dept_lvl:  "60 00 02 1c" # Depth
-  ro_levl_lvl:  "60 00 02 1d" # Level
+  ro_dept_lvl:  "60 00 02 1C" # Depth
+  ro_levl_lvl:  "60 00 02 1D" # Level
 # Uni-V
-  un_rate_lvl:  "60 00 02 1e" # Rate
-  un_dept_lvl:  "60 00 02 1f" # Depth
+  un_rate_lvl:  "60 00 02 1E" # Rate
+  un_dept_lvl:  "60 00 02 1F" # Depth
   un_levl_lvl:  "60 00 02 20" # Level
 # Slicer
   sl_pattern:   "60 00 02 21" # Pattern 00>13=0>20
@@ -158,14 +139,14 @@ SEND:
   vi_rate_lvl:  "60 00 02 26" # Rate
   vi_dept_lvl:  "60 00 02 27" # Depth
     ### Missing "60 00 02 28" > 29 ###
-  vi_levl_lvl:  "60 00 02 2a" # Level
+  vi_levl_lvl:  "60 00 02 2A" # Level
 # Ring Modulate
-  rm_type_sw:   "60 00 02 2b" # Normal/Intelligent
-  rm_freq_lvl:  "60 00 02 2c" # Freq
-  rm_eff_lvl:   "60 00 02 2d" # Effect
-  rm_dmix_lvl:  "60 00 02 2e" # Direct Mix
+  rm_type_sw:   "60 00 02 2B" # Normal/Intelligent
+  rm_freq_lvl:  "60 00 02 2C" # Freq
+  rm_eff_lvl:   "60 00 02 2D" # Effect
+  rm_dmix_lvl:  "60 00 02 2E" # Direct Mix
 # Humanizer
-  hu_type_sw:   "60 00 02 2f" # Picking/Auto
+  hu_type_sw:   "60 00 02 2F" # Picking/Auto
   hu_vow1_type: "60 00 02 30" # Vowel 1
   hu_vow2_type: "60 00 02 31" # Vowel 2
   hu_sens_lvl:  "60 00 02 32"
@@ -174,17 +155,17 @@ SEND:
   hu_eff_lvl:   "60 00 02 35" # Effect
   hu_dmix_lvl:  "60 00 02 36"
 # 2x2 Chorus
-  2c1_pred_lvl: "60 00 02 3e" # Pre Delay
+  2c1_pred_lvl: "60 00 02 3E" # Pre Delay
                 # 00>50=0ms>40ms
-  2c1_rate_lvl: "60 00 02 3c" # Rate
-  2c1_dept_lvl: "60 00 02 3d" # Depth
-  2c2_pred_lvl: "60 00 02 3a" # Pre Delay
+  2c1_rate_lvl: "60 00 02 3C" # Rate
+  2c1_dept_lvl: "60 00 02 3D" # Depth
+  2c2_pred_lvl: "60 00 02 3A" # Pre Delay
                 # 00>50=0ms>40ms
   2c2_rate_lvl: "60 00 02 38" # Rate
   2c2_dept_lvl: "60 00 02 39" # Depth
   2c_xover_lvl: "60 00 02 37" # 00>10=100Hz>4kHz
-  2c_low_lvl:   "60 00 02 3b" # Low
-  2c_high_lvl:  "60 00 02 3f" # High
+  2c_low_lvl:   "60 00 02 3B" # Low
+  2c_high_lvl:  "60 00 02 3F" # High
   2c_dirc_lvl:  "60 00 02 40" # Direct
 # AC Guitar Sim
   ags_top_lvl:  "60 00 02 41" # Top -50>+50
@@ -197,10 +178,10 @@ SEND:
   p9_speed_lvl: "60 00 02 47" # Speed
     ### Missing: "60 00 02 48" > 4b ###
 # Wah 95E
-  w9_ppos_lvl:  "60 00 02 4c" # Pedal Pos
-  w9_min_lvl:   "60 00 02 4d"
-  w9_max_lvl:   "60 00 02 4e"
-  w9_eff_lvl:   "60 00 02 4f"
+  w9_ppos_lvl:  "60 00 02 4C" # Pedal Pos
+  w9_min_lvl:   "60 00 02 4D"
+  w9_max_lvl:   "60 00 02 4E"
+  w9_eff_lvl:   "60 00 02 4F"
   w9_dmix_lvl:  "60 00 02 50"
 # DC30
   dc_sel_sw:   "60 00 02 51" # Chorus / Echo
@@ -213,24 +194,24 @@ SEND:
   dc_ints_lvl:  "60 00 02 56" # Intensity
   dc_vol_lvl:   "60 00 02 57" # Volume
 # Heavy Octave
-  ho_oct1_lvl:  "60 00 02 5a" # Octave 1
-  ho_oct2_lvl:  "60 00 02 5b" # Octave 2
-  ho_dmix_lvl:  "60 00 02 5c" # Direct Mix
+  ho_oct1_lvl:  "60 00 02 5A" # Octave 1
+  ho_oct2_lvl:  "60 00 02 5B" # Octave 2
+  ho_dmix_lvl:  "60 00 02 5C" # Direct Mix
 # Pedal Bend
-  pb_pitch_lvl: "60 00 02 5d" # Pitch
-  pb_ppos_lvl:  "60 00 02 5e" # Pedal Pos
-  pb_effl_lvl:  "60 00 02 5f" # Effect Level
+  pb_pitch_lvl: "60 00 02 5D" # Pitch
+  pb_ppos_lvl:  "60 00 02 5E" # Pedal Pos
+  pb_effl_lvl:  "60 00 02 5F" # Effect Level
   pb_dmix_lvl:  "60 00 02 60" # Direct Mix
   
 RECV:
   "60 00 06 27":  "mod_return"    # Type Copy G
-  "60 00 06 2a":  "fx_return"     # Type Copy
-  "60 00 06 5e":  "mod_status"    # GRY +1
-  "60 00 06 5f":  "fx_status"     # GRY +1
-  "60 00 06 58":  "mod_unknown_1"
-  "60 00 06 59":  "fx_unknown_1"
+  "60 00 06 2A":  "fx_return"     # Type Copy
+  "60 00 06 5E":  "mod_status"    # GRY +1
+  "60 00 06 5F":  "fx_status"     # GRY +1
+  # "60 00 06 58":  "mod_unknown_1"
+#  "60 00 06 59":  "fx_unknown_1"
 
-Types:
+MFTypes:
   "Touch Wah":      '00'
   "Auto Wah":       '01'
   "Pedal Wah":      '02'
@@ -239,10 +220,10 @@ Types:
   "Graphic EQ":     '06'
   "Parametric EQ":  '07'
   "Guitar Sym":     '09'
-  "Slow Gear":      '0a'
-  "Wave Synth":     '0c'
-  "Octave":         '0e'
-  "Pitch Shifter":  '0f'
+  "Slow Gear":      '0A'
+  "Wave Synth":     '0C'
+  "Octave":         '0E'
+  "Pitch Shifter":  '0F'
   "Harmonist":      '10'
   "Acu Processor":  '12'
   "Phaser":         '13'
@@ -251,34 +232,17 @@ Types:
   "Rotary":         '16'
   "Uni-V":          '17'
   "Slicer":         '19'
-  "Vibrato":        '1a'
-  "Ring Modulate":  '1b'
-  "Humanizer":      '1c'
-  "2x2 Chorus":     '1d'
-  "AC Guitar Sym":  '1f'
+  "Vibrato":        '1A'
+  "Ring Modulate":  '1B'
+  "Humanizer":      '1C'
+  "2x2 Chorus":     '1D'
+  "AC Guitar Sym":  '1F'
   "Phaser 90E":     '23'
   "Flanger 117E":   '24'
   "Wah 95E":        '25'
   "DC30":           '26'
   "Heavy Octave":   '27'
   "Pedal Bend":     '28'
-
-Pedal_Wah:
-  "Cry Wah":      '00'
-  "VO Wah":       '01'
-  "Fat Wah":      '02'
-  "Light Wah":    '03'
-  "7strings Wah": '04'
-  "Reso_Wah":     '05'
-
-Compressor:
-  "Boss CS-3":        '00'
-  "Hi Band":          '01'
-  "Light":            '02'
-  "MXR DynaComp":     '03'
-  "Orange Squeezer":  '04'
-  "Fat":              '05'
-  "Mild":             '06'
 
 Limiter:
   "Boss Limiter":         '00'

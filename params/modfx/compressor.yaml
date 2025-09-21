@@ -1,0 +1,19 @@
+# Compressor
+SEND:
+  co_type:      "60 00 01 16"
+  co_sus_lvl:   "60 00 01 17" # Sustain
+  co_att_lvl:   "60 00 01 18" # Attack
+  co_tone_lvl:  "60 00 01 19" # Tone
+  co_eff_lvl:   "60 00 01 1A" # Effect
+  # co_dmix_lvl:  "60 00 06 59" # Direct Mix
+  
+CompressorTypes:
+  "Boss CS-3":        '00'
+  "Hi Band":          '01'
+  "Light":            '02'
+  "MXR DynaComp":     '03'
+  "Orange Squeezer":  '04'
+  "Fat":              '05'
+  "Mild":             '06'
+
+

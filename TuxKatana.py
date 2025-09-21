@@ -34,7 +34,6 @@ class MainWindow(Gtk.Window):
         box.append(self.settings)
         self.switcher = Switcher( config['SWITCHER'], app.ctrl)
         box.append(self.switcher)
-        app.emit("main-ready")
 
         self.wait_dialog = ConnectWait( app, self )
         self.set_sensitive(False)
@@ -46,6 +45,7 @@ class MainWindow(Gtk.Window):
         if self.app.ctrl.port.has_device:
             self.set_sensitive(True)
             self.wait_dialog.set_visible(False)
+            self.app.emit("main-ready")
             return False
         return True
 

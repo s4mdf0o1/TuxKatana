@@ -5,6 +5,7 @@ from gi.repository import Gtk, GLib, Gdk, GObject
 from .slider import Slider
 from .bank import Bank
 from .toggle import Toggle
+from .box_inner import BoxInner
 
 from lib.midi_bytes import Address, MIDIBytes
 from lib.log_setup import LOGGER_NAME
@@ -23,7 +24,7 @@ class BoosterUI(Gtk.Box):
         self.append(self.bank_select)
 
         self.own_ctrl.bind_property(
-            "bank_select", self.bank_select, "selected",
+            "boost_bank_sel", self.bank_select, "selected",
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
 
@@ -38,70 +39,37 @@ class BoosterUI(Gtk.Box):
             GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
 
-        box_drive = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
-        box_drive.get_style_context().add_class('inner')
-        label=Gtk.Label(label="Drive")
-        label.set_xalign(1.0)
-        label.set_margin_end(20)
-        box_drive.append(label)
-
-        self.drive_lvl = Slider( "Drive", "normal", self.own_ctrl, "drive_lvl" )
-        self.drive_lvl.name = "drive_lvl"
+        box_drv = BoxInner("Drive")
+        self.drive_lvl = Slider( "Drive", "normal", self.own_ctrl, "boost_drive_lvl" )
         adj = self.drive_lvl.scale.get_adjustment()
         adj.set_upper(MIDIBytes('7D').int) # max 100+25
-        self.drive_lvl.connect("delayed-value", self.on_slider_changed)
-        box_drive.append(self.drive_lvl)
+        box_drv.append(self.drive_lvl)
 
-        self.bottom_lvl = Slider( "Bottom", "plus_minus", self.own_ctrl, "bottom_lvl" )
-        self.bottom_lvl.name = "bottom_lvl"
-        adj = self.bottom_lvl.scale.get_adjustment()
-        self.bottom_lvl.connect("delayed-value", self.on_slider_changed)
-        box_drive.append(self.bottom_lvl)
+        self.bottom_lvl = Slider( "Bottom", "plus_minus", self.own_ctrl, "boost_botm_lvl" )
+        box_drv.append(self.bottom_lvl)
 
-        self.tone_lvl = Slider( "Tone", "plus_minus" , self.own_ctrl, "tone_lvl" )
-        self.tone_lvl.name = "tone_lvl"
-        adj = self.tone_lvl.scale.get_adjustment()
-        self.tone_lvl.connect("delayed-value", self.on_slider_changed)
-        box_drive.append(self.tone_lvl)
+        self.tone_lvl = Slider( "Tone", "plus_minus" , self.own_ctrl, "boost_tone_lvl" )
+        box_drv.append(self.tone_lvl)
 
-        self.append(box_drive)
+        self.append(box_drv)
 
-        box_level = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
-        box_level.get_style_context().add_class('inner')
-        label=Gtk.Label(label="Level")
-        label.set_xalign(1.0)
-        label.set_margin_end(20)
-        box_level.append(label)
+        box_lvl = BoxInner("Level") 
+        self.effect_lvl = Slider( "Effect", "normal", self.own_ctrl, "boost_eff_lvl" )
+        box_lvl.append(self.effect_lvl)
 
-        self.effect_lvl = Slider( "Effect", "normal", self.own_ctrl, "effect_lvl" )
-        self.effect_lvl.name = "effect_lvl"
-        self.effect_lvl.connect("delayed-value", self.on_slider_changed)
-        box_level.append(self.effect_lvl)
+        self.dmix_lvl = Slider( "Mix", "normal", self.own_ctrl, "boost_dmix_lvl" )
+        box_lvl.append(self.dmix_lvl)
 
-        self.dir_mix_lvl = Slider( "Dir Mix", "normal", self.own_ctrl, "dir_mix_lvl" )
-        self.dir_mix_lvl.name = "dir_mix_lvl"
-        self.dir_mix_lvl.connect("delayed-value", self.on_slider_changed)
-        box_level.append(self.dir_mix_lvl)
+        self.append(box_lvl)
 
-        self.append(box_level)
-
-        box_solo = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
-        box_solo.get_style_context().add_class('inner')
-        label=Gtk.Label(label="Solo")
-        label.set_xalign(1.0)
-        label.set_margin_end(20)
-        box_solo.append(label)
-
-
-        self.solo_lvl = Slider( "Level", "normal", self.own_ctrl, "solo_lvl" )
-        self.solo_lvl.name = "solo_lvl"
-        self.solo_lvl.connect("delayed-value", self.on_slider_changed)
+        box_solo = BoxInner("Solo")
+        self.solo_lvl = Slider( "Level", "normal", self.own_ctrl, "boost_solo_lvl" )
         box_solo.append(self.solo_lvl)
         self.append(box_solo)
 
         self.solo_sw = Toggle("SOLO")
         self.own_ctrl.bind_property(
-            "solo_sw", self.solo_sw, "active", 
+            "boost_solo_sw", self.solo_sw, "active", 
             GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
         box_solo.append(self.solo_sw)

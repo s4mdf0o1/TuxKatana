@@ -59,7 +59,7 @@ class Controller(GObject.GObject):
                 log.sysex(f"{msg.hex()}")
                 self.sysex.recvd(msg.data)
                 addr, data = self.sysex.addr, self.sysex.data
-                log.debug(f"{addr}: {data}")
+                # log.debug(f"{addr}: {data}")
                 GLib.idle_add(self.device.on_received_msg, addr, data)
             else:
                 sleep(.1)
@@ -81,6 +81,8 @@ class Controller(GObject.GObject):
 
     def send( self, Addr, data=None, SET=False):
         self.device.set_charging(1, 50)
+        if not Addr:
+            log.debug("Addr Empty")
         msg = self.sysex.get(Addr, data, SET)
         log.sysex(f"SEND: {msg.hex()}")
         log.debug(self.sysex)

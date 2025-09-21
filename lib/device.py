@@ -13,6 +13,7 @@ from .preset import Preset, Presets
 from .amplifier import Amplifier
 from .memory import Memory
 from .booster import Booster
+from .modfx_lib import ModFx
 from .reverb import Reverb
 from .delay import Delay
 from .midi_bytes import Address, MIDIBytes
@@ -43,6 +44,8 @@ class Device(GObject.GObject):
         self.presets = Gio.ListStore(item_type=Presets)
         self.amplifier=Amplifier( self, ctrl )
         self.booster = Booster( self, ctrl )
+        self.mod = ModFx( self, ctrl, "Mod" )
+        self.fx = ModFx( self, ctrl, "Fx" )
         self.reverb = Reverb( self, ctrl )
         self.delay = Delay( self, ctrl )
         self.preset = Preset(self)
@@ -52,30 +55,32 @@ class Device(GObject.GObject):
         self.ctrl.parent.connect("main-ready", self.on_main_ready)
 
     def on_main_ready(self, main):
+        log.debug(f"{main}")
         self.emit("load-maps")
 
     def on_received_msg(self, addr, data):
-        log.debug(f"{addr} {data}")
+        # log.debug(f"{addr} {data}")
         if len(data) > 63:
             self.set_charging(2, 50)
             self.mry.add_block(addr, data)
         else:
             if addr == Address('60 00 00 00').bytes:
                 text = ''.join([chr(v) for v in data])
-                log.info(f"{text.strip}")
+                log.info(f"{text.strip()}")
                 return
             self.set_charging(3, 100)
             self.mry.write(addr, data)
-            # log.debug(f"{str(addr)=}: {data}")
             if str(addr) in self.mry.map:
                 obj, prop = self.mry.map[str(addr)]
+                if hasattr(obj, "prefix"):
+                    prop = prop.replace(obj.prefix+'_', '')
                 value = None
                 if isinstance(getattr(obj, prop), bool):
                     value = data.bool
                 else:
                     value = data.int
+                log.debug(f"{obj.name}[{str(addr)}]: {prop}={value}")
                 obj.set_from_msg(prop, value)
-                # log.debug(f"{obj.name}: {prop}={value}")
 
             elif str(addr) == '00 01 00 00':
                 log.debug(f"emit channel-changed {data}")

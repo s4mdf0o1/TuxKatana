@@ -1,11 +1,11 @@
 SEND:
   amp_model:  "60 00 00 21"
-  gain_lvl:   "60 00 06 51"
+  amp_gain_lvl:   "60 00 06 51"
   #volume_lvl: "60 00 00 28"
 RECV:
   "60 00 06 50": "amp_num"
   "60 00 06 5C": "amp_variation"
-  "60 00 06 52": "volume_lvl"
+  "60 00 06 52": "amp_vol_lvl"
 Models:
   'Acoustic':     '01'
   'Clean':        '08'

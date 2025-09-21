@@ -2,33 +2,20 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk, GObject
 
-from .slider import Slider
-from .tabbed_panel import TabbedPanel
-from .bank import Bank
-from .toggle import Toggle
-from .box_inner import BoxInner
+from widgets.slider import Slider
+# from .tabbed_panel import TabbedPanel
+# from .bank import Bank
+from widgets.toggle import Toggle
+from widgets.box_inner import BoxInner
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-class TouchWahbUI(Gtk.Box):
+class TouchWahUI(Gtk.Box):
     def __init__(self, own_ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.own_ctrl = own_ctrl
         
-        banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
-        self.bank_select = Bank("TOUCH WAH", banks)
-        self.bank_select.buttons[0].set_status_id(1)
-        self.bank_select.buttons[2].set_status_id(3)
-        self.append(self.bank_select)
-
-        self.own_ctrl.bind_property(
-            "bank_select", self.bank_select, "selected",
-            GObject.BindingFlags.BIDIRECTIONAL |\
-            GObject.BindingFlags.SYNC_CREATE )
-
-        # box_sel = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
-
         box_eff = BoxInner("Effect")
 
         self.filter_sw = Toggle("Low/Pass Band")
@@ -71,11 +58,20 @@ class TouchWahbUI(Gtk.Box):
         self.eff_lvl.connect("delayed-value", self.on_slider_changed)
         box_lvl.append(self.eff_lvl)
 
-        self.dirmix_lvl = Slider( "Direct Mix", "normal", self.own_ctrl, "tw_dirmix_lvl" )
-        self.dirmix_lvl.name = "tw_dirmix_lvl"
-        self.dirmix_lvl.connect("delayed-value", self.on_slider_changed)
-        box_lvl.append(self.dirmix_lvl)
+        self.dmix_lvl = Slider( "Direct Mix", "normal", self.own_ctrl, "tw_dmix_lvl" )
+        self.dmix_lvl.name = "tw_dmix_lvl"
+        self.dmix_lvl.connect("delayed-value", self.on_slider_changed)
+        box_lvl.append(self.dmix_lvl)
 
         self.append(box_eff)
         self.append(box_tw)
         self.append(box_lvl)
+
+    def on_slider_changed( self, slider, value):
+        old_val = self.own_ctrl.get_property(slider.name)
+        value = int(value)
+        # log.debug(f"{old_val} {value}")
+        if value != old_val:
+            self.own_ctrl.set_property(slider.name, int(value))
+
+

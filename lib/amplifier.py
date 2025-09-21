@@ -15,8 +15,8 @@ class Amplifier(GObject.GObject):
     amp_variation = GObject.Property(type=bool, default=False)
     amp_model   = GObject.Property(type=int, default=-1)        # Real Model Code
     model_idx   = GObject.Property(type=int, default=-1)        # Combo index
-    gain_lvl    = GObject.Property(type=int, default=50)
-    volume_lvl  = GObject.Property(type=int, default=50)
+    amp_gain_lvl    = GObject.Property(type=int, default=50)
+    amp_vol_lvl  = GObject.Property(type=int, default=50)
 
     def __init__(self, device, ctrl):
         super().__init__()

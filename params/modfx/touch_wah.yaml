@@ -1,5 +1,6 @@
 # Touch_Wah
   ## Effect
+SEND:
   tw_filt_sw:   "60 00 01 02" # Low/Band Pass
   tw_polar_sw:  "60 00 01 03" # Down/Up
   ## Touch Wah

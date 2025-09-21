@@ -1,20 +1,20 @@
 SEND:
-  booster_sw:   "60 00 00 10"
-  booster_model: "60 00 00 11"
-  solo_sw:      "60 00 00 15"
-  solo_lvl:     "60 00 00 16"
-  drive_lvl:    "60 00 00 12"
-  bottom_lvl:   "60 00 00 13"
-  tone_lvl:     "60 00 00 14"
-  effect_lvl:   "60 00 00 17"
-  dir_mix_lvl:  "60 00 00 18"
-  bank_select:  "60 00 06 39"
-  bank_G:      "60 00 06 24"
-  bank_R:      "60 00 06 25"
-  bank_Y:      "60 00 06 26"
+  boost_sw:       "60 00 00 10"
+  boost_model:    "60 00 00 11"
+  boost_solo_sw:  "60 00 00 15"
+  boost_solo_lvl: "60 00 00 16"
+  boost_drive_lvl: "60 00 00 12"
+  boost_botm_lvl: "60 00 00 13"
+  boost_tone_lvl: "60 00 00 14"
+  boost_eff_lvl:  "60 00 00 17"
+  boost_dmix_lvl: "60 00 00 18"
+  boost_bank_sel: "60 00 06 39"
+  boost_bank_G:   "60 00 06 24"
+  boost_bank_R:   "60 00 06 25"
+  boost_bank_Y:   "60 00 06 26"
 
 RECV:
-  "60 00 06 5D":  "booster_status"
+  "60 00 06 5D":  "boost_status"
 
 Models:
   'Mid Boost':    '00'

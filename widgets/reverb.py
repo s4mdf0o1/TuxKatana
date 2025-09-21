@@ -126,7 +126,7 @@ class ReverbUI(Gtk.Box):
         if value != old_val:
             self.own_ctrl.set_property(slider.name, value)
 
-    def on_reverb_loaded(self, device, types, modes):
+    def on_reverb_loaded(self, own_ctrl, types, modes):
         i = 0
         for name, code in types.items():
             self.types_store.append([i,name, code])

@@ -47,14 +47,14 @@ class Reverb(GObject.GObject):
         self.device.connect("load-maps", self.load_map)
 
     def load_map(self, ctrl):
-        self.emit("reverb-map-ready", self.map['Types'], self.map['Modes'])
+        self.emit("reverb-map-ready", self.map['ReverbTypes'], self.map['Modes'])
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
         if name == 'reverb_type':
             svalue = str(MIDIBytes(value))
-            num = list(self.map['Types'].values()).index(svalue)
+            num = list(self.map['ReverbTypes'].values()).index(svalue)
             self.direct_set("type_idx", num)
         else:
             self.direct_set(name, value)
@@ -68,7 +68,7 @@ class Reverb(GObject.GObject):
             value = int(value)
         Addr = self.map.get_addr(name)
         if name == 'type_idx':
-            model_val = list(self.map['Types'].values())[value]
+            model_val = list(self.map['ReverbTypes'].values())[value]
             Addr  = self.map.get_addr("reverb_type")
             self.ctrl.send(Addr, model_val, True)
         elif name == 'mode_idx':
@@ -103,7 +103,7 @@ class Reverb(GObject.GObject):
         bank_name = self.get_bank_var("bank_")
         r_type = self.get_property(bank_name)
         r_type = str(MIDIBytes(r_type))
-        num = list(self.map['Types'].values()).index(r_type)
+        num = list(self.map['ReverbTypes'].values()).index(r_type)
         self.direct_set("type_idx", num)
 
     def set_bank_mode(self):

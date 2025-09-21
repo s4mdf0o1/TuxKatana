@@ -28,9 +28,12 @@ class Switcher(Gtk.Box):
 
         self.effects = Bank("EFFECTS", config['EFFECTS'], True)
 
-        self.ctrl.device.booster.connect("notify::booster-status", self.on_status_changed)
+        self.ctrl.device.booster.connect("notify::boost-status", self.on_status_changed)
         self.ctrl.device.reverb.connect("notify::reverb-status", self.on_status_changed)
         self.ctrl.device.delay.connect("notify::delay-status", self.on_status_changed)
+
+        self.ctrl.device.mod.connect("notify::mod-status", self.on_status_changed)
+        self.ctrl.device.fx.connect("notify::fx-status", self.on_status_changed)
         self.append(self.effects)
         self.append(self.bank_a)
         self.append(self.bank_b)
@@ -42,9 +45,20 @@ class Switcher(Gtk.Box):
                 #log.debug(but.name)
                 if but.name == 'BOOSTER':
                     but.bind_id = self.ctrl.device.booster.bind_property(
-                        "booster_sw", but, "active",
+                        "boost_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
+                elif but.name == 'MOD':
+                    but.bind_id = self.ctrl.device.mod.bind_property(
+                        "mod_sw", but, "active",
+                        GObject.BindingFlags.BIDIRECTIONAL |\
+                        GObject.BindingFlags.SYNC_CREATE )
+                elif but.name == 'FX':
+                    but.bind_id = self.ctrl.device.fx.bind_property(
+                        "fx_sw", but, "active",
+                        GObject.BindingFlags.BIDIRECTIONAL |\
+                        GObject.BindingFlags.SYNC_CREATE )
+
                 elif but.name == 'REVERB':
                     but.bind_id = self.ctrl.device.reverb.bind_property(
                         "reverb_sw", but, "active",
@@ -61,7 +75,7 @@ class Switcher(Gtk.Box):
 
     def on_status_changed(self, obj, pspec):
         name = pspec.name.split('-')[0]
-        #log.debug(f"{pspec.name} {name}")
+        # log.debug(f"{pspec.name} {name}")
         for but in self.effects.buttons:
             #log.debug(f"{but.name.lower()=}")
             if name == but.name.lower():

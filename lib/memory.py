@@ -29,7 +29,7 @@ class Memory(GObject.GObject):
         # log.debug(f"{self.Addr_start} / {Addr_start}: {len(data.bytes)} {self.Addr_start+len(self.memory)}")
         if self._timer_id:
             GLib.source_remove(self._timer_id)
-        self._timer_id = GLib.timeout_add(200, self._on_timeout)
+        self._timer_id = GLib.timeout_add(500, self._on_timeout)
 
         if Addr_start == self.Addr_start:
 
