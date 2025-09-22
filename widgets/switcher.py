@@ -32,7 +32,7 @@ class Switcher(Gtk.Box):
         self.ctrl.device.reverb.connect("notify::reverb-status", self.on_status_changed)
         self.ctrl.device.delay.connect("notify::delay-status", self.on_status_changed)
 
-        self.ctrl.device.mod.connect("notify::mod-status", self.on_status_changed)
+        self.ctrl.device.mod.connect("notify::mo-status", self.on_status_changed)
         self.ctrl.device.fx.connect("notify::fx-status", self.on_status_changed)
         self.append(self.effects)
         self.append(self.bank_a)
@@ -50,7 +50,7 @@ class Switcher(Gtk.Box):
                         GObject.BindingFlags.SYNC_CREATE )
                 elif but.name == 'MOD':
                     but.bind_id = self.ctrl.device.mod.bind_property(
-                        "mod_sw", but, "active",
+                        "mo_sw", but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
                         GObject.BindingFlags.SYNC_CREATE )
                 elif but.name == 'FX':

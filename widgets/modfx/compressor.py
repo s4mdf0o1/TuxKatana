@@ -61,10 +61,10 @@ class CompressorUI(Gtk.Box):
     #         i += 1
     #     self.types.set_active(self.own_ctrl.co_type)
        
-    def on_slider_changed( self, slider, value):
-        old_val = self.own_ctrl.get_property(slider.name)
-        value = int(value)
-        if value != old_val:
-            self.own_ctrl.set_property(slider.name, int(value))
+    # def on_slider_changed( self, slider, value):
+    #     old_val = self.own_ctrl.get_property(slider.name)
+    #     value = int(value)
+    #     if value != old_val:
+    #         self.own_ctrl.set_property(slider.name, int(value))
 
 

@@ -10,11 +10,9 @@ from lib.map import Map
 class Common:
     def __init__(self, device, ctrl, name):
         super().__init__()
-        # log.debug(name)
         self.name = name
         self.ctrl = ctrl
         self.device = device
-        # log.debug(f"params/modfx/{name.lower()}.yaml")
         self.map = Map(f"params/modfx/{name.lower()}.yaml")
         self.prefix = None
         # self.set_mry_map()

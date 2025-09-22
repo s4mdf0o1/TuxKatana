@@ -19,7 +19,7 @@ class AutoWah(GObject.GObject):
     aw_eff_lvl      = GObject.Property(type=float, default=0.0)
     aw_dmix_lvl     = GObject.Property(type=float, default=0.0)
 
-    def __init__(self, device, ctrl):
+    def __init__(self, device, ctrl, parent_prefix=""):
         super().__init__()
         self.name = "Auto Wah"
         self.ctrl = ctrl

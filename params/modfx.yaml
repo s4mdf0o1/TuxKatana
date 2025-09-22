@@ -1,11 +1,11 @@
 SEND:
-  mod_sw:       "60 00 01 00"
-  mod_type:     "60 00 01 01"
-  mod_bank_G:   "60 00 06 27"
-  mod_bank_R:   "60 00 06 28"
-  mod_bank_Y:   "60 00 06 29"
-  mod_bank_sel: "60 00 06 3A"
-  mod_vol_lvl:  "60 00 06 58"
+  mo_sw:       "60 00 01 00"
+  mo_type:     "60 00 01 01"
+  mo_bank_G:   "60 00 06 27"
+  mo_bank_R:   "60 00 06 28"
+  mo_bank_Y:   "60 00 06 29"
+  mo_bank_sel: "60 00 06 3A"
+  mo_vol_lvl:  "60 00 06 58"
   
   fx_sw:        "60 00 03 00"
   fx_type:      "60 00 03 01"
@@ -204,14 +204,14 @@ SEND:
   pb_dmix_lvl:  "60 00 02 60" # Direct Mix
   
 RECV:
-  "60 00 06 27":  "mod_return"    # Type Copy G
+  "60 00 06 27":  "mo_return"    # Type Copy G
   "60 00 06 2A":  "fx_return"     # Type Copy
-  "60 00 06 5E":  "mod_status"    # GRY +1
+  "60 00 06 5E":  "mo_status"    # GRY +1
   "60 00 06 5F":  "fx_status"     # GRY +1
-  # "60 00 06 58":  "mod_unknown_1"
+  # "60 00 06 58":  "mo_unknown_1"
 #  "60 00 06 59":  "fx_unknown_1"
 
-MFTypes:
+Types:
   "Touch Wah":      '00'
   "Auto Wah":       '01'
   "Pedal Wah":      '02'

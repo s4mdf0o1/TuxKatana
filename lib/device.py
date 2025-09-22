@@ -73,6 +73,7 @@ class Device(GObject.GObject):
             if str(addr) in self.mry.map:
                 obj, prop = self.mry.map[str(addr)]
                 if hasattr(obj, "prefix"):
+                    log.debug(f"{obj.name} > {obj.prefix}")
                     prop = prop.replace(obj.prefix+'_', '')
                 value = None
                 if isinstance(getattr(obj, prop), bool):
@@ -104,7 +105,7 @@ class Device(GObject.GObject):
         return False
     
     def set_midi_channel(self, data):
-        self.send(Address('00 01 00 00'), MIDIBytes(data))
+        self.ctrl.send(Address('00 01 00 00'), MIDIBytes(data), True)
 
     def dump_memory(self):
         self.ctrl.pause_queue = True

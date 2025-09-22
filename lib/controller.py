@@ -46,7 +46,7 @@ class Controller(GObject.GObject):
         self.thread_watch = Thread(target=self.queue_watcher, daemon=True).start()
         GLib.timeout_add_seconds(1, self.wait_device)
     
-    def wait_msg(self, timeout=0.5):
+    def wait_msg(self, timeout=0.2):
         msg = self.msg_queue.get(timeout=timeout)
         self.sysex.recvd(msg.data)
         log.sysex(f"{self.sysex.mido.hex()}")

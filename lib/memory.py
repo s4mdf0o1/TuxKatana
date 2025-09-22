@@ -27,6 +27,9 @@ class Memory(GObject.GObject):
 
     def add_block(self, Addr_start, data):
         # log.debug(f"{self.Addr_start} / {Addr_start}: {len(data.bytes)} {self.Addr_start+len(self.memory)}")
+        if Addr_start == Address('60 00 00 00'):
+            self.memory = MIDIBytes()
+
         if self._timer_id:
             GLib.source_remove(self._timer_id)
         self._timer_id = GLib.timeout_add(500, self._on_timeout)
@@ -50,6 +53,7 @@ class Memory(GObject.GObject):
             self.memory += data
         else:
             raise ValueError(f"Mry calculation Error: {Addr_start=} {Addr_next=}")
+        log.debug(f"End Addr: {self.Addr_start+len(self.memory)}")
 
     def read(self, Addr, size=1, dump = False):
         if not len(self.memory):

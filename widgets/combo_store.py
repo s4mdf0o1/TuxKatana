@@ -13,13 +13,18 @@ class ComboStore(Gtk.ComboBox):
     def __init__(self, own_ctrl, key, direct_load=False):
         super().__init__()
         self.own_ctrl = own_ctrl
-        lower = own_ctrl.name.lower()
-        signal = ''.join(lower.split()) + "-map-ready"
-        abrv = lower[:2]+'_' if len(lower.split())==1 \
-                else ''.join(v[:1] for v in lower.split())+'_'
+        # lower = own_ctrl.name.lower()
+        signal = own_ctrl.signal_name #''.join(lower.split()) + "-map-ready"
+        prefix = own_ctrl.prefix
+        # abrv = lower[:2]+'_' if len(lower.split())==1 \
+                # else ''.join(v[:1] for v in lower.split())+'_'
         self.key = key
-        prop = abrv + key.lower()[:-1] + '_idx'
-        self.dest = abrv + key.lower()[:-1]
+        prop = ""
+        if own_ctrl.name in ['Mod', 'Fx']:
+            prop = key.lower()[:-1] + '_idx'
+        else:
+            prop = prefix + key.lower()[:-1] + '_idx'
+        self.dest = prefix + key.lower()[:-1]
         # log.debug(f"{signal} {abrv=} {self.key} {prop} {self.dest}")
 
         self.store = Gtk.ListStore(int, str, str)

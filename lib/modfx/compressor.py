@@ -6,12 +6,14 @@ log = logging.getLogger(LOGGER_NAME)
 from lib.midi_bytes import Address, MIDIBytes
 
 from lib.map import Map
-from .common import Common
+# from .common import Common
+from lib.effect import Effect
+
 from ruamel.yaml import YAML
 yaml = YAML(typ="rt")
 
 
-class Compressor(Common, GObject.GObject):
+class Compressor(Effect, GObject.GObject):
     __gsignals__ = {
         "compressor-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
@@ -23,10 +25,11 @@ class Compressor(Common, GObject.GObject):
     co_eff_lvl      = GObject.Property(type=float, default=0.0)
     # co_dmix_lvl     = GObject.Property(type=float, default=0.0)
 
-    def __init__(self, device, ctrl):
-        super().__init__(device, ctrl, "Compressor")
+    def __init__(self, device, ctrl, parent_prefix=""):
+        super().__init__(device, ctrl, "Compressor", True, parent_prefix)
         # GObject.GObject.__init__()
         # self.name = "Compressor"
+        # self.parent_prefix = None
         self.ctrl = ctrl
         self.device = device
         # self.map = Map("params/modfx/compressor.yaml")
@@ -52,16 +55,19 @@ class Compressor(Common, GObject.GObject):
     def search_addr(self, prop):
         for k, v in self.device.mry.map.items():
             o, p = v
+            # log.debug(f"{prop} {o.name} {p}")
             if p == prop:
                 return k
 
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
-        # log.debug(f"{name}={value} {self.prefix=}")
-        name = self.prefix + '_' +name.replace('-','_')
-        Addr = self.search_addr(name)
-        # log.debug(f">>> [{Addr}]> {name}={value}")
+        log.debug(f"{name}={value} {self.prefix=}")
+        name = name.replace('-','_')
+        # log.debug(f"{self.map}")
+        prop = self.parent_prefix+name
+        Addr = self.search_addr(prop)
+        log.debug(f">>> [{Addr}]> {prop} {name}={value}")
         if isinstance(value, float):
             value = int(value)
         ## DEBUG Memory MAP Dict
@@ -74,7 +80,7 @@ class Compressor(Common, GObject.GObject):
 
         if 'co_type_idx' in name:
             model_val = list(self.map['Types'].values())[value]
-            prop = self.prefix+'_'+"co_type"
+            prop = self.parent_prefix+"co_type"
             Addr = self.search_addr(prop)
             # log.debug(f"{prop=} {Addr}")
             if Addr:
