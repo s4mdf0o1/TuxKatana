@@ -16,19 +16,13 @@ class SysEx(MIDIBytes):
         self.received = False
         if not body:
             return
-        # if isinstance(body, tuple):
-        #     body = list(body)
-        # if isinstance(mb, SysexData):
-        #     self.bytes = list(body)
-        #     return
-
         super().__init__(body)
 
     def recvd(self, msg):
         self.received = True
         if isinstance(msg, SysexData):
             msg = MIDIBytes(list(msg))
-        if msg[:4] == MIDIBytes('7E 00 06 02').bytes:
+        if msg[:4] == MIDIBytes('7E 00 06 02').bytes: # Recv infos -> Header
             self.header = self._set_header(msg.bytes)
             return self
 
@@ -44,7 +38,7 @@ class SysEx(MIDIBytes):
         if not isinstance(data, MIDIBytes):
             bdata = MIDIBytes(data)
         command = self.GET if not SET else self.SET
-        if str(baddr) == '7E 00 06 01':
+        if str(baddr) == '7E 00 06 01': # Request device infos: Address+no data
             self.mido.data = baddr
             return self.mido
         msg = self.header
@@ -60,15 +54,13 @@ class SysEx(MIDIBytes):
         return (self.addr, self.data)
 
     def copy(self):
-        new = SysEx()#self.bytes[:])  
+        new = SysEx()
         if hasattr(self, "header"):
             new.header = MIDIBytes(self.header.bytes[:])
         if hasattr(self, "addr"):
             new.addr = Address(self.addr.bytes[:])
         if hasattr(self, "data"):
             new.data = MIDIBytes(self.data.bytes[:])
-        # if hasattr(self, "checksum"):
-            # new.checksum = MIDIBytes(self.checksum.bytes[:])
         return new
 
     def __str__(self):

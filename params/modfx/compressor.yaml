@@ -7,7 +7,7 @@ SEND:
   co_eff_lvl:   "60 00 01 1A" # Effect
   # co_dmix_lvl:  "60 00 06 59" # Direct Mix
   
-CompressorTypes:
+Types:
   "Boss CS-3":        '00'
   "Hi Band":          '01'
   "Light":            '02'

@@ -88,7 +88,7 @@ class ModFxUI(Gtk.Box):
     def on_bank_changed(self, obj, pspec):
         idx = getattr(obj, pspec.name.replace("-", "_"))
         children = self.get_stack_children(self.stack)
-        log.debug(f"{idx=} {children.__class__.__name__}") 
+        # log.debug(f"{idx=} {children.__class__.__name__}") 
         if 0 <= idx < len(children):
             self.stack.set_visible_child(children[idx])
         else:
@@ -108,18 +108,18 @@ class ModFxUI(Gtk.Box):
         filename = name.lower().replace(" ", "_")
         lib_name = "".join(w.capitalize() for w in name.split())
         ui_name = lib_name + "UI"
-        log.debug(f"{filename} {lib_name} {ui_name}")
+        # log.debug(f"{filename} {lib_name} {ui_name}")
         try:
             ui = importlib.import_module("widgets.modfx."+filename)
             ui_cls = getattr(ui, ui_name)
-            log.debug(ui_cls)
+            # log.debug(ui_cls)
         except (ModuleNotFoundError, AttributeError) as e:
             log.warning(f"widgets.modfx.{filename}.{ui_name}' not found {e}")
             return None
         try:
             lib = importlib.import_module("lib.modfx."+filename)
             lib_cls = getattr(lib, lib_name)
-            log.debug(lib_cls)
+            # log.debug(lib_cls)
         except (ModuleNotFoundError, AttributeError) as e:
             log.warning(f"lib.modfx.{filename}.{lib_name}' not found {e}")
             return None
@@ -127,8 +127,8 @@ class ModFxUI(Gtk.Box):
         lib_obj.prefix = self.prefix
         lib_obj.set_mry_map()
         self.own_ctrl.libs[self.prefix+'_'+filename] = lib_obj
-        log.debug(self.own_ctrl.libs)
+        # log.debug(self.own_ctrl.libs)
         ui_obj = ui_cls(lib_obj)
-        log.debug(f"{self.name} {ui_obj.__class__.__name__} {lib_obj.prefix=}")
+        # log.debug(f"{self.name} {ui_obj.__class__.__name__} {lib_obj.prefix=}")
         return ui_obj
 

@@ -1,10 +1,11 @@
 SEND:
-  reverb_type:  "60 00 05 41"
+  re_type:  "60 00 05 41"
   bank_select:  "60 00 06 3D"
   reverb_sw:    "60 00 05 40"
   bank_G:       "60 00 06 30"
   bank_R:       "60 00 06 31"
   bank_Y:       "60 00 06 32"
+  re_mode:      "00 00 00 00"
   mode_G:       "60 00 06 36"
   mode_R:       "60 00 06 37"
   mode_Y:       "60 00 06 38"
@@ -15,11 +16,12 @@ SEND:
   high_cut_lvl: "60 00 05 46" # '00' -> '0e'=630Hz -> 12.5kHz/FLAT
   effect_lvl:   "60 00 05 48" # '00' -> '63'
   dir_mix_lvl:  "60 00 05 49" # '00' -> '63'
+  revb_vol_lvl: "60 00 06 5B"
 
 RECV:
   "60 00 06 61": "reverb_status"
 
-ReverbTypes:
+Types:
     'Ambience': '00'
     'Room':     '01'
     'Hall 1':   '02'
@@ -33,6 +35,9 @@ Modes:
   Dual:   '01'
   Delay:  '00'
 
-Unimplemented:
+Unimplemented: # Delay_2 < !!!
   "60 00 06 5b":  '2c|--|1e|2c'
   "60 00 06 51":  '??'
+  "60 00 05 20":  '00'
+  "60 00 05 24":  ''
+  "60 00 05 26":  '00>63'

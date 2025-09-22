@@ -68,7 +68,7 @@ class ModFx(GObject.GObject):
         elif name == self.prefix + 'status':
             self.direct_set(name, value)
             bank_prop = self.get_bank_var()
-            log.debug(f"{bank_prop}: {self.get_property(bank_prop)}")
+            # log.debug(f"{bank_prop}: {self.get_property(bank_prop)}")
             bank_val = self.get_property(bank_prop)
             self.direct_set("type_idx", bank_val )
             # self.type_idx = bank_val
@@ -88,7 +88,7 @@ class ModFx(GObject.GObject):
         Addr = self.map.get_addr(name)
         # if name == self.prefix + 'idx':
         if 'idx' in name:# == self.prefix + 'idx':
-            log.debug(f"{name=}")
+            # log.debug(f"{name=}")
             type_val = list(self.map['MFTypes'].values())[value]
             Addr  = self.map.send[self.prefix + "type"]
             self.ctrl.send(Addr, type_val, True)
@@ -100,7 +100,7 @@ class ModFx(GObject.GObject):
             #else:
             #    self.ctrl.send(Addr, value, True)
         elif self.prefix+"bank_" in name or '_vol_lvl' in name:
-            log.debug(f"{name}: {Addr}: {value}")
+            # log.debug(f"{name}: {Addr}: {value}")
             self.ctrl.send(Addr, value, True)
         else:
             log.debug(f"missing DEF for '{name}'")
@@ -110,7 +110,7 @@ class ModFx(GObject.GObject):
                 not hasattr(self, prop):
             # log.warning(f"ModFx: Unknown Property: {prop}={value}")
             return
-        log.debug(f"{prop}={value}")
+        # log.debug(f"{prop}={value}")
         self.handler_block_by_func(self.set_from_ui)
         self.set_property(prop, value)
         self.handler_unblock_by_func(self.set_from_ui)

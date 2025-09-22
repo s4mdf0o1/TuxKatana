@@ -1,6 +1,6 @@
 SEND:
   boost_sw:       "60 00 00 10"
-  boost_model:    "60 00 00 11"
+  bo_type:    "60 00 00 11"
   boost_solo_sw:  "60 00 00 15"
   boost_solo_lvl: "60 00 00 16"
   boost_drive_lvl: "60 00 00 12"
@@ -12,11 +12,12 @@ SEND:
   boost_bank_G:   "60 00 06 24"
   boost_bank_R:   "60 00 06 25"
   boost_bank_Y:   "60 00 06 26"
+  boost_vol_lvl:  "60 00 06 57"
 
 RECV:
   "60 00 06 5D":  "boost_status"
 
-Models:
+Types:
   'Mid Boost':    '00'
   'Clean Boost':  '01'
   'Treble Boost': '02'

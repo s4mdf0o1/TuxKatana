@@ -37,12 +37,12 @@ class Compressor(Common, GObject.GObject):
 
         # self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
         self.notify_id = self.connect("notify", self.set_from_ui)
-        self.load_map(device)
+        # self.load_map(device)
 
 
-    def load_map(self, device):
+    # def load_map(self, device):
         # log.debug(f"{self.map}")
-        self.emit("compressor-map-ready", self.map['CompressorTypes'])#, self.map['Modes'])
+        # self.emit("compressor-map-ready", self.map)#, self.map['Modes'])
 
     # def set_from_msg(self, name, value):
     #     name = name.replace('-', '_')
@@ -61,7 +61,7 @@ class Compressor(Common, GObject.GObject):
         # log.debug(f"{name}={value} {self.prefix=}")
         name = self.prefix + '_' +name.replace('-','_')
         Addr = self.search_addr(name)
-        log.debug(f">>> [{Addr}]> {name}={value}")
+        # log.debug(f">>> [{Addr}]> {name}={value}")
         if isinstance(value, float):
             value = int(value)
         ## DEBUG Memory MAP Dict
@@ -73,10 +73,10 @@ class Compressor(Common, GObject.GObject):
         #     yaml.dump(mry_map, f)
 
         if 'co_type_idx' in name:
-            model_val = list(self.map['CompressorTypes'].values())[value]
+            model_val = list(self.map['Types'].values())[value]
             prop = self.prefix+'_'+"co_type"
             Addr = self.search_addr(prop)
-            log.debug(f"{prop=} {Addr}")
+            # log.debug(f"{prop=} {Addr}")
             if Addr:
                 self.ctrl.send(Addr, model_val, True)
         elif 'lvl' in name:

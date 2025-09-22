@@ -6,14 +6,15 @@ log = logging.getLogger(LOGGER_NAME)
 from .midi_bytes import Address, MIDIBytes
 
 from .map import Map
+from .effect import Effect
 
-class Delay(GObject.GObject):
+class Delay(Effect, GObject.GObject):
     __gsignals__ = {
         "delay-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
     delay_sw        = GObject.Property(type=bool, default=False)
-    delay_type      = GObject.Property(type=int, default=0)
-    type_idx        = GObject.Property(type=int, default=0)
+    de_type      = GObject.Property(type=int, default=0)
+    de_type_idx        = GObject.Property(type=int, default=0)
     delay_status    = GObject.Property(type=int, default=0)
     bank_select     = GObject.Property(type=int, default=0)
     bank_G          = GObject.Property(type=int, default=0)
@@ -40,32 +41,34 @@ class Delay(GObject.GObject):
     sde_ef_phase_sw = GObject.Property(type=bool, default=False)
     sde_filter_sw   = GObject.Property(type=bool, default=False)
     sde_modul_sw    = GObject.Property(type=bool, default=False)
+    delay_vol_lvl   = GObject.Property(type=float, default=0.0)
 
     def __init__(self, device, ctrl):
-        super().__init__()
-        self.name = "Delay"
-        self.ctrl = ctrl
-        self.device = device
+        super().__init__(device, ctrl, "Delay")
+        # super().__init__()
+        # self.name = "Delay"
+        # self.ctrl = ctrl
+        # self.device = device
 
-        self.map = Map("params/delay.yaml")
-        self.set_mry_map()
+        # self.map = Map("params/delay.yaml")
+        # self.set_mry_map()
 
         self.banks=['G', 'R', 'Y']
 
-        self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
+        # self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
         self.notify_id = self.connect("notify", self.set_from_ui)
-        self.device.connect("load-maps", self.load_map)
+        # self.device.connect("load-maps", self.load_map)
 
-    def load_map(self, ctrl):
-        self.emit("delay-map-ready", self.map['Types'])
+    # def load_map(self, ctrl):
+        # self.emit("delay-map-ready", self.map)#['Types'])
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
-        if name == 'delay_type':
+        if name == 'de_type':
             svalue = str(MIDIBytes(value))
             num = list(self.map['Types'].values()).index(svalue)
-            self.direct_set("type_idx", num)
+            self.direct_set("de_type_idx", num)
         else:
             self.direct_set(name, value)
  
@@ -80,19 +83,19 @@ class Delay(GObject.GObject):
         if 'sw' in name:
             value = 1 if value else 0
             self.ctrl.send(Addr, value, True)
-        elif name == 'type_idx':
+        elif name == 'de_type_idx':
             model_val = list(self.map['Types'].values())[value]
-            Addr  = self.map.get_addr("delay_type")
+            Addr  = self.map.get_addr("de_type")
             self.ctrl.send(Addr, model_val, True)
         elif 'lvl' in name or name == 'bank_select':
             self.ctrl.send(Addr, value, True)
         else:
             log.warning(f"missing DEF for '{name}'")
 
-    def direct_set(self, prop, value):
-        self.handler_block_by_func(self.set_from_ui)
-        self.set_property(prop, value)
-        self.handler_unblock_by_func(self.set_from_ui)
+    # def direct_set(self, prop, value):
+    #     self.handler_block_by_func(self.set_from_ui)
+    #     self.set_property(prop, value)
+    #     self.handler_unblock_by_func(self.set_from_ui)
 
     def get_bank_var(self, var):
         if self.delay_status == 0:
@@ -106,22 +109,22 @@ class Delay(GObject.GObject):
         d_type = self.get_property(bank_name)
         d_type = str(MIDIBytes(d_type))
         num = list(self.map['Types'].values()).index(d_type)
-        self.direct_set("type_idx", num)
+        self.direct_set("de_type_idx", num)
 
-    def load_from_mry(self, mry):
-        # log.debug("-")
-        for saddr, prop in self.map.recv.items():
-            value = mry.read(Address(saddr))
-            if prop in ['time_lvl', 'd1_time_lvl']:
-                value = mry.read(Address(saddr), 2)
-                self.direct_set(prop, value.int)
-            else:
-                if value is not None and value.int >= 0:
-                    self.direct_set(prop, value.int)
-        self.set_bank_type()
+    # def load_from_mry(self, mry):
+    #     # log.debug("-")
+    #     for saddr, prop in self.map.recv.items():
+    #         value = mry.read(Address(saddr))
+    #         if prop in ['time_lvl', 'd1_time_lvl']:
+    #             value = mry.read(Address(saddr), 2)
+    #             self.direct_set(prop, value.int)
+    #         else:
+    #             if value is not None and value.int >= 0:
+    #                 self.direct_set(prop, value.int)
+    #     self.set_bank_type()
 
-    def set_mry_map(self):
-        for Addr, prop in self.map.recv.items():
-            self.device.mry.map[str(Addr)] = ( self, prop ) 
+    # def set_mry_map(self):
+    #     for Addr, prop in self.map.recv.items():
+    #         self.device.mry.map[str(Addr)] = ( self, prop ) 
 
 

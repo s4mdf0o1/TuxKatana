@@ -6,14 +6,15 @@ log = logging.getLogger(LOGGER_NAME)
 from .midi_bytes import Address, MIDIBytes
 
 from .map import Map
+from .effect import Effect
 
-class Booster(GObject.GObject):
+class Booster(Effect, GObject.GObject):
     __gsignals__ = {
         "booster-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
     boost_sw            = GObject.Property(type=bool, default=False)
-    boost_model         = GObject.Property(type=int, default=0)
-    model_idx           = GObject.Property(type=int, default=0)
+    bo_type         = GObject.Property(type=int, default=0)
+    bo_type_idx           = GObject.Property(type=int, default=0)
     boost_solo_sw       = GObject.Property(type=bool, default=False)
     boost_solo_lvl      = GObject.Property(type=float, default=50.0)
     boost_drive_lvl     = GObject.Property(type=float, default=50.0)
@@ -25,32 +26,22 @@ class Booster(GObject.GObject):
     boost_bank_G        = GObject.Property(type=int, default=0)
     boost_bank_R        = GObject.Property(type=int, default=0)
     boost_bank_Y        = GObject.Property(type=int, default=0)
-    boost_status  = GObject.Property(type=int, default=0)
+    boost_status        = GObject.Property(type=int, default=0)
+    boost_vol_lvl       = GObject.Property(type=float, default=50.0)
 
     def __init__(self, device, ctrl):
-        super().__init__()
-        self.name = "Booster"
-        self.ctrl = ctrl
-        self.device = device
-        self.map = Map("params/booster.yaml")
-        self.set_mry_map()
-
+        super().__init__(device, ctrl, "Booster")
         self.banks=['G', 'R', 'Y']
 
-        self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        self.device.connect("load-maps", self.load_map)
         self.notify_id = self.connect("notify", self.set_from_ui)
-
-    def load_map(self, ctrl):
-        self.emit("booster-map-ready", self.map['Models'])
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
-        if name == 'boost_model':
+        if name == 'bo_type':
             svalue = str(MIDIBytes(value))
-            num = list(self.map['Models'].values()).index(svalue)
-            self.direct_set('model_idx', num)
+            num = list(self.map['Types'].values()).index(svalue)
+            self.direct_set('bo_type_idx', num)
         else:
             self.direct_set(name, value)
         
@@ -62,9 +53,9 @@ class Booster(GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
-        if name == 'model_idx':
-            model_val = list(self.map['Models'].values())[value]
-            Addr  = self.map.get_addr("boost_model")
+        if name == 'bo_type_idx':
+            model_val = list(self.map['Types'].values())[value]
+            Addr  = self.map.get_addr("bo_type")
             self.ctrl.send(Addr, model_val)
         elif 'lvl' in name or name == 'boost_bank_sel':
             self.ctrl.send(Addr, value, True)
@@ -72,28 +63,11 @@ class Booster(GObject.GObject):
             value = 1 if value else 0
             self.ctrl.send(Addr, value, True)
 
-    def direct_set(self, prop, value):
-        self.handler_block_by_func(self.set_from_ui)
-        self.set_property(prop, value)
-        self.handler_unblock_by_func(self.set_from_ui)
-
     def set_bank_model(self):
         bank = self.banks[self.boost_status - 1]
         bank_name = "boost_bank_"+bank
         model = self.get_property(bank_name)
         smodel = str(MIDIBytes(model))
-        num = list(self.map['Models'].values()).index(smodel)
-        self.direct_set("model_idx", num)
-
-    def load_from_mry(self, mry):
-        for saddr, prop in self.map.recv.items():
-            value = mry.read(Address(saddr))
-            if value is not None and value.int >= 0:
-                self.direct_set(prop, value.int)
-        self.set_bank_model()
-
-    def set_mry_map(self):
-        for Addr, prop in self.map.recv.items():
-            self.device.mry.map[str(Addr)] = ( self, prop) 
-
+        num = list(self.map['Types'].values()).index(smodel)
+        self.direct_set("bo_type_idx", num)
 

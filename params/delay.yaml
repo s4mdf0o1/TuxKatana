@@ -1,7 +1,7 @@
 SEND:
   delay_sw:     "60 00 05 00"
   bank_select:  "60 00 06 3C"
-  delay_type:   "60 00 05 01"
+  de_type:   "60 00 05 01"
   time_lvl:     "60 00 05 02" # '00 01' -> '0f 50'=1ms->2s
   feedback_lvl: "60 00 05 04" 
   tap_time_lvl: "60 00 05 08" # 0% -> 100%
@@ -26,6 +26,7 @@ SEND:
   sde_ef_phase_sw: "60 00 05 18" # Normal|Inverse
   sde_filter_sw:  "60 00 05 16"  # 8kHz|17kHz
   sde_modul_sw:   "60 00 05 19"  # Off|On
+  delay_vol_lvl:  "60 00 06 5A"
 
 RECV:
   "60 00 06 2D":  delay_return
@@ -45,30 +46,3 @@ Types:
   "Modulate":     '09'
   "SDE-3000":     '0A'
 
-#Digital: 0
-#  Delay: (time, feedback)
-#  Filter: high_cut
-#  Level: (effect, dir_mix)
-#Pan: 1
-#  Delay: +tap_time
-#  Filter: idem
-#  Level: idem
-#Stereo: Digital
-#  Delay1: idem
-#  Delay2: idem
-#  Filter1: idem
-#  Filter2: idem
-#  Effet1: -dir_mix
-#  Effect2: -dir_mix
-#  Direct: dir_mix
-#Dual*: Stereo
-#Reverse: 6 Digital
-#Analog: 7 Digital
-#Tap Echo: 8 Digital
-#Modulate: 9
-#  Base: Digital
-#  Modulate: (mod_rate, mode_depth)
-#SDE: 10
-#  Delay: Digital.Delay
-#  Level: Digital.Level
-#  SDE
