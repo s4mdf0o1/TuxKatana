@@ -20,7 +20,7 @@ class ComboStore(Gtk.ComboBox):
         self.key = key
         prop = abrv + key.lower()[:-1] + '_idx'
         self.dest = abrv + key.lower()[:-1]
-        log.debug(f"{signal} {abrv=} {self.key} {prop} {self.dest}")
+        # log.debug(f"{signal} {abrv=} {self.key} {prop} {self.dest}")
 
         self.store = Gtk.ListStore(int, str, str)
         self.set_model(self.store)

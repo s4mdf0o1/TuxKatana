@@ -55,7 +55,7 @@ class Device(GObject.GObject):
         self.ctrl.parent.connect("main-ready", self.on_main_ready)
 
     def on_main_ready(self, main):
-        log.debug(f"{main}")
+        # log.debug(f"{main}")
         self.emit("load-maps")
 
     def on_received_msg(self, addr, data):
