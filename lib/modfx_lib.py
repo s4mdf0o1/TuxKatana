@@ -36,29 +36,16 @@ class ModFx(Effect, GObject.GObject):
     
     def __init__(self, device, ctrl, name):
         super().__init__(device, ctrl, name)
-        # log.debug(self.prefix)
-        # self.name = name
-        # self.prefix = name.lower() + '_'
-        # log.debug(f">>>>>> {name}, {self.prefix}<<<<<<<<<<<")
-        # self.ctrl = ctrl
-        # self.device = device
-        # self.map = Map("params/modfx.yaml")
-        # self.set_mry_map()
-        # self.banks=['G', 'R', 'Y']
-
+         ## DEBUG Memory MAP Dict
+        # mry_map = self.device.mry.map.copy()
+        # for k, v in mry_map.items():
+        #     obj, prop = v
+        #     mry_map[k]= prop
+        # with open(self.prefix+"map.log", 'w') as f:
+        #     yaml.dump(mry_map, f)
         self.libs={}
 
-        # self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        # self.device.connect("load-maps", self.load_map)
         self.notify_id = self.connect("notify", self.set_from_ui)
-
-    # def load_map(self, ctrl):
-    #     self.emit("modfx-map-ready", self.map['Types'])
-
-    # def set_mry_map(self):
-    #     for Addr, prop in self.map.recv.items():
-    #         if self.prefix in prop:
-    #             self.device.mry.map[str(Addr)] = (self, prop)
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
@@ -74,12 +61,10 @@ class ModFx(Effect, GObject.GObject):
             # log.debug(f"{bank_prop}: {self.get_property(bank_prop)}")
             bank_val = self.get_property(bank_prop)
             self.direct_set("type_idx", bank_val )
-            # self.type_idx = bank_val
         elif '_vol_lvl' in name or 'bank' in name:
             self.direct_set(name, value)
         else:
             log.warning(f"NEED PRECISE: {name}={value}")
-            # self.direct_set(name, value)
 
     def set_from_ui(self, obj, pspec):
         name = pspec.name
@@ -89,8 +74,7 @@ class ModFx(Effect, GObject.GObject):
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
-        # if name == self.prefix + 'idx':
-        if 'idx' in name:# == self.prefix + 'idx':
+        if 'idx' in name:
             # log.debug(f"{name=}")
             type_val = list(self.map['Types'].values())[value]
             Addr  = self.map.send[self.prefix + "type"]
@@ -100,23 +84,11 @@ class ModFx(Effect, GObject.GObject):
         elif 'sw' in name:
             value = 1 if value else 0
             self.ctrl.send(Addr, value, True)
-            #else:
-            #    self.ctrl.send(Addr, value, True)
         elif self.prefix+"bank_" in name or 'vol_lvl' in name:
             # log.debug(f"{name}: {Addr}: {value}")
             self.ctrl.send(Addr, value, True)
         else:
             log.debug(f"missing DEF for '{name}'")
-
-    # def direct_set(self, prop, value):
-    #     if 'unknown' in prop or \
-    #             not hasattr(self, prop):
-    #         # log.warning(f"ModFx: Unknown Property: {prop}={value}")
-    #         return
-    #     # log.debug(f"{prop}={value}")
-    #     self.handler_block_by_func(self.set_from_ui)
-    #     self.set_property(prop, value)
-    #     self.handler_unblock_by_func(self.set_from_ui)
 
     def get_bank_var(self):
         status = self.get_property(self.prefix+'status')
@@ -129,14 +101,5 @@ class ModFx(Effect, GObject.GObject):
         d_type = str(MIDIBytes(d_type))
         num = list(self.map['Types'].values()).index(d_type)
         self.direct_set("type_idx", num)
-
-    #def load_from_mry(self, mry):
-    #    #log.debug(self.map.recv.items())
-    #    for saddr, prop in self.map.recv.items():
-    #        value = mry.read(Address(saddr))
-    #        # log.debug(f"{saddr} {value.int=}")
-    #        if value is not None and value.int >= 0:
-    #            self.direct_set(prop, value.int)
-    #    self.set_bank_type()
 
 

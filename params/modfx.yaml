@@ -14,13 +14,6 @@ SEND:
   fx_bank_Y:    "60 00 06 2C"
   fx_bank_sel:  "60 00 06 3B"
   fx_vol_lvl:   "60 00 06 59"
-# Limiter
-  li_type:      "60 00 01 1B"
-  li_attak_lvl: "60 00 01 1C" # Attack
-  li_thold_lvl: "60 00 01 1D" # Threshold
-  li_rate_lvl:  "60 00 01 1E" # Rate
-  li_rels_lvl:  "60 00 01 1F" # Release
-  li_eff_lvl:   "60 00 01 20" # Effect
 # Graphic EQ
   ge_31h_lvl:   "60 00 01 21" # 00>28=-20dB>+20dB
   ge_62h_lvl:   "60 00 01 22" # ""
@@ -243,11 +236,6 @@ Types:
   "DC30":           '26'
   "Heavy Octave":   '27'
   "Pedal Bend":     '28'
-
-Limiter:
-  "Boss Limiter":         '00'
-  "DBX 100X rack":        '01'
-  "UREI 1178 vint rack":  '02'
 
 Guitar_Sym:
   "Singl to Humbuckr":  '00'

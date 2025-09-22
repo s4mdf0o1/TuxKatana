@@ -2,10 +2,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk, GObject
 
-# from .slider import Slider
 from widgets.slider import Slider
-# from .tabbed_panel import TabbedPanel
-# from .bank import Bank
 from widgets.toggle import Toggle
 from widgets.box_inner import BoxInner
 
@@ -29,8 +26,6 @@ class AutoWahUI(Gtk.Box):
         box_eff.append(self.filter_sw)
 
         box_aw = BoxInner("Auto Wah")
-        # self.filt_lvl = Slider( "Filter", "normal", self.own_ctrl, "aw_filt_lvl" )
-        # box_aw.append(self.filt_lvl)
 
         self.freq_lvl = Slider( "Freq", "normal", self.own_ctrl, "aw_freq_lvl" )
         box_aw.append(self.freq_lvl)

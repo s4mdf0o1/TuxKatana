@@ -1,4 +1,4 @@
-from gi.repository import GLib#, GObject, Gio
+from gi.repository import GLib
 
 import logging
 from lib.log_setup import LOGGER_NAME

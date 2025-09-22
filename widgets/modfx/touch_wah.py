@@ -3,8 +3,6 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gdk, GObject
 
 from widgets.slider import Slider
-# from .tabbed_panel import TabbedPanel
-# from .bank import Bank
 from widgets.toggle import Toggle
 from widgets.box_inner import BoxInner
 

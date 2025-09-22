@@ -42,14 +42,6 @@ class Compressor(Effect, GObject.GObject):
         log.debug(f">>> [{Addr}]> {prop} {name}={value}")
         if isinstance(value, float):
             value = int(value)
-        ## DEBUG Memory MAP Dict
-        # mry_map = self.device.mry.map.copy()
-        # for k, v in mry_map.items():
-        #     obj, prop = v
-        #     mry_map[k]= prop
-        # with open(self.prefix+"map.log", 'w') as f:
-        #     yaml.dump(mry_map, f)
-
         if 'co_type_idx' in name:
             model_val = list(self.map['Types'].values())[value]
             prop = self.parent_prefix+"co_type"
