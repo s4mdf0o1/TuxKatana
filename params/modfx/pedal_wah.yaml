@@ -7,7 +7,7 @@ SEND:
   pw_eff_lvl:   "60 00 01 14" # Effect
   pw_dmix_lvl:  "60 00 01 15" # Diret Mix
 
-PWTypes:
+Types:
   "Cry Wah":      '00'
   "VO Wah":       '01'
   "Fat Wah":      '02'

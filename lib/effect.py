@@ -21,7 +21,9 @@ class Effect:
         if name in ['Mod', 'Fx']:
             self.map = Map(f"params/modfx.yaml")
         elif is_modfx:
-            self.map = Map(f"params/modfx/{name.lower()}.yaml")
+            yf = f"params/modfx/{name.lower().replace(' ', '_')}.yaml"
+            self.map = Map(yf)
+            # f"params/modfx/{name.lower().replace(' ', '_')}.yaml")
         else:
             self.map = Map(f"params/{name.lower()}.yaml")
         self.set_mry_map()
@@ -73,5 +75,10 @@ class Effect:
                 log.warning(f"{self.name} has no '{prop}' property")
         # log.debug(f"{self.device.mry.map}") 
 
-
+    def search_addr(self, prop):
+        for k, v in self.device.mry.map.items():
+            o, p = v
+            # log.debug(f"{prop} {o.name} {p}")
+            if p == prop:
+                return k
 

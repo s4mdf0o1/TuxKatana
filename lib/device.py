@@ -72,9 +72,9 @@ class Device(GObject.GObject):
             self.mry.write(addr, data)
             if str(addr) in self.mry.map:
                 obj, prop = self.mry.map[str(addr)]
-                if hasattr(obj, "prefix"):
-                    log.debug(f"{obj.name} > {obj.prefix}")
-                    prop = prop.replace(obj.prefix+'_', '')
+                if hasattr(obj, "parent_prefix"):
+                    prop = prop.replace(obj.parent_prefix, '')
+                    log.debug(f"{obj.name} > {prop}")
                 value = None
                 if isinstance(getattr(obj, prop), bool):
                     value = data.bool
