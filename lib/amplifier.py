@@ -21,8 +21,8 @@ class Amplifier(Effect, GObject.GObject):
     amp_unk1_lvl   = GObject.Property(type=float, default=0.0)
     amp_unk2_lvl   = GObject.Property(type=float, default=0.0)
 
-    def __init__(self, device, ctrl):
-        super().__init__(device, ctrl, "Amplifier")
+    def __init__(self, device):
+        super().__init__("Amplifier", device)
         self.switch_model = False
 
         self.notify_id = self.connect("notify", self.set_from_ui)
@@ -64,7 +64,7 @@ class Amplifier(Effect, GObject.GObject):
             self.ctrl.send(Addr, value, True)
 
     def set_am_type(self):
-        am_type = self.device.mry.read(Address("60 00 00 21"))
+        am_type = self.ctrl.device.mry.read(Address("60 00 00 21"))
         self.direct_set("am_type", am_type.int)
         am_type_code = str(MIDIBytes(self.am_type))
         num = list(self.map['Types'].values()).index(am_type_code)

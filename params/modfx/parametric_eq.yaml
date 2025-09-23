@@ -1,0 +1,24 @@
+# Param EQ
+SEND:
+  pe_loco_lvl:  "60 00 01 2C" # Low Cut Off
+        # 00>11=0Hz>800Hz
+  pe_loga_lvl:  "60 00 01 2D" # Low Gain
+        # 00>28=-20dB>+20dB
+  pe_lomf_lvl:  "60 00 01 2E" # Low Mid Freq
+        # 00>1b=20Hz>10kHz
+  pe_lomq_lvl:  "60 00 01 2F" # Low Mid Q
+        # 00>05=0.5>16
+  pe_lomg_lvl:  "60 00 01 30" # Low Mid Gain
+        # 00>28=-20dB>+20dB
+  pe_himf_lvl:  "60 00 01 31" # High Mid Freq
+        # 00>1b=20Hz>10kHz
+  pe_himq_lvl:  "60 00 01 32" # High Mid Q
+        # 00>05=0.5>16
+  pe_himg_lvl:  "60 00 01 33" # High Mid Gain
+        # 00>28=-20dB>+20dB
+  pe_higa_lvl:  "60 00 01 34" # High Gain
+        # 00>28=-20dB>+20dB
+  pe_hico_lvl:  "60 00 01 35" # High Cut Off
+        # 00>0e=630Hz>12.5kHz
+  pe_lev_lvl:  "60 00 01 36"
+

@@ -34,8 +34,8 @@ class ModFx(Effect, GObject.GObject):
     #mo_unknown_1 = GObject.Property(type=int, default=0)
     #fx_unknown_1  = GObject.Property(type=int, default=0)
     
-    def __init__(self, device, ctrl, name):
-        super().__init__(device, ctrl, name)
+    def __init__(self, device, name):
+        super().__init__(name, device )
          ## DEBUG Memory MAP Dict
         # mry_map = self.device.mry.map.copy()
         # for k, v in mry_map.items():
@@ -49,11 +49,13 @@ class ModFx(Effect, GObject.GObject):
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value}, {self.prefix} {self.name}")
+        # log.debug(f">>> {name} = {value}, {self.prefix} {self.name}")
         # log.debug(f"{self.setting=}")
-        if name == self.prefix + 'type':
+        log.debug(f"{self.prefix+'type'=}")
+        if name == self.prefix + 'type' or 'bank' in name:
             svalue = str(MIDIBytes(value))
             num = list(self.map['Types'].values()).index(svalue)
+            log.debug(f"{num=}")
             self.direct_set(self.prefix + 'idx', num)
         elif name == self.prefix + 'status':
             self.direct_set(name, value)
@@ -61,7 +63,7 @@ class ModFx(Effect, GObject.GObject):
             # log.debug(f"{bank_prop}: {self.get_property(bank_prop)}")
             bank_val = self.get_property(bank_prop)
             self.direct_set("type_idx", bank_val )
-        elif '_vol_lvl' in name or 'bank' in name:
+        elif '_vol_lvl' in name:
             self.direct_set(name, value)
         else:
             log.warning(f"NEED PRECISE: {name}={value}")
@@ -70,16 +72,18 @@ class ModFx(Effect, GObject.GObject):
         name = pspec.name
         value = self.get_property(name)
         name = name.replace('-', '_')
-        log.debug(f">>> {name} = {value} ({self.prefix})")
+        # log.debug(f">>> {name} = {value} ({self.prefix})")
         if isinstance(value, float):
             value = int(value)
         Addr = self.map.get_addr(name)
         if 'idx' in name:
-            # log.debug(f"{name=}")
             type_val = list(self.map['Types'].values())[value]
+            # if value == 5 and type_val == '06':
+            #     log.debug(f"{self.map=} {type(type_val)=}")
             Addr  = self.map.send[self.prefix + "type"]
             self.ctrl.send(Addr, type_val, True)
         elif name == self.prefix + 'bank_sel':
+            # log.debug(f"{name=} {value}")
             self.ctrl.send(Addr, value, True)
         elif 'sw' in name:
             value = 1 if value else 0

@@ -121,7 +121,7 @@ class Slider(AntiFlood, Gtk.Box):
                 # log.debug(f"{self.format_name} {time=}")
                 return self.vals['kilo'].format(time=time/1000)
         elif 'gain' in self.format_name:
-            gain = self.vals['vmax'] - v
+            gain = v - 20 #self.vals['vmax']
             return self.vals['unit'].format(gain=gain)
         elif self.format_name == 'mid_q':
             return str(0.5 * (2 ** v))

@@ -8,20 +8,21 @@ from lib.effect import Effect
 
 from lib.map import Map
 
-class PedalWah(Effect, GObject.GObject):
+class Limiter(Effect, GObject.GObject):
     __gsignals__ = {
-        "pedalwah-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "limiter-map-ready": (GObject.SIGNAL_RUN_FIRST, None, ()),
     }
-    pw_type         = GObject.Property(type=int, default=0)
-    pw_type_idx     = GObject.Property(type=int, default=0)
-    pw_pos_lvl      = GObject.Property(type=float, default=0.0)
-    pw_min_lvl      = GObject.Property(type=float, default=0.0)
-    pw_max_lvl      = GObject.Property(type=float, default=0.0)
-    pw_eff_lvl      = GObject.Property(type=float, default=0.0)
-    pw_dmix_lvl     = GObject.Property(type=float, default=0.0)
+    li_type         = GObject.Property(type=int, default=0)
+    li_type_idx     = GObject.Property(type=int, default=0)
+    li_attak_lvl    = GObject.Property(type=float, default=0.0)
+    li_thold_lvl    = GObject.Property(type=float, default=0.0)
+    li_rate_lvl     = GObject.Property(type=float, default=0.0)
+    li_rels_lvl     = GObject.Property(type=float, default=0.0)
+    li_eff_lvl      = GObject.Property(type=float, default=0.0)
+    # li_dmix_lvl     = GObject.Property(type=float, default=0.0)
 
     def __init__(self, device, parent_prefix=""):
-        super().__init__("Pedal Wah", device, parent_prefix)
+        super().__init__("Limiter", device, parent_prefix)
         # self.ctrl = ctrl
         # self.device = device
 
@@ -38,9 +39,9 @@ class PedalWah(Effect, GObject.GObject):
         # log.debug(f">>> [{Addr}]> {prop} {name}={value}")
         if isinstance(value, float):
             value = int(value)
-        if 'pw_type_idx' in name:
+        if 'li_type_idx' in name:
             model_val = list(self.map['Types'].values())[value]
-            prop = self.parent_prefix+"pw_type"
+            prop = self.parent_prefix+"li_type"
             Addr = self.search_addr(prop)
             # log.debug(f"{prop=} {Addr}")
             if Addr:

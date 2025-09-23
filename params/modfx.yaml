@@ -14,46 +14,6 @@ SEND:
   fx_bank_Y:    "60 00 06 2C"
   fx_bank_sel:  "60 00 06 3B"
   fx_vol_lvl:   "60 00 06 59"
-# Graphic EQ
-  ge_31h_lvl:   "60 00 01 21" # 00>28=-20dB>+20dB
-  ge_62h_lvl:   "60 00 01 22" # ""
-  ge_125h_lvl:  "60 00 01 23" # ""
-  ge_250h_lvl:  "60 00 01 24" # ""
-  ge_500h_lvl:  "60 00 01 25" # ""
-  ge_1kh_lvl:   "60 00 01 26" # ""
-  ge_2kh_lvl:   "60 00 01 27" # ""
-  ge_4kh_lvl:   "60 00 01 28" # ""
-  ge_8kh_lvl:   "60 00 01 29" # ""
-  ge_16kh_lvl:  "60 00 01 2A" # ""
-  ge_lev_lvl:   "60 00 01 2B" # Level
-# Param EQ
-  pe_loco_lvl:  "60 00 01 2C" # Low Cut Off
-        # 00>11=0Hz>800Hz
-  pe_loga_lvl:  "60 00 01 2D" # Low Gain
-        # 00>28=-20dB>+20dB
-  pe_lomf_lvl:  "60 00 01 2E" # Low Mid Freq
-        # 00>1b=20Hz>10kHz
-  pe_lomq_lvl:  "60 00 01 2F" # Low Mid Q
-        # 00>05=0.5>16
-  pe_lomg_lvl:  "60 00 01 30" # Low Mid Gain
-        # 00>28=-20dB>+20dB
-  pe_himf_lvl:  "60 00 01 31" # High Mid Freq
-        # 00>1b=20Hz>10kHz
-  pe_himq_lvl:  "60 00 01 32" # High Mid Q
-        # 00>05=0.5>16
-  pe_himg_lvl:  "60 00 01 33" # High Mid Gain
-        # 00>28=-20dB>+20dB
-  pe_higa_lvl:  "60 00 01 34" # High Gain
-        # 00>28=-20dB>+20dB
-  pe_hico_lvl:  "60 00 01 35" # High Cut Off
-        # 00>0e=630Hz>12.5kHz
-  pe_levl_lvl:  "60 00 01 36"
-# Guitar Sym
-  gs_type:      "60 00 01 37"
-  gs_low_lvl:   "60 00 01 38" # -50>+50
-  gs_high_lvl:  "60 00 01 39" # ""
-  gs_eff_lvl:   "60 00 01 3A" # Effect
-  gs_bod_lvl:   "60 00 01 3B" # Body
 # Slow_Gear
   sg_sens_lvl:  "60 00 01 3C" # Sens
   sg_rise_lvl:  "60 00 01 3D" # Rise Time
@@ -212,7 +172,7 @@ Types:
   "Limiter":        '04'
   "Graphic EQ":     '06'
   "Parametric EQ":  '07'
-  "Guitar Sym":     '09'
+  "Guitar Sim":     '09'
   "Slow Gear":      '0A'
   "Wave Synth":     '0C'
   "Octave":         '0E'
@@ -236,16 +196,6 @@ Types:
   "DC30":           '26'
   "Heavy Octave":   '27'
   "Pedal Bend":     '28'
-
-Guitar_Sym:
-  "Singl to Humbuckr":  '00'
-  "Humbuckr to Singl":  '01'
-  "Hum 2 Sing Half T":  '02'
-  "Sing 2 Acs Hollow":  '03'
-  "Hum 2 Acs Hollow":   '04'
-  "Single 2 Acoustic":  '05'
-  "Humbuk 2 Acoustic":  '06'
-  "Piezo 2 Acoustic":   '07'
 
 Octave:
   "7th str B 2 1st 24fr E": '00'

@@ -24,22 +24,22 @@ class Compressor(Effect, GObject.GObject):
     co_eff_lvl      = GObject.Property(type=float, default=0.0)
     # co_dmix_lvl     = GObject.Property(type=float, default=0.0)
 
-    def __init__(self, device, ctrl, parent_prefix=""):
-        super().__init__(device, ctrl, "Compressor", True, parent_prefix)
-        self.ctrl = ctrl
-        self.device = device
+    def __init__(self, device, parent_prefix=""):
+        super().__init__("Compressor", device, parent_prefix)
+        # self.ctrl = ctrl
+        # self.device = device
 
         self.notify_id = self.connect("notify", self.set_from_ui)
 
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
-        log.debug(f"{name}={value} {self.prefix=}")
+        # log.debug(f"{name}={value} {self.prefix=}")
         name = name.replace('-','_')
         # log.debug(f"{self.map}")
         prop = self.parent_prefix+name
         Addr = self.search_addr(prop)
-        log.debug(f">>> [{Addr}]> {prop} {name}={value}")
+        # log.debug(f">>> [{Addr}]> {prop} {name}={value}")
         if isinstance(value, float):
             value = int(value)
         if 'co_type_idx' in name:

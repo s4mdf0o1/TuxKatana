@@ -8,29 +8,24 @@ from .midi_bytes import Address, MIDIBytes
 from .map import Map
 
 class Effect:
-    def __init__(self, device, ctrl, name, is_modfx=False, parent_prefix=""):
+    def __init__(self, name, device, parent_prefix="" ):
         super().__init__()
         self.name = name
         self.parent_prefix = parent_prefix
+        self.is_modfx = True if self.parent_prefix else False
         self.prefix = self.get_prefix()
-        log.debug(self.prefix)
+        # log.debug(self.prefix)
         self.signal_name = self.get_signal_name()
-        self.ctrl = ctrl
+        self.ctrl = device.ctrl
         self.device = device
-        self.is_modfx = is_modfx
-        if name in ['Mod', 'Fx']:
-            self.map = Map(f"params/modfx.yaml")
-        elif is_modfx:
-            yf = f"params/modfx/{name.lower().replace(' ', '_')}.yaml"
-            self.map = Map(yf)
-            # f"params/modfx/{name.lower().replace(' ', '_')}.yaml")
-        else:
-            self.map = Map(f"params/{name.lower()}.yaml")
+        # self.is_modfx = is_modfx
+        self.params_file = self.get_params_file(name)
+        self.map = Map( self.params_file )
         self.set_mry_map()
         self.banks=['G', 'R', 'Y']
 
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
-        self.device.connect("load-maps", self.load_map)
+        device.connect("load-maps", self.load_map)
 
     def get_prefix(self):
         lower = self.name.lower()
@@ -51,7 +46,7 @@ class Effect:
                 prop = self.parent_prefix + prop
                 Addr = Address(Addr)+256 \
                         if self.parent_prefix=='fx_' else Addr
-                log.debug(f"{prop}: {Addr}")
+                # log.debug(f"{prop}: {Addr}")
             if not (self.prefix == 'mo_' and 'fx_' in prop)\
                     and not (self.prefix == 'fx_' and 'mo_' in prop):
                 self.device.mry.map[str(Addr)] = ( self, prop )
@@ -81,4 +76,14 @@ class Effect:
             # log.debug(f"{prop} {o.name} {p}")
             if p == prop:
                 return k
+
+    def get_params_file(self, name):
+        pf = ""
+        if name in ['Mod', 'Fx']:
+            pf = "params/modfx.yaml"
+        elif self.is_modfx:
+            pf = f"params/modfx/{name.lower().replace(' ', '_')}.yaml"
+        else:
+            pf = f"params/{name.lower()}.yaml"
+        return pf
 

@@ -1,34 +1,37 @@
+
 from gi.repository import GLib, GObject, Gio
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 from lib.midi_bytes import Address, MIDIBytes
+from lib.map import Map
 from lib.effect import Effect
 
-from lib.map import Map
+from ruamel.yaml import YAML
+yaml = YAML(typ="rt")
 
-class PedalWah(Effect, GObject.GObject):
+class GuitarSim(Effect, GObject.GObject):
     __gsignals__ = {
-        "pedalwah-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "guitarsim-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
-    pw_type         = GObject.Property(type=int, default=0)
-    pw_type_idx     = GObject.Property(type=int, default=0)
-    pw_pos_lvl      = GObject.Property(type=float, default=0.0)
-    pw_min_lvl      = GObject.Property(type=float, default=0.0)
-    pw_max_lvl      = GObject.Property(type=float, default=0.0)
-    pw_eff_lvl      = GObject.Property(type=float, default=0.0)
-    pw_dmix_lvl     = GObject.Property(type=float, default=0.0)
+    gs_type         = GObject.Property(type=int, default=0)
+    gs_type_idx     = GObject.Property(type=int, default=0)
+    gs_low_lvl      = GObject.Property(type=float, default=0.0)
+    gs_high_lvl      = GObject.Property(type=float, default=0.0)
+    gs_eff_lvl      = GObject.Property(type=float, default=0.0)
+    gs_bod_lvl      = GObject.Property(type=float, default=0.0)
 
     def __init__(self, device, parent_prefix=""):
-        super().__init__("Pedal Wah", device, parent_prefix)
+        super().__init__("Guitar Sim", device, parent_prefix)
         # self.ctrl = ctrl
         # self.device = device
 
         self.notify_id = self.connect("notify", self.set_from_ui)
 
     def set_from_ui(self, obj, pspec):
-        name = pspec.name
+        name = pspec.name.replace('-','_')
+
         value = self.get_property(name)
         # log.debug(f"{name}={value} {self.prefix=}")
         name = name.replace('-','_')
@@ -38,9 +41,9 @@ class PedalWah(Effect, GObject.GObject):
         # log.debug(f">>> [{Addr}]> {prop} {name}={value}")
         if isinstance(value, float):
             value = int(value)
-        if 'pw_type_idx' in name:
+        if 'gs_type_idx' in name:
             model_val = list(self.map['Types'].values())[value]
-            prop = self.parent_prefix+"pw_type"
+            prop = self.parent_prefix+"gs_type"
             Addr = self.search_addr(prop)
             # log.debug(f"{prop=} {Addr}")
             if Addr:

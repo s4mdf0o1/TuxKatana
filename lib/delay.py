@@ -43,24 +43,11 @@ class Delay(Effect, GObject.GObject):
     sde_modul_sw    = GObject.Property(type=bool, default=False)
     delay_vol_lvl   = GObject.Property(type=float, default=0.0)
 
-    def __init__(self, device, ctrl):
-        super().__init__(device, ctrl, "Delay")
-        # super().__init__()
-        # self.name = "Delay"
-        # self.ctrl = ctrl
-        # self.device = device
+    def __init__(self, device):
+        super().__init__("Delay", device  )
+        # self.banks=['G', 'R', 'Y']
 
-        # self.map = Map("params/delay.yaml")
-        # self.set_mry_map()
-
-        self.banks=['G', 'R', 'Y']
-
-        # self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
         self.notify_id = self.connect("notify", self.set_from_ui)
-        # self.device.connect("load-maps", self.load_map)
-
-    # def load_map(self, ctrl):
-        # self.emit("delay-map-ready", self.map)#['Types'])
 
     def set_from_msg(self, name, value):
         name = name.replace('-', '_')
@@ -92,11 +79,6 @@ class Delay(Effect, GObject.GObject):
         else:
             log.warning(f"missing DEF for '{name}'")
 
-    # def direct_set(self, prop, value):
-    #     self.handler_block_by_func(self.set_from_ui)
-    #     self.set_property(prop, value)
-    #     self.handler_unblock_by_func(self.set_from_ui)
-
     def get_bank_var(self, var):
         if self.delay_status == 0:
             log.warning(f"{self.delay_status=}")
@@ -110,21 +92,5 @@ class Delay(Effect, GObject.GObject):
         d_type = str(MIDIBytes(d_type))
         num = list(self.map['Types'].values()).index(d_type)
         self.direct_set("de_type_idx", num)
-
-    # def load_from_mry(self, mry):
-    #     # log.debug("-")
-    #     for saddr, prop in self.map.recv.items():
-    #         value = mry.read(Address(saddr))
-    #         if prop in ['time_lvl', 'd1_time_lvl']:
-    #             value = mry.read(Address(saddr), 2)
-    #             self.direct_set(prop, value.int)
-    #         else:
-    #             if value is not None and value.int >= 0:
-    #                 self.direct_set(prop, value.int)
-    #     self.set_bank_type()
-
-    # def set_mry_map(self):
-    #     for Addr, prop in self.map.recv.items():
-    #         self.device.mry.map[str(Addr)] = ( self, prop ) 
 
 

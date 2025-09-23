@@ -1,0 +1,15 @@
+# Limiter
+SEND:
+  li_type:      "60 00 01 1B"
+  li_attak_lvl: "60 00 01 1C" # Attack
+  li_thold_lvl: "60 00 01 1D" # Threshold
+  li_rate_lvl:  "60 00 01 1E" # Rate
+  li_rels_lvl:  "60 00 01 1F" # Release
+  li_eff_lvl:   "60 00 01 20" # Effect
+
+Types:
+  "Boss Limiter":         '00'
+  "DBX 100X rack":        '01'
+  "UREI 1178 vint rack":  '02'
+
+

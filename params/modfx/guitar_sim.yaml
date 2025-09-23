@@ -1,0 +1,19 @@
+# Guitar Sym
+SEND:
+  gs_type:      "60 00 01 37"
+  gs_low_lvl:   "60 00 01 38" # -50>+50
+  gs_high_lvl:  "60 00 01 39" # ""
+  gs_eff_lvl:   "60 00 01 3A" # Effect
+  gs_bod_lvl:   "60 00 01 3B" # Body
+
+Types:
+  "Single to Humbucker":  '00'
+  "Humbucker to Single":  '01'
+  "Humb to Single Half Tone":  '02'
+  "Single to Acoutic Hollow":  '03'
+  "Humbucker to Acoustic Hollow":   '04'
+  "Single to Acoustic":  '05'
+  "Humbucker to Acoustic":  '06'
+  "Piezo to Acoustic":   '07'
+
+

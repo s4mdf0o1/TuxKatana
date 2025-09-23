@@ -29,8 +29,8 @@ class Booster(Effect, GObject.GObject):
     boost_status        = GObject.Property(type=int, default=0)
     boost_vol_lvl       = GObject.Property(type=float, default=50.0)
 
-    def __init__(self, device, ctrl):
-        super().__init__(device, ctrl, "Booster")
+    def __init__(self, device):
+        super().__init__("Booster", device, )
         self.banks=['G', 'R', 'Y']
 
         self.notify_id = self.connect("notify", self.set_from_ui)

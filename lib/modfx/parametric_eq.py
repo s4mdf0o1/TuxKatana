@@ -8,20 +8,24 @@ from lib.effect import Effect
 
 from lib.map import Map
 
-class PedalWah(Effect, GObject.GObject):
+class ParametricEq(Effect, GObject.GObject):
     __gsignals__ = {
-        "pedalwah-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        "graphiceq-map-ready": (GObject.SIGNAL_RUN_FIRST, None, ()),
     }
-    pw_type         = GObject.Property(type=int, default=0)
-    pw_type_idx     = GObject.Property(type=int, default=0)
-    pw_pos_lvl      = GObject.Property(type=float, default=0.0)
-    pw_min_lvl      = GObject.Property(type=float, default=0.0)
-    pw_max_lvl      = GObject.Property(type=float, default=0.0)
-    pw_eff_lvl      = GObject.Property(type=float, default=0.0)
-    pw_dmix_lvl     = GObject.Property(type=float, default=0.0)
+    pe_loco_lvl = GObject.Property(type=float, default=0.0)
+    pe_loga_lvl = GObject.Property(type=float, default=0.0)
+    pe_lomf_lvl = GObject.Property(type=float, default=0.0)
+    pe_lomq_lvl = GObject.Property(type=float, default=0.0)
+    pe_lomg_lvl = GObject.Property(type=float, default=0.0)
+    pe_himf_lvl = GObject.Property(type=float, default=0.0)
+    pe_himq_lvl = GObject.Property(type=float, default=0.0)
+    pe_himg_lvl = GObject.Property(type=float, default=0.0)
+    pe_higa_lvl = GObject.Property(type=float, default=0.0)
+    pe_hico_lvl = GObject.Property(type=float, default=0.0)
+    pe_lev_lvl  = GObject.Property(type=float, default=0.0)
 
     def __init__(self, device, parent_prefix=""):
-        super().__init__("Pedal Wah", device, parent_prefix)
+        super().__init__("Parametric EQ", device, parent_prefix)
         # self.ctrl = ctrl
         # self.device = device
 
@@ -38,14 +42,7 @@ class PedalWah(Effect, GObject.GObject):
         # log.debug(f">>> [{Addr}]> {prop} {name}={value}")
         if isinstance(value, float):
             value = int(value)
-        if 'pw_type_idx' in name:
-            model_val = list(self.map['Types'].values())[value]
-            prop = self.parent_prefix+"pw_type"
-            Addr = self.search_addr(prop)
-            # log.debug(f"{prop=} {Addr}")
-            if Addr:
-                self.ctrl.send(Addr, model_val, True)
-        elif 'lvl' in name:
+        if 'lvl' in name:
             if Addr:
                 self.ctrl.send(Addr, value, True)
         elif not Addr:

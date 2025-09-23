@@ -115,7 +115,7 @@ class ModFxUI(Gtk.Box):
         except (ModuleNotFoundError, AttributeError) as e:
             log.warning(f"lib.modfx.{filename}.{lib_name}' not found {e}")
             return None
-        lib_obj = lib_cls(self.ctrl.device, self.ctrl, self.prefix)
+        lib_obj = lib_cls(self.ctrl.device, self.prefix)
         lib_obj.set_mry_map()
         self.own_ctrl.libs[self.prefix+filename] = lib_obj
         # log.debug(self.own_ctrl.libs)
