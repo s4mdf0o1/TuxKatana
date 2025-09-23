@@ -1,6 +1,6 @@
 import gi
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk, GLib, Gdk, GObject
+from gi.repository import Gtk#, GLib, Gdk, GObject
 
 from widgets.slider import Slider
 from widgets.box_inner import BoxInner
@@ -14,7 +14,7 @@ class GraphicEqUI(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.own_ctrl = own_ctrl
         
-        box_co = BoxInner("Graphic EQ")
+        box_co = BoxInner("")
 
         self.ge_31h_lvl = Slider( "31 Hz", "gain", self.own_ctrl, "ge_31h_lvl" )
         box_co.append(self.ge_31h_lvl)
@@ -46,7 +46,7 @@ class GraphicEqUI(Gtk.Box):
         self.ge_16kh_lvl = Slider( "16 kHz", "gain", self.own_ctrl, "ge_16kh_lvl" )
         box_co.append(self.ge_16kh_lvl)
 
-        box_lvl = BoxInner("Level")
+        box_lvl = BoxInner("")
         self.lev_lvl = Slider( "Level", "gain", self.own_ctrl, "ge_lev_lvl" )
         box_lvl.append(self.lev_lvl)
 

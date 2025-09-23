@@ -25,7 +25,7 @@ class AutoWah(Effect, GObject.GObject):
         # self.ctrl = ctrl
         # self.device = device
 
-        self.notify_id = self.connect("notify", self.set_from_ui)
+        # self.notify_id = self.connect("notify", self.set_from_ui)
 
     def set_from_ui(self, obj, pspec):
         name = pspec.name
@@ -36,8 +36,6 @@ class AutoWah(Effect, GObject.GObject):
         prop = self.parent_prefix+name
         Addr = self.search_addr(prop)
         # log.debug(f">>> [{Addr}]> {prop} {name}={value}")
-        if isinstance(value, float):
-            value = int(value)
         if 'aw_type_idx' in name:
             model_val = list(self.map['Types'].values())[value]
             prop = self.parent_prefix+"aw_type"
@@ -45,15 +43,7 @@ class AutoWah(Effect, GObject.GObject):
             # log.debug(f"{prop=} {Addr}")
             if Addr:
                 self.ctrl.send(Addr, model_val, True)
-        elif 'lvl' in name:
-            if Addr:
-                self.ctrl.send(Addr, value, True)
-        elif not Addr:
-            log.warning(f"{name} not found in device.mry.map")
-
-    def set_from_msg(self, name, value):
-        name = name.replace('-', '_')
-        # log.debug(f">>> {name} = {value}")
-        self.direct_set(name, value)
+        else:
+            super().set_from_ui(obj, pspec)
 
 

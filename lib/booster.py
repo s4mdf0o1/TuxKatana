@@ -31,43 +31,38 @@ class Booster(Effect, GObject.GObject):
 
     def __init__(self, device):
         super().__init__("Booster", device, )
-        self.banks=['G', 'R', 'Y']
+        # self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self.set_from_ui)
+        # self.notify_id = self.connect("notify", self.set_from_ui)
 
-    def set_from_msg(self, name, value):
-        name = name.replace('-', '_')
+    def set_from_msg(self, sig_name, value):
+        name = sig_name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
         if name == 'bo_type':
             svalue = str(MIDIBytes(value))
             num = list(self.map['Types'].values()).index(svalue)
             self.direct_set('bo_type_idx', num)
         else:
-            self.direct_set(name, value)
+            super().set_from_msg(sig_name, value)
         
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
         # log.debug(f"<<< {name} = {value}")
         name = name.replace('-', '_')
-        if isinstance(value, float):
-            value = int(value)
         Addr = self.map.get_addr(name)
         if name == 'bo_type_idx':
             model_val = list(self.map['Types'].values())[value]
             Addr  = self.map.get_addr("bo_type")
             self.ctrl.send(Addr, model_val)
-        elif 'lvl' in name or name == 'boost_bank_sel':
-            self.ctrl.send(Addr, value, True)
-        elif 'sw' in name:
-            value = 1 if value else 0
-            self.ctrl.send(Addr, value, True)
+        else:
+            super().set_from_ui(obj, pspec)
 
-    def set_bank_model(self):
-        bank = self.banks[self.boost_status - 1]
-        bank_name = "boost_bank_"+bank
-        model = self.get_property(bank_name)
-        smodel = str(MIDIBytes(model))
-        num = list(self.map['Types'].values()).index(smodel)
-        self.direct_set("bo_type_idx", num)
+    # def set_bank_model(self):
+    #     bank = self.banks[self.boost_status - 1]
+    #     bank_name = "boost_bank_"+bank
+    #     model = self.get_property(bank_name)
+    #     smodel = str(MIDIBytes(model))
+    #     num = list(self.map['Types'].values()).index(smodel)
+    #     self.direct_set("bo_type_idx", num)
 

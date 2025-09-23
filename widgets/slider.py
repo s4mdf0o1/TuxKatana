@@ -17,7 +17,7 @@ class Slider(AntiFlood, Gtk.Box):
     }
 
     def __init__(self, name, format_name="normal", own_ctrl=None, bind_prop=""):
-        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=2)
         self.format_name = format_name
         adjustment = Gtk.Adjustment(
             lower=0,

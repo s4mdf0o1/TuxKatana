@@ -26,6 +26,7 @@ class Effect:
 
         self.mry_id = device.mry.connect("mry-loaded", self.load_from_mry)
         device.connect("load-maps", self.load_map)
+        self.notify_id = self.connect("notify", self.set_from_ui)
 
     def get_prefix(self):
         lower = self.name.lower()
@@ -46,16 +47,19 @@ class Effect:
                 prop = self.parent_prefix + prop
                 Addr = Address(Addr)+256 \
                         if self.parent_prefix=='fx_' else Addr
-                # log.debug(f"{prop}: {Addr}")
             if not (self.prefix == 'mo_' and 'fx_' in prop)\
                     and not (self.prefix == 'fx_' and 'mo_' in prop):
                 self.device.mry.map[str(Addr)] = ( self, prop )
+            # else:
+                # log.debug(f"{prop}: {Addr}")
 
     def direct_set(self, prop, value):
-        # log.debug(prop)
-        self.handler_block_by_func(self.set_from_ui)
+        log.debug(prop)
+        # self.handler_block_by_func(self.set_from_ui)
+        self.handler_block(self.notify_id)
         self.set_property(prop, value)
-        self.handler_unblock_by_func(self.set_from_ui)
+        self.handler_unblock(self.notify_id)
+        # self.handler_unblock_by_func(self.set_from_ui)
 
     def load_from_mry(self, mry):
         for saddr, prop in self.map.recv.items():
@@ -87,3 +91,42 @@ class Effect:
             pf = f"params/{name.lower()}.yaml"
         return pf
 
+    def set_from_msg(self, name, value):
+        name = name.replace('-', '_')
+        log.debug(f">>> {name} = {value}")
+        self.direct_set(name, value)
+
+    def set_from_ui(self, obj, pspec):
+        name = pspec.name.replace('-','_')
+        value = self.get_property(name)
+        # log.debug(f"{name}={value} {self.prefix=}")
+        name = name.replace('-','_')
+        # log.debug(f"{self.map}")
+        prop = self.parent_prefix+name
+        Addr = self.search_addr(prop)
+        # log.debug(f">>> [{Addr}]> {prop} {name}={value}")
+        if isinstance(value, float):
+            value = int(value)
+        if '_idx' in name:
+            key = 'Types' if 'type' in name else 'Modes'
+            prop= name.replace('_idx', '')
+            if self.is_modfx:
+                log.debug("is_modfx")
+                prop = self.parent_prefix + prop
+            model_val = list(self.map[ key ].values())[value]
+            Addr  = self.search_addr(prop)
+            if Addr:
+                self.ctrl.send(Addr, model_val, True)
+            else:
+                log.debug(f"{prop} Addr not found in self.map")
+        if '_lvl' in name:
+            if Addr:
+                self.ctrl.send(Addr, value, True)
+        elif not Addr:
+            log.warning(f"{name} not found in device.mry.map")
+
+    def get_bank_var(self):
+        status = self.get_property(self.prefix+'status')
+        bank_var = self.banks[status - 1] if status else self.banks[0]
+        return self.prefix + 'bank_' + bank_var
+ 

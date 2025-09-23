@@ -75,7 +75,7 @@ class Switcher(Gtk.Box):
 
     def on_status_changed(self, obj, pspec):
         name = pspec.name.split('-')[0]
-        # log.debug(f"{pspec.name} {name}")
+        log.debug(f"{pspec.name} {name}")
         for but in self.effects.buttons:
             #log.debug(f"{but.name.lower()=}")
             if name == but.name.lower():

@@ -25,25 +25,23 @@ class Amplifier(Effect, GObject.GObject):
         super().__init__("Amplifier", device)
         self.switch_model = False
 
-        self.notify_id = self.connect("notify", self.set_from_ui)
+        # self.notify_id = self.connect("notify", self.set_from_ui)
 
-    def set_from_msg(self, name, value):
-        name = name.replace('-', '_')
+    def set_from_msg(self, sig_name, value):
+        name = sig_name.replace('-', '_')
         # log.debug(f">>> {name} = {value}, {type(value)}")
         if name == 'am_type':
             svalue = str(MIDIBytes(value))
             num = list(self.map['Types'].values()).index(svalue)
             self.direct_set('am_type_idx', num)
         else:
-            self.direct_set(name, value)
+            super().set_from_msg(sig_name, value)
 
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
         # log.debug(f"<<< {name} = {value}, {type(value)}")
         name = name.replace('-', '_')
-        if isinstance(value, float):
-            value = int(value)
         Addr = self.map.get_addr(name)
         if name == 'am_type_idx':
             model_val = list(self.map['Types'].values())[value]
@@ -60,13 +58,13 @@ class Amplifier(Effect, GObject.GObject):
             if not self.switch_model:
                 self.ctrl.send(Addr, am_type, True)
                 self.direct_set("am_type_idx", index)
-        elif 'lvl' in name:
-            self.ctrl.send(Addr, value, True)
+        else:
+            super().set_from_ui(obj, pspec)
 
-    def set_am_type(self):
-        am_type = self.ctrl.device.mry.read(Address("60 00 00 21"))
-        self.direct_set("am_type", am_type.int)
-        am_type_code = str(MIDIBytes(self.am_type))
-        num = list(self.map['Types'].values()).index(am_type_code)
-        self.direct_set("am_type_idx", num)
+    # def set_am_type(self):
+    #     am_type = self.ctrl.device.mry.read(Address("60 00 00 21"))
+    #     self.direct_set("am_type", am_type.int)
+    #     am_type_code = str(MIDIBytes(self.am_type))
+    #     num = list(self.map['Types'].values()).index(am_type_code)
+    #     self.direct_set("am_type_idx", num)
 

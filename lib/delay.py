@@ -47,50 +47,43 @@ class Delay(Effect, GObject.GObject):
         super().__init__("Delay", device  )
         # self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self.set_from_ui)
+        # self.notify_id = self.connect("notify", self.set_from_ui)
 
-    def set_from_msg(self, name, value):
-        name = name.replace('-', '_')
+    def set_from_msg(self, sig_name, value):
+        name = sig_name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
         if name == 'de_type':
             svalue = str(MIDIBytes(value))
             num = list(self.map['Types'].values()).index(svalue)
             self.direct_set("de_type_idx", num)
         else:
-            self.direct_set(name, value)
+            super().set_from_msg(sig_name, value)
  
     def set_from_ui(self, obj, pspec):
         name = pspec.name
         value = self.get_property(name)
         name = name.replace('-', '_')
         # log.debug(f"<<< {name} = {value}")
-        if isinstance(value, float):
-            value = int(value)
         Addr = self.map.get_addr(name)
-        if 'sw' in name:
-            value = 1 if value else 0
-            self.ctrl.send(Addr, value, True)
-        elif name == 'de_type_idx':
+        if name == 'de_type_idx':
             model_val = list(self.map['Types'].values())[value]
             Addr  = self.map.get_addr("de_type")
             self.ctrl.send(Addr, model_val, True)
-        elif 'lvl' in name or name == 'bank_select':
-            self.ctrl.send(Addr, value, True)
         else:
-            log.warning(f"missing DEF for '{name}'")
+            super().set_from_ui(obj, pspec)
 
-    def get_bank_var(self, var):
-        if self.delay_status == 0:
-            log.warning(f"{self.delay_status=}")
-            return var + self.banks[0]
-        else:
-            return var + self.banks[self.delay_status - 1]
+    # def get_bank_var(self, var):
+    #     if self.delay_status == 0:
+    #         log.warning(f"{self.delay_status=}")
+    #         return var + self.banks[0]
+    #     else:
+    #         return var + self.banks[self.delay_status - 1]
 
-    def set_bank_type(self):
-        bank_name = self.get_bank_var("bank_")
-        d_type = self.get_property(bank_name)
-        d_type = str(MIDIBytes(d_type))
-        num = list(self.map['Types'].values()).index(d_type)
-        self.direct_set("de_type_idx", num)
+    # def set_bank_type(self):
+    #     bank_name = self.get_bank_var("bank_")
+    #     d_type = self.get_property(bank_name)
+    #     d_type = str(MIDIBytes(d_type))
+    #     num = list(self.map['Types'].values()).index(d_type)
+    #     self.direct_set("de_type_idx", num)
 
 

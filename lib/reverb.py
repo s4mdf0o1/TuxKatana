@@ -36,19 +36,19 @@ class Reverb(Effect, GObject.GObject):
 
     def __init__(self, device):
         super().__init__("Reverb", device)
-        self.banks=['G', 'R', 'Y']
+        # self.banks=['G', 'R', 'Y']
 
-        self.notify_id = self.connect("notify", self.set_from_ui)
+        # self.notify_id = self.connect("notify", self.set_from_ui)
 
-    def set_from_msg(self, name, value):
-        name = name.replace('-', '_')
+    def set_from_msg(self, sig_name, value):
+        name = sig_name.replace('-', '_')
         # log.debug(f">>> {name} = {value}")
         if name == 're_type':
             svalue = str(MIDIBytes(value))
             num = list(self.map['Types'].values()).index(svalue)
             self.direct_set("re_type_idx", num)
         else:
-            self.direct_set(name, value)
+            super().set_from_msg(sig_name, value)
 
     def set_from_ui(self, obj, pspec):
         name = pspec.name
@@ -67,15 +67,17 @@ class Reverb(Effect, GObject.GObject):
             bank = self.get_bank_var("mode_")
             Addr  =  self.map.get_addr(bank)
             self.ctrl.send(Addr, mode_val, True)
-        elif 'lvl' in name or name == 'bank_select':
-            if name == 'pre_delay_lvl':
-                value = MIDIBytes(value, 2)
-                self.ctrl.send(Addr, value, True)
-            else:
-                self.ctrl.send(Addr, value, True)
-        elif 'sw' in name:
-            value = 1 if value else 0
+        elif name == 'pre_delay_lvl':#'lvl' in name or name == 'bank_select':
+            # if name == 'pre_delay_lvl':
+            value = MIDIBytes(value, 2)
             self.ctrl.send(Addr, value, True)
+            # else:
+                # self.ctrl.send(Addr, value, True)
+        # elif 'sw' in name:
+            # value = 1 if value else 0
+            # self.ctrl.send(Addr, value, True)
+        else:
+            super().set_from_ui(obj, pspec)
 
     def get_bank_var(self, var):
         if self.reverb_status <= 0:
@@ -85,18 +87,18 @@ class Reverb(Effect, GObject.GObject):
             return var + self.banks[self.reverb_status - 1]
         return var+bank
 
-    def set_bank_type(self):
-        bank_name = self.get_bank_var("bank_")
-        r_type = self.get_property(bank_name)
-        r_type = str(MIDIBytes(r_type))
-        num = list(self.map['Types'].values()).index(r_type)
-        self.direct_set("re_type_idx", num)
+    # def set_bank_type(self):
+    #     bank_name = self.get_bank_var("bank_")
+    #     r_type = self.get_property(bank_name)
+    #     r_type = str(MIDIBytes(r_type))
+    #     num = list(self.map['Types'].values()).index(r_type)
+    #     self.direct_set("re_type_idx", num)
 
-    def set_bank_mode(self):
-        bank_name = self.get_bank_var("mode_")
-        mode = self.get_property(bank_name)
-        mode = str(MIDIBytes(mode))
-        num = list(self.map['Modes'].values()).index(mode)
-        self.direct_set("re_mode_idx", num)
+    # def set_bank_mode(self):
+    #     bank_name = self.get_bank_var("mode_")
+    #     mode = self.get_property(bank_name)
+    #     mode = str(MIDIBytes(mode))
+    #     num = list(self.map['Modes'].values()).index(mode)
+    #     self.direct_set("re_mode_idx", num)
 
 

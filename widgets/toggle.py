@@ -9,7 +9,7 @@ log = logging.getLogger(LOGGER_NAME)
 dots = [ "⚫", "🟢", "🔴", "🟡" ]
 
 class Toggle(Gtk.ToggleButton):
-    def __init__(self, label, path=None, status_id=2):
+    def __init__(self, label, data=None, status_id=2):#, status_bind=()):
         super().__init__()
         self.name = label
         self.label_on = dots[status_id] + "  " + label
@@ -26,9 +26,9 @@ class Toggle(Gtk.ToggleButton):
         self.set_hexpand(True)
         self.set_halign(Gtk.Align.FILL)
 
-        if path:
-            self.path = path
-            self.midi_type = path.split(':')[0].lower()
+        if data:
+            self.data = data
+            self.midi_type = data.split(':')[0].lower()
 
     def _active_to_label(self, binding, active: bool):
         return self.label_on if active else self.label_off
