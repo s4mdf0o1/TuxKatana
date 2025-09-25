@@ -27,34 +27,34 @@ class PresetsView(Gtk.Box):
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
-        self.own_ctrl = self.ctrl.device.presets
+        self.own_ctrl = self.ctrl.presets
 
         factory = Gtk.SignalListItemFactory()
         factory.connect("setup", self.on_setup)
         factory.connect("bind", self.on_bind)
 
-        self.selection = Gtk.SingleSelection.new(ctrl.device.presets)
+        self.selection = Gtk.SingleSelection.new(ctrl.presets)
         listview = Gtk.ListView.new(self.selection, factory)
         self.append(listview)
 
-        self.preset = PresetUI(ctrl.device.preset)
+        self.preset = PresetUI(ctrl.preset)
         self.append(self.preset)
 
         self.selection.connect("selection-changed", self.on_selection_changed)
-        self.ctrl.device.mry.connect('mry-loaded', self.on_mry_loaded)
+        self.ctrl.mry.connect('mry-loaded', self.on_mry_loaded)
 
 
     def on_mry_loaded(self, mry):
-        preset_name = self.ctrl.device.mry.get_actual_preset()
+        preset_name = self.ctrl.mry.get_actual_preset()
         index = self.find_index_by_text(self.selection, preset_name)
-        self.ctrl.device.emit("channel-changed", int(index+1))
+        self.ctrl.emit("channel-changed", int(index+1))
 
     def on_selection_changed(self, selection, position, n_items):
         index = selection.get_selected()
         if index != Gtk.INVALID_LIST_POSITION:
             item = selection.get_model().get_item(index)
             # log.debug(f"Sélectionné index={index}, valeur={item}")
-            self.ctrl.device.emit("channel-changed", index+1)
+            self.ctrl.emit("channel-changed", index+1)
 
     def find_index_by_text(self, selection, text_to_find):
         model = selection.get_model()

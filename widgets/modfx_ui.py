@@ -16,7 +16,7 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 class ModFxUI(Gtk.Box):
-    def __init__(self, ctrl, own_ctrl, name):
+    def __init__(self, ctrl, name):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
         self.name = name
@@ -98,8 +98,8 @@ class ModFxUI(Gtk.Box):
 
     def make_ui(self, name):
         filename = name.lower().replace(" ", "_")
-        lib_name = "".join(w.capitalize() for w in name.split())
-        ui_name = lib_name + "UI"
+        ui_name = "".join(w.capitalize() for w in name.split())
+        # ui_name = lib_name + "UI"
         # log.debug(f"{name} {filename} {lib_name} {ui_name}")
         try:
             ui = importlib.import_module("widgets.modfx."+filename)
@@ -108,18 +108,19 @@ class ModFxUI(Gtk.Box):
         except (ModuleNotFoundError, AttributeError) as e:
             log.warning(f"widgets.modfx.{filename}.{ui_name}' not found {e}")
             return None
-        try:
-            lib = importlib.import_module("lib.modfx."+filename)
-            lib_cls = getattr(lib, lib_name)
+        # try:
+            # lib = importlib.import_module("lib.modfx."+filename)
+            # lib_cls = getattr(lib, lib_name)
             # log.debug(lib_cls)
-        except (ModuleNotFoundError, AttributeError) as e:
-            log.warning(f"lib.modfx.{filename}.{lib_name}' not found {e}")
-            return None
-        lib_obj = lib_cls(self.ctrl.device, self.prefix)
-        lib_obj.set_mry_map()
-        self.own_ctrl.libs[self.prefix+filename] = lib_obj
+        # except (ModuleNotFoundError, AttributeError) as e:
+            # log.warning(f"lib.modfx.{filename}.{lib_name}' not found {e}")
+            # return None
+        # setattr(lib_cls, 'parent_prefix', self.prefix)
+        ui_obj = ui_cls(self.ctrl.mry, self.prefix) ## TODO
+        # ui_obj.set_mry_map()
+        # self.own_ctrl.libs[self.prefix+filename] = lib_obj
         # log.debug(self.own_ctrl.libs)
-        ui_obj = ui_cls(lib_obj)
+        # ui_obj = ui_cls(lib_obj)
         # log.debug(f"{self.name} {ui_obj.__class__.__name__} {lib_obj.prefix=}")
         return ui_obj
 

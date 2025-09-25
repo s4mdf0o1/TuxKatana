@@ -1,25 +1,25 @@
 SEND:
-  re_type:  "60 00 05 41"
-  bank_select:  "60 00 06 3D"
-  reverb_sw:    "60 00 05 40"
-  bank_G:       "60 00 06 30"
-  bank_R:       "60 00 06 31"
-  bank_Y:       "60 00 06 32"
-  re_mode:      "00 00 00 00"
-  mode_G:       "60 00 06 36"
-  mode_R:       "60 00 06 37"
-  mode_Y:       "60 00 06 38"
-  pre_delay_lvl: "60 00 05 43" # '00 00' -> '03 74'= 0ms -> 500ms
-  time_lvl:     "60 00 05 42" # '00' -> '63'=0.1s->10s
-  density_lvl:  "60 00 05 47" # '00' -> '0a'
-  low_cut_lvl:  "60 00 05 45" # '00' -> '11'=0Hz -> 800Hz
-  high_cut_lvl: "60 00 05 46" # '00' -> '0e'=630Hz -> 12.5kHz/FLAT
-  effect_lvl:   "60 00 05 48" # '00' -> '63'
-  dir_mix_lvl:  "60 00 05 49" # '00' -> '63'
-  revb_vol_lvl: "60 00 06 5B"
+  reverb_sw:      "60 00 05 40"
+  re_type:        "60 00 05 41"
+  re_bank_sel:    "60 00 06 3D"
+  re_bank_G:      "60 00 06 30"
+  re_bank_R:      "60 00 06 31"
+  re_bank_Y:      "60 00 06 32"
+  re_mode:        "00 00 00 00"
+  re_mode_G:      "60 00 06 36"
+  re_mode_R:      "60 00 06 37"
+  re_mode_Y:      "60 00 06 38"
+  re_pre_delay_lvl: "60 00 05 43" # '00 00' -> '03 74'= 0ms -> 500ms
+  re_time_lvl:    "60 00 05 42" # '00' -> '63'=0.1s->10s
+  re_density_lvl: "60 00 05 47" # '00' -> '0a'
+  re_low_cut_lvl: "60 00 05 45" # '00' -> '11'=0Hz -> 800Hz
+  re_high_cut_lvl: "60 00 05 46" # '00' -> '0e'=630Hz -> 12.5kHz/FLAT
+  re_effect_lvl:  "60 00 05 48" # '00' -> '63'
+  re_dmix_lvl:    "60 00 05 49" # '00' -> '63'
+  re_vol_lvl:     "60 00 06 5B"
 
 RECV:
-  "60 00 06 61": "reverb_status"
+  "60 00 06 61": "re_status"
 
 Types:
     'Ambience': '00'
@@ -31,9 +31,9 @@ Types:
     'Modulate': '06'
 
 Modes:
-  Reverb: '02'
-  Dual:   '01'
   Delay:  '00'
+  Dual:   '01'
+  Reverb: '02'
 
 Unimplemented: # Delay_2 < !!!
   "60 00 06 5b":  '2c|--|1e|2c'

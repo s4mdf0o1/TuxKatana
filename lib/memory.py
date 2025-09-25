@@ -10,6 +10,7 @@ class Memory(GObject.GObject):
     __gsignals__ = {
         "mry-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         #"channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        "address-changed": (GObject.SIGNAL_RUN_FIRST, None, (object, object)),
     }
     def __init__(self, mry_start):
         super().__init__()
@@ -18,15 +19,21 @@ class Memory(GObject.GObject):
         self.memory = MIDIBytes()
         self.loading = False
         self.base_addr = Address()
-        self.map = {}
+        # self.map = {}
+        self._values = {}
 
-    def _on_timeout(self):
-        self._timer_id = None
-        self.emit("mry-loaded")
-        return False
+    def set_value(self, addr, val):
+        log.debug(f"{addr=} {val=}")
+        self._values[addr] = val
+        self.emit("address-changed", addr, val)
+
+    def get_value(self, addr):
+        log.debug(addr-self.Addr_start)
+        return self._values.get(addr)
 
     def add_block(self, Addr_start, data):
-        # log.debug(f"{self.Addr_start} / {Addr_start}: {len(data.bytes)} {self.Addr_start+len(self.memory)}")
+        # log.debug(f"{self.Addr_start} / {Addr_start}:\
+                # {len(data.bytes)} {self.Addr_start+len(self.memory)}")
         if Addr_start == Address('60 00 00 00'):
             self.memory = MIDIBytes()
 
@@ -83,5 +90,10 @@ class Memory(GObject.GObject):
     def get_actual_preset(self):
         mry_bytes=self.read(Address('60 00 00 00'), 16)
         return mry_bytes.to_chars()
+
+    def _on_timeout(self):
+        self._timer_id = None
+        self.emit("mry-loaded")
+        return False
 
 

@@ -43,11 +43,11 @@ class Device(GObject.GObject):
         self.mry = Memory( self.ctrl.addrs['MEMORY'])
         self.presets = Gio.ListStore(item_type=Presets)
         self.amplifier=Amplifier( self )
-        self.booster = Booster( self)
-        self.mod = ModFx( self, "Mod" )
-        self.fx = ModFx( self, "Fx" )
-        self.reverb = Reverb( self )
-        self.delay = Delay( self )
+        # self.booster = Booster( self)
+        # self.mod = ModFx( self, "Mod" )
+        # self.fx = ModFx( self, "Fx" )
+        # self.reverb = Reverb( self )
+        # self.delay = Delay( self )
         self.preset = Preset( self )
         self.charging = False
         self._charging_id = None

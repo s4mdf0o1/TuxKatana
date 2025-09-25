@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S python3 -B
 import sys
 import argparse
 import gi
@@ -26,7 +26,7 @@ def close(app):
 class MainWindow(Gtk.Window):
     def __init__(self, app, config):
         super().__init__(application=app)
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.set_child(box)
         self.app = app
 

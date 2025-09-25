@@ -83,7 +83,7 @@ class Debug(Gtk.Box):
         self.append(h_box4)
 
     def test(self, but):
-        self.ctrl.device.amplifier.amp_type = 12
+        self.ctrl.amplifier.amp_type = 12
 
     def add_log_note(self, button):
         note = self.log_note.get_text()
@@ -116,8 +116,8 @@ class Debug(Gtk.Box):
     def read_memory(self, button):
         Addr = Address(self.address.get_text())
         size = int(self.value.get_text())
-        value = self.ctrl.device.mry.read(Addr, size, True)
+        value = self.ctrl.mry.read(Addr, size, True)
         self.value.set_text(value)
 
     def save_mry(self, filename="mry_dump.bin"):
-        self.ctrl.device.mry.save_to_file()
+        self.ctrl.mry.save_to_file()

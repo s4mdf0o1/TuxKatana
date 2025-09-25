@@ -155,7 +155,10 @@ class Address(MIDIBytes):
             return Address.from_int(value, len(self.bytes))
         if isinstance(other, MIDIBytes):
             return MIDIBytes(self.bytes + other.bytes)
-       
+
+    def __hash__(self):
+        return self.int
+
     def __sub__(self, other):
         if isinstance(other, Address):
             val_s = self.to_int()

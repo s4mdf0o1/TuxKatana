@@ -9,6 +9,7 @@ log = logging.getLogger(LOGGER_NAME)
 dots = [ "⚫", "🟢", "🔴", "🟡" ]
 
 class Toggle(Gtk.ToggleButton):
+    status = GObject.Property(type=int, default=0)
     def __init__(self, label, data=None, status_id=2):#, status_bind=()):
         super().__init__()
         self.name = label
@@ -29,9 +30,13 @@ class Toggle(Gtk.ToggleButton):
         if data:
             self.data = data
             self.midi_type = data.split(':')[0].lower()
+        self.connect('notify::status', self.on_status_changed)
 
     def _active_to_label(self, binding, active: bool):
         return self.label_on if active else self.label_off
+
+    def on_status_changed(self, obj, status):
+        self.set_status_id(self.status)
 
     def set_status_id(self, status_id):
         #log.debug(f"{self.name}: {status_id=}")

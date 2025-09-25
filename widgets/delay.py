@@ -8,16 +8,51 @@ from .bank import Bank
 from .toggle import Toggle
 from .combo_store import ComboStore
 from .box_inner import BoxInner
+from lib.effect import Effect
 
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-class DelayUI(Gtk.Box):
-    def __init__(self, own_ctrl):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.own_ctrl = own_ctrl
-        self.stores = {'Types': []}
+from lib.set_mapping import add_properties
+@add_properties()
+class Delay(Effect, Gtk.Box):
+    delay_sw        = GObject.Property(type=bool, default=False)
+    de_type      = GObject.Property(type=int, default=0)
+    de_type_idx        = GObject.Property(type=int, default=0)
+    de_status    = GObject.Property(type=int, default=0)
+    de_bank_sel     = GObject.Property(type=int, default=0)
+    de_bank_G          = GObject.Property(type=int, default=0)
+    de_bank_R          = GObject.Property(type=int, default=0)
+    de_bank_Y          = GObject.Property(type=int, default=0)
+    de_time_lvl        = GObject.Property(type=int, default=0)
+    de_feedback_lvl    = GObject.Property(type=int, default=0)
+    de_tap_time_lvl    = GObject.Property(type=int, default=0)
+    de_high_cut_lvl    = GObject.Property(type=int, default=0)
+    de_effect_lvl      = GObject.Property(type=int, default=0)
+    de_dmix_lvl      = GObject.Property(type=int, default=0)
+    d1_time_lvl     = GObject.Property(type=int, default=0)
+    d1_fb_lvl       = GObject.Property(type=int, default=0)
+    d1_h_cut_lvl    = GObject.Property(type=int, default=0)
+    d1_eff_lvl      = GObject.Property(type=int, default=0)
+    d2_time_lvl     = GObject.Property(type=int, default=0)
+    d2_fb_lvl       = GObject.Property(type=int, default=0)
+    d2_h_cut_lvl    = GObject.Property(type=int, default=0)
+    d2_eff_lvl      = GObject.Property(type=int, default=0)
+    de_mod_rate_lvl    = GObject.Property(type=int, default=0)
+    de_mod_depth_lvl   = GObject.Property(type=int, default=0)
+    sde_vint_lpf_sw = GObject.Property(type=bool, default=False)
+    sde_fb_phase_sw = GObject.Property(type=bool, default=False)
+    sde_ef_phase_sw = GObject.Property(type=bool, default=False)
+    sde_filter_sw   = GObject.Property(type=bool, default=False)
+    sde_modul_sw    = GObject.Property(type=bool, default=False)
+    de_vol_lvl   = GObject.Property(type=int, default=0)
+
+
+    def __init__(self, ctrl):
+        super().__init__(ctrl, self.mapping)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
+        self.set_spacing(6)
         
         banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
         self.bank_select = Bank("DELAY", banks)
@@ -25,18 +60,18 @@ class DelayUI(Gtk.Box):
         self.bank_select.buttons[2].set_status_id(3)
         self.append(self.bank_select)
 
-        self.own_ctrl.bind_property(
-            "bank_select", self.bank_select, "selected",
+        self.bind_property(
+            "de_bank_sel", self.bank_select, "selected",
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
 
         box_sel = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
-        self.types = ComboStore( own_ctrl, 'Types')
-        box_sel.append(self.types)
-        self.types.connect("changed", self.on_type_changed)
-        self.volume_lvl = Slider( 
-                "Volume", "normal", own_ctrl, "delay_vol_lvl" )
-        box_sel.append(self.volume_lvl)
+        self.types_store = ComboStore( self, self.types, 'de_type')
+        box_sel.append(self.types_store)
+        self.types_store.connect("changed", self.on_type_changed)
+        self.volume = Slider( 
+                "Volume", "normal", self, "de_vol_lvl" )
+        box_sel.append(self.volume)
         self.append(box_sel)
  
         ### Show/Hide Boxes and +
@@ -50,61 +85,61 @@ class DelayUI(Gtk.Box):
 
         ### Box Delay ###
         self.box_dly = BoxInner("Delay")
-        self.time_lvl = Slider(
-                "Time", "long_time", self.own_ctrl, "time_lvl" )
-        self.time_lvl.show()
-        self.box_dly.append(self.time_lvl)
+        self.time = Slider(
+                "Time", "long_time", self, "de_time_lvl" )
+        self.time.show()
+        self.box_dly.append(self.time)
 
-        self.feedback_lvl = Slider("Feeback", "normal", self.own_ctrl, "feedback_lvl" )
-        self.feedback_lvl.name = "feedback_lvl"
-        self.feedback_lvl.show()
-        self.box_dly.append(self.feedback_lvl)
+        self.feedback = Slider("Feeback", "normal", self, "de_feedback_lvl" )
+        # self.feedback_lvl.name = "feedback_lvl"
+        self.feedback.show()
+        self.box_dly.append(self.feedback)
 
             ## D1 Time ##
-        self.d1_time_lvl = Slider(
-                "Time 1", "long_time", self.own_ctrl, "d1_time_lvl" )
-        self.d1_time_lvl.hide()
-        self.box_dly.append(self.d1_time_lvl)
+        self.d1_time= Slider(
+                "Time 1", "long_time", self, "d1_time_lvl" )
+        self.d1_time.hide()
+        self.box_dly.append(self.d1_time)
 
-        self.d1_fb_lvl = Slider(
-                "Feeback 1", "normal", self.own_ctrl, "d1_fb_lvl" )
-        self.d1_fb_lvl.hide()
-        self.box_dly.append(self.d1_fb_lvl)
+        self.d1_fb= Slider(
+                "Feeback 1", "normal", self, "d1_fb_lvl" )
+        self.d1_fb.hide()
+        self.box_dly.append(self.d1_fb)
 
             ## D2 Time ##
-        self.d2_time_lvl = Slider(
-                "Time 2", "long_time", self.own_ctrl, "d2_time_lvl" )
-        self.d2_time_lvl.hide()
-        self.box_dly.append(self.d2_time_lvl)
+        self.d2_time= Slider(
+                "Time 2", "long_time", self, "d2_time_lvl" )
+        self.d2_time.hide()
+        self.box_dly.append(self.d2_time)
 
-        self.d2_fb_lvl = Slider(
-                "Feeback 2", "normal", self.own_ctrl, "d2_fb_lvl" )
-        self.d2_fb_lvl.hide()
-        self.box_dly.append(self.d2_fb_lvl)
+        self.d2_fb= Slider(
+                "Feeback 2", "normal", self, "d2_fb_lvl" )
+        self.d2_fb.hide()
+        self.box_dly.append(self.d2_fb)
 
 
-        self.tap_time_lvl = Slider(
-                "Tap Time", "percent", self.own_ctrl, "tap_time_lvl" )
-        self.tap_time_lvl.hide()
-        self.box_dly.append(self.tap_time_lvl)
+        self.tap_time= Slider(
+                "Tap Time", "percent", self, "de_tap_time_lvl" )
+        self.tap_time.hide()
+        self.box_dly.append(self.tap_time)
         self.append(self.box_dly)
 
         ## Box Filter
         self.box_filt = BoxInner("Filter")
-        self.high_cut_lvl = Slider(
-                "High Cut", "high_freq", self.own_ctrl, "high_cut_lvl" )
-        self.high_cut_lvl.show()
-        self.box_filt.append(self.high_cut_lvl)
+        self.high_cut= Slider(
+                "High Cut", "high_freq", self, "de_high_cut_lvl" )
+        self.high_cut.show()
+        self.box_filt.append(self.high_cut)
             ## D1 High_cut
-        self.d1_h_cut_lvl = Slider(
-                "High Cut 1", "high_freq", self.own_ctrl, "d1_h_cut_lvl" )
-        self.d1_h_cut_lvl.hide()
-        self.box_filt.append(self.d1_h_cut_lvl)
+        self.d1_h_cut= Slider(
+                "High Cut 1", "high_freq", self, "d1_h_cut_lvl" )
+        self.d1_h_cut.hide()
+        self.box_filt.append(self.d1_h_cut)
             ## D2 High_cut
-        self.d2_h_cut_lvl = Slider(
-                "High Cut 2", "high_freq", self.own_ctrl, "d2_h_cut_lvl" )
-        self.d2_h_cut_lvl.hide()
-        self.box_filt.append(self.d2_h_cut_lvl)
+        self.d2_h_cut= Slider(
+                "High Cut 2", "high_freq", self, "d2_h_cut_lvl" )
+        self.d2_h_cut.hide()
+        self.box_filt.append(self.d2_h_cut)
 
         self.append(self.box_filt)
 
@@ -112,83 +147,83 @@ class DelayUI(Gtk.Box):
         self.box_sde = BoxInner("SDE-3000")
         self.box_sde.hide()
         box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
-        self.sde_vint_lpf_sw = Toggle("Vintage LPF")
-        self.sde_vint_lpf_sw.name = "sde_vint_lpf_sw"
-        self.own_ctrl.bind_property(
-            "sde_vint_lpf_sw", self.sde_vint_lpf_sw,
+        self.sde_vint_lpf = Toggle("Vintage LPF")
+        # self.sde_vint_lpf_sw.name = "sde_vint_lpf_sw"
+        self.bind_property(
+            "sde_vint_lpf_sw", self.sde_vint_lpf,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
-        box_h.append(self.sde_vint_lpf_sw)
-        self.sde_fb_phase_sw = Toggle("Feedback Phase")
-        self.sde_fb_phase_sw.name = "sde_fb_phase_sw"
-        self.own_ctrl.bind_property(
-            "sde_fb_phase_sw", self.sde_fb_phase_sw,
+        box_h.append(self.sde_vint_lpf)
+        self.sde_fb_phase = Toggle("Feedback Phase")
+        # self.sde_fb_phase_sw.name = "sde_fb_phase_sw"
+        self.bind_property(
+            "sde_fb_phase_sw", self.sde_fb_phase,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
-        box_h.append(self.sde_fb_phase_sw)
-        self.sde_ef_phase_sw = Toggle("Effect Phase")
-        self.sde_ef_phase_sw.name = "sde_ef_phase_sw"
-        self.own_ctrl.bind_property(
-            "sde_ef_phase_sw", self.sde_fb_phase_sw,
+        box_h.append(self.sde_fb_phase)
+        self.sde_ef_phase = Toggle("Effect Phase")
+        # self.sde_ef_phase_sw.name = "sde_ef_phase_sw"
+        self.bind_property(
+            "sde_ef_phase_sw", self.sde_fb_phase,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
-        box_h.append(self.sde_ef_phase_sw)
+        box_h.append(self.sde_ef_phase)
         self.box_sde.append(box_h)
         box_h2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
-        self.sde_filter_sw = Toggle("Filter")
-        self.sde_filter_sw.name = "sde_filter_sw"
-        self.own_ctrl.bind_property(
-            "sde_filter_sw", self.sde_filter_sw,
+        self.sde_filter= Toggle("Filter")
+        # self.sde_filter_sw.name = "sde_filter_sw"
+        self.bind_property(
+            "sde_filter_sw", self.sde_filter,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
-        box_h2.append(self.sde_filter_sw)
-        self.sde_modul_sw = Toggle("Modulation")
-        self.sde_modul_sw.name = "sde_modul_sw"
-        self.own_ctrl.bind_property(
-            "sde_modul_sw", self.sde_modul_sw,
+        box_h2.append(self.sde_filter)
+        self.sde_modul= Toggle("Modulation")
+        # self.sde_modul_sw.name = "sde_modul_sw"
+        self.bind_property(
+            "sde_modul_sw", self.sde_modul,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
-        box_h2.append(self.sde_modul_sw)
+        box_h2.append(self.sde_modul)
         self.box_sde.append(box_h2)
         self.append(self.box_sde)
 
         ## Box Modulation
         self.box_mod = BoxInner("Modulate")
         self.box_mod.hide()
-        self.mod_rate_lvl = Slider(
-                "Rate", "normal", self.own_ctrl, "mod_rate_lvl" )
-        self.box_mod.append(self.mod_rate_lvl)
+        self.mod_rate= Slider(
+                "Rate", "normal", self, "de_mod_rate_lvl" )
+        self.box_mod.append(self.mod_rate)
 
-        self.mod_depth_lvl = Slider(
-                "Depth", "normal", self.own_ctrl, "mod_depth_lvl" )
-        self.box_mod.append(self.mod_depth_lvl)
+        self.mod_depth= Slider(
+                "Depth", "normal", self, "de_mod_depth_lvl" )
+        self.box_mod.append(self.mod_depth)
         
         self.append(self.box_mod)
 
         #Levels
-        self.effect_lvl = Slider(
-                "Effect", "normal", self.own_ctrl, "effect_lvl" )
-        self.effect_lvl.get_style_context().add_class('inner')
-        self.effect_lvl.show()
-        self.append(self.effect_lvl)
+        self.effect= Slider(
+                "Effect", "normal", self, "de_effect_lvl" )
+        self.effect.get_style_context().add_class('inner')
+        self.effect.show()
+        self.append(self.effect)
 
-        self.d1_eff_lvl = Slider(
-                "Effect 1", "normal", self.own_ctrl, "d1_eff_lvl" )
-        self.d1_eff_lvl.get_style_context().add_class('inner')
-        self.d1_eff_lvl.hide()
-        self.append(self.d1_eff_lvl)
+        self.d1_eff= Slider(
+                "Effect 1", "normal", self, "d1_eff_lvl" )
+        self.d1_eff.get_style_context().add_class('inner')
+        self.d1_eff.hide()
+        self.append(self.d1_eff)
 
-        self.d2_eff_lvl = Slider(
-                "Effect 2", "normal", self.own_ctrl, "d2_eff_lvl" )
-        self.d2_eff_lvl.get_style_context().add_class('inner')
-        self.d2_eff_lvl.hide()
-        self.append(self.d2_eff_lvl)
+        self.d2_eff= Slider(
+                "Effect 2", "normal", self, "d2_eff_lvl" )
+        self.d2_eff.get_style_context().add_class('inner')
+        self.d2_eff.hide()
+        self.append(self.d2_eff)
 
-        self.dirmix_lvl = Slider(
-                "Direct Mix", "normal", self.own_ctrl, "dirmix_lvl" )
-        self.dirmix_lvl.get_style_context().add_class('outer')
+        self.dirmix= Slider(
+                "Direct Mix", "normal", self, "de_dmix_lvl" )
+        self.dirmix.get_style_context().add_class('outer')
 
-        self.append(self.dirmix_lvl)
+        self.append(self.dirmix)
 
     def on_delay_toggled(self, button):
         self.on_type_changed(self.types)
@@ -197,25 +232,25 @@ class DelayUI(Gtk.Box):
         idx = types.get_active()
         base_widgets = [
             self.box_dly,       # 0
-            self.time_lvl,      # 1
-            self.feedback_lvl,  # 2
-            self.effect_lvl,    # 3
-            self.high_cut_lvl,  # 4
+            self.time,      # 1
+            self.feedback,  # 2
+            self.effect,    # 3
+            self.high_cut,  # 4
             self.box_filt,      # 5
-            self.tap_time_lvl,  # 6
+            self.tap_time,  # 6
             self.box_mod,       # 7
             self.box_sde,       # 8
             self.bank_dual,     # 9
         ]
         duals = [
-            self.d1_time_lvl,
-            self.d1_fb_lvl,
-            self.d1_h_cut_lvl,
-            self.d1_eff_lvl,
-            self.d2_time_lvl,
-            self.d2_fb_lvl,
-            self.d2_h_cut_lvl,
-            self.d2_eff_lvl, 
+            self.d1_time,
+            self.d1_fb,
+            self.d1_h_cut,
+            self.d1_eff,
+            self.d2_time,
+            self.d2_fb,
+            self.d2_h_cut,
+            self.d2_eff, 
         ]
         for w in base_widgets + duals:
             w.hide()
@@ -239,11 +274,11 @@ class DelayUI(Gtk.Box):
                 base_widgets[i].show()
 
     def on_slider_changed( self, slider, value):
-        old_val = self.own_ctrl.get_property(slider.name)
+        old_val = self.get_property(slider.name)
         value = int(value)
         # log.debug(f"{old_val} {value}")
         if value != old_val:
-            self.own_ctrl.set_property(slider.name, value)
+            self.set_property(slider.name, value)
 
     def on_delay_loaded(self, device, types):
         i = 0

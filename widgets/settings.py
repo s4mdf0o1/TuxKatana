@@ -15,11 +15,11 @@ dbg=logging.getLogger("debug")
 from .slider import Slider
 
 from .presets import PresetsView
-from .amplifier import AmplifierUI
-from .booster import BoosterUI
+from .amplifier import Amplifier
+from .booster import Booster
 from .modfx_ui import ModFxUI
-from .reverb import ReverbUI
-from .delay import DelayUI
+from .reverb import Reverb
+from .delay import Delay
 from .debug import Debug
 
 class KS_TabbedPanel(Gtk.Box):
@@ -51,22 +51,22 @@ class KS_Settings(Gtk.Box):
             debug = Debug(ctrl)
             self.append(debug)
         elif name == "PRE-AMP":
-            self.amplifier = AmplifierUI(ctrl.device.amplifier)
+            self.amplifier = Amplifier(ctrl)
             self.append(self.amplifier) 
         elif name == "BOOSTER":
-            self.booster = BoosterUI(ctrl.device.booster)
+            self.booster = Booster(ctrl)
             self.append(self.booster)
-        elif name == "MOD":
-            self.mod = ModFxUI(ctrl, ctrl.device.mod, name)
-            self.append(self.mod)
-        elif name == "FX":
-            self.fx = ModFxUI(ctrl, ctrl.device.fx, name)
-            self.append(self.fx)
+        # elif name == "MOD":
+        #     self.mod = ModFxUI(ctrl, ctrl.mod, name)
+        #     self.append(self.mod)
+        # elif name == "FX":
+        #     self.fx = ModFxUI(ctrl, ctrl.fx, name)
+        #     self.append(self.fx)
         elif name == "REVERB":
-            self.reverb = ReverbUI(ctrl.device.reverb)
+            self.reverb = Reverb(ctrl)
             self.append(self.reverb)
         elif name == "DELAY":
-            self.delay = DelayUI(ctrl.device.delay)
+            self.delay = Delay(ctrl)
             self.append(self.delay)
 
         else:
@@ -77,7 +77,7 @@ class CommLabel(Gtk.Label):
     def __init__(self, device):
         self.states = [ "⚫", "🟢", "🔴", "🟡" ]
         self.state = 0
-        self.device = device
+        # self.device = device
         super().__init__(label=self.states[0])
         self.set_halign(Gtk.Align.START)
         self.get_style_context().add_class('comm')
@@ -94,7 +94,7 @@ class Settings(Gtk.Box):
         self.get_style_context().add_class("inner")
         self.ctrl = ctrl
         h_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=2)
-        self.comm = CommLabel(ctrl.device)
+        self.comm = CommLabel(ctrl)
         self.title = Gtk.Label(label=label)
         self.title.set_halign(Gtk.Align.CENTER)
         self.title.set_hexpand(True)
@@ -103,14 +103,14 @@ class Settings(Gtk.Box):
         self.edit_tog.get_style_context().add_class('edit-mode')
         self.edit_tog.set_tooltip_text("Toggle Edit Mode")
         self.edit_tog.connect("toggled", self.toggle_edit_mode)
-        ctrl.device.bind_property("edit_mode", self.edit_tog, \
+        ctrl.bind_property("edit_mode", self.edit_tog, \
                 "active", GObject.BindingFlags.SYNC_CREATE | \
                 GObject.BindingFlags.BIDIRECTIONAL)
         h_box.append(self.comm)
         h_box.append(self.title)
         h_box.append(self.edit_tog)
         self.append(h_box)
-        ctrl.device.bind_property("name", self.title, \
+        ctrl.bind_property("name", self.title, \
                 "label", GObject.BindingFlags.DEFAULT)
 
         tabs = KS_TabbedPanel()
@@ -129,5 +129,5 @@ class Settings(Gtk.Box):
         
     def toggle_edit_mode(self, button):
         edit = self.edit_tog.get_active()
-        self.ctrl.device.set_edit_mode(edit)
+        self.ctrl.set_edit_mode(edit)
 

@@ -44,6 +44,7 @@ class Slider(AntiFlood, Gtk.Box):
         
         if own_ctrl:
             self.own_ctrl = own_ctrl
+            # log.debug(f"{bind_prop}")
             own_ctrl.bind_property(
                 bind_prop, self, "value",\
                 GObject.BindingFlags.SYNC_CREATE )

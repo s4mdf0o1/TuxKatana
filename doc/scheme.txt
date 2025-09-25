@@ -72,3 +72,29 @@ MainWindow.__init__(app)
                                              └ store.append
    ┆
 
+# Draft:
+  ┌────────┐
+  │ Katana │
+  └┬───────┘
+   │       ▲
+   │ sysex │
+   ▼       │
+  recv    send
+  ┌─────────┴──┐
+  │ Controller │
+  └┬───────────┘
+   │       ▲
+   │       │
+   ▼       │
+  set     get
+  ┌────────┴─┐
+  │  Memory  │
+  ├──────────┤
+  │  address │
+  └────┬─────┘
+   bind value
+  ┌────┴─────┐
+  │ property │ 
+  ├──────────┤
+  │  Effect  │
+  └──────────┘

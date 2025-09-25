@@ -1,12 +1,18 @@
 SEND:
-  am_type:    "60 00 00 21"
-  amp_gain_lvl: "60 00 06 51"
-  amp_unk1_lvl: "60 00 00 28"
-  amp_unk2_lvl: "60 00 00 22"
-RECV:
-  "60 00 06 50": "amp_num"
-  "60 00 06 5C": "amp_variation"
-  "60 00 06 52": "amp_vol_lvl"
+  am_type:      "60 00 00 21"
+  am_num:       "60 00 06 50"
+  am_var_sw:    "60 00 06 5C"
+  am_gain_lvl:  "60 00 06 51"
+  am_vol_lvl:   "60 00 06 52"
+  am_bass_lvl:  "60 00 00 24"
+  am_middle_lvl: "60 00 00 25"
+  am_treble_lvl: "60 00 00 26"
+  am_unk1_lvl:  "60 00 00 28"
+  am_unk2_lvl:  "60 00 00 22"
+# RECV:
+#   "60 00 06 50": "am_num"
+#   "60 00 06 5C": "am_var_sw"
+#   "60 00 06 52": "am_vol_lvl"
 Types:
   'Acoustic':     '01'
   'Clean':        '08'

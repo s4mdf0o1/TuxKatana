@@ -28,65 +28,81 @@ class Switcher(Gtk.Box):
 
         self.effects = Bank("EFFECTS", config['EFFECTS'], True)
 
-        self.ctrl.device.booster.connect("notify::boost-status", self.on_status_changed)
-        self.ctrl.device.reverb.connect("notify::reverb-status", self.on_status_changed)
-        self.ctrl.device.delay.connect("notify::delay-status", self.on_status_changed)
+        self.ctrl.connect("status-changed", self.on_status_changed)
+        # self.ctrl.mry.connect("notify::re-status", self.on_status_changed)
+        # self.ctrl.device.delay.connect("notify::delay-status", self.on_status_changed)
 
-        self.ctrl.device.mod.connect("notify::mo-status", self.on_status_changed)
-        self.ctrl.device.fx.connect("notify::fx-status", self.on_status_changed)
+        # self.ctrl.device.mod.connect("notify::mo-status", self.on_status_changed)
+        # self.ctrl.device.fx.connect("notify::fx-status", self.on_status_changed)
         self.append(self.effects)
         self.append(self.bank_a)
         self.append(self.bank_b)
-        self.ctrl.device.connect("channel-changed", self.on_channel_changed)
+        self.ctrl.connect("channel-changed", self.on_channel_changed)
 
-        for bank in [self.bank_a, self.bank_b, self.effects]:
-            for but in bank.buttons:
+        # for bank in [self.bank_a, self.bank_b, self.effects]:
+        #     for but in bank.buttons:
                 
                 #log.debug(but.name)
-                if but.name == 'BOOSTER':
-                    but.bind_id = self.ctrl.device.booster.bind_property(
-                        "boost_sw", but, "active",
-                        GObject.BindingFlags.BIDIRECTIONAL |\
-                        GObject.BindingFlags.SYNC_CREATE )
-                elif but.name == 'MOD':
-                    but.bind_id = self.ctrl.device.mod.bind_property(
-                        "mo_sw", but, "active",
-                        GObject.BindingFlags.BIDIRECTIONAL |\
-                        GObject.BindingFlags.SYNC_CREATE )
-                elif but.name == 'FX':
-                    but.bind_id = self.ctrl.device.fx.bind_property(
-                        "fx_sw", but, "active",
-                        GObject.BindingFlags.BIDIRECTIONAL |\
-                        GObject.BindingFlags.SYNC_CREATE )
+                # if but.name == 'BOOSTER':
+                #     but.bind_id = self.ctrl.device.booster.bind_property(
+                #         "boost_sw", but, "active",
+                #         GObject.BindingFlags.BIDIRECTIONAL |\
+                #         GObject.BindingFlags.SYNC_CREATE )
+                # elif but.name == 'MOD':
+                #     but.bind_id = self.ctrl.device.mod.bind_property(
+                #         "mo_sw", but, "active",
+                #         GObject.BindingFlags.BIDIRECTIONAL |\
+                #         GObject.BindingFlags.SYNC_CREATE )
+                # elif but.name == 'FX':
+                #     but.bind_id = self.ctrl.device.fx.bind_property(
+                #         "fx_sw", but, "active",
+                #         GObject.BindingFlags.BIDIRECTIONAL |\
+                #         GObject.BindingFlags.SYNC_CREATE )
 
-                elif but.name == 'REVERB':
-                    but.bind_id = self.ctrl.device.reverb.bind_property(
-                        "reverb_sw", but, "active",
-                        GObject.BindingFlags.BIDIRECTIONAL |\
-                        GObject.BindingFlags.SYNC_CREATE )
-                elif but.name == 'DELAY':
-                    but.bind_id = self.ctrl.device.delay.bind_property(
-                        "delay_sw", but, "active",
-                        GObject.BindingFlags.BIDIRECTIONAL |\
-                        GObject.BindingFlags.SYNC_CREATE )
-                else:
-                    but.toggled_id = but.connect("toggled", self.callback_toggled)
+                # elif but.name == 'REVERB':
+                #     but.bind_id = self.ctrl.device.reverb.bind_property(
+                #         "reverb_sw", but, "active",
+                #         GObject.BindingFlags.BIDIRECTIONAL |\
+                #         GObject.BindingFlags.SYNC_CREATE )
+                # elif but.name == 'DELAY':
+                #     but.bind_id = self.ctrl.device.delay.bind_property(
+                #         "delay_sw", but, "active",
+                #         GObject.BindingFlags.BIDIRECTIONAL |\
+                #         GObject.BindingFlags.SYNC_CREATE )
+                # else:
+                #     but.toggled_id = but.connect("toggled", self.callback_toggled)
             #self.ctrl.device.booster.connect("notify::booster_sw", lambda o,p: print("booster_sw changed:", o.booster_sw))
 
-    def on_status_changed(self, obj, pspec):
-        name = pspec.name.split('-')[0]
-        log.debug(f"{pspec.name} {name}")
+    def on_status_changed(self, ctrl, obj, bind_prop):
+        log.debug(f"{obj.name} {obj.get_property(bind_prop)=}")
+        obj_name = obj.name.lower()
+        # status = obj.get_property(bind_prop)
+        # name = pspec.name.split('-')[0]
+        # log.debug(f"{pspec.name} {name}")
         for but in self.effects.buttons:
             #log.debug(f"{but.name.lower()=}")
-            if name == but.name.lower():
-                status = obj.get_property(pspec.name)
-                but.set_status_id(status)
+            if obj_name == but.name.lower():
+                # prefix = obj_name[:3]
+                but.bind_id = obj.bind_property(
+                    bind_prop, but, "status",
+                    GObject.BindingFlags.BIDIRECTIONAL |\
+                    GObject.BindingFlags.SYNC_CREATE )
+                but.disconnect(but.handler_id)
+                obj_sw = obj.find_property(obj_name+'_sw')
+                if obj_sw:
+                    log.debug(f"{obj_sw.name=}")
+                    but.bind_id = obj.bind_property(
+                        obj_sw.name.replace('-', '_'), but, "active",
+                        GObject.BindingFlags.BIDIRECTIONAL |\
+                        GObject.BindingFlags.SYNC_CREATE )
+                # status = obj.get_property(pspec.name)
+                # but.set_status_id(status)
 
-    def callback_toggled( self, button):
-        log.debug(f"{button.name}: {button.path}")
-        if button.get_active():
-            if 'CH_' in button.name:
-                self.ctrl.device.set_midi_channel(button.path)
+    # def callback_toggled( self, button):
+    #     log.debug(f"{button.name}: {button.path}")
+    #     if button.get_active():
+    #         if 'CH_' in button.name:
+    #             self.ctrl.device.set_midi_channel(button.path)
 
     def on_channel_changed(self, obj, ch_num):
         # log.debug(f"{obj} {ch_num=}")
@@ -97,9 +113,9 @@ class Switcher(Gtk.Box):
             but.handler_unblock(but.toggled_id)
         else:
             but = self.bank_b.buttons[ch_num-5]
-            but.handler_block(but.toggled_id)
+            # but.handler_block(but.toggled_id)
             but.set_active(True)
-            but.handler_unblock(but.toggled_id)
+            # but.handler_unblock(but.toggled_id)
             # self.bank_b.buttons[ch_num-5].set_active(True)
         #self.presets[ch_num-1].set_active(True)
 
