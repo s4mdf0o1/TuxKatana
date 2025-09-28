@@ -90,7 +90,7 @@ class Controller(GObject.GObject):
                 log.info(f"{text.strip()}")
                 return
             elif str(addr) == '00 01 00 00':
-                log.debug(f"emit channel-changed {data}")
+                # log.debug(f"emit channel-changed {data}")
                 self.emit("channel-changed", data.int)
                 return
             self.set_charging(3, 500)
@@ -138,7 +138,7 @@ class Controller(GObject.GObject):
 
     def dump_memory(self):
         self.pause_queue = True
-        log.debug("TODO: yaml datas")
+        log.debug("TODO: yaml datas for presets")
         saddr = self.addrs['MEMORY']
         sdata = '00 00 0f 00'
         self.send(saddr, sdata)

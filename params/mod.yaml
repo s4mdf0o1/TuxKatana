@@ -1,0 +1,44 @@
+SEND:
+  mo_sw:        "60 00 01 00"
+  mo_type:      "60 00 01 01"
+  mo_type_G:    "60 00 06 27"
+  mo_type_R:    "60 00 06 28"
+  mo_type_Y:    "60 00 06 29"
+  mo_bank_sel:  "60 00 06 3A"
+  mo_vol_lvl:   "60 00 06 58"
+  mo_status:    "60 00 06 5E"
+  
+Types:
+  "Touch Wah":      '00'
+  "Auto Wah":       '01'
+  "Pedal Wah":      '02'
+  "Compressor":     '03'
+  "Limiter":        '04'
+  "Graphic EQ":     '06'
+  "Parametric EQ":  '07'
+  "Guitar Sim":     '09'
+  "Slow Gear":      '0A'
+  "Wave Synth":     '0C'
+  "Octave":         '0E'
+  "Pitch Shifter":  '0F'
+  "Harmonist":      '10'
+  "Acu Processor":  '12'
+  "Phaser":         '13'
+  "Flanger":        '14'
+  "Tremolo":        '15'
+  "Rotary":         '16'
+  "Uni-V":          '17'
+  "Slicer":         '19'
+  "Vibrato":        '1A'
+  "Ring Modulate":  '1B'
+  "Humanizer":      '1C'
+  "2x2 Chorus":     '1D'
+  "AC Guitar Sym":  '1F'
+  "Phaser 90E":     '23'
+  "Flanger 117E":   '24'
+  "Wah 95E":        '25'
+  "DC30":           '26'
+  "Heavy Octave":   '27'
+  "Pedal Bend":     '28'
+
+

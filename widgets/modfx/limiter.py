@@ -11,27 +11,42 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
-class LimiterUI(Gtk.Box):
-    def __init__(self, own_ctrl):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.own_ctrl = own_ctrl
+from lib.effect import Effect
+from lib.set_mapping import add_properties
+
+@add_properties()
+class Limiter(Effect, Gtk.Box):
+    li_type         = GObject.Property(type=str)
+    li_type_idx     = GObject.Property(type=int, default=0)
+    li_attak_lvl    = GObject.Property(type=int, default=0)
+    li_thold_lvl    = GObject.Property(type=int, default=0)
+    li_rate_lvl     = GObject.Property(type=int, default=0)
+    li_rels_lvl     = GObject.Property(type=int, default=0)
+    li_eff_lvl      = GObject.Property(type=int, default=0)
+    # li_dmix_lvl     = GObject.Property(type=int, default=0)
+
+    def __init__(self, ctrl, pprefx=""):
+        super().__init__(ctrl, self.mapping, pprefx)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
+        self.set_spacing(6)
+        self.parent_prefix = pprefx
         
         box_co = BoxInner("Limiter")
-        self.types = ComboStore( own_ctrl, 'Types', True)
-        box_co.append(self.types)
+        self.types_list = ComboStore( self, self.types, "li_type_idx")
+        box_co.append(self.types_list)
 
-        self.attak_lvl = Slider( "Attack", "normal", self.own_ctrl, "li_attak_lvl" )
-        box_co.append(self.attak_lvl)
+        self.attak = Slider( "Attack", "normal", self, "li_attak_lvl" )
+        box_co.append(self.attak)
 
-        self.thold_lvl = Slider( "Threshold", "normal", self.own_ctrl, "li_thold_lvl" )
-        box_co.append(self.thold_lvl)
+        self.thold = Slider( "Threshold", "normal", self, "li_thold_lvl" )
+        box_co.append(self.thold)
 
-        self.rate_lvl = Slider( "Rate", "normal", self.own_ctrl, "li_rate_lvl" )
-        box_co.append(self.rate_lvl)
+        self.rate = Slider( "Rate", "normal", self, "li_rate_lvl" )
+        box_co.append(self.rate)
 
         box_lvl = BoxInner("Level")
-        self.eff_lvl = Slider( "Effect", "normal", self.own_ctrl, "li_eff_lvl" )
-        box_lvl.append(self.eff_lvl)
+        self.eff = Slider( "Effect", "normal", self, "li_eff_lvl" )
+        box_lvl.append(self.eff)
 
         self.append(box_co)
         self.append(box_lvl)

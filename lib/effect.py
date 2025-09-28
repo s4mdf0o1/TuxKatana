@@ -8,13 +8,13 @@ from .midi_bytes import Address, MIDIBytes
 # from .map import Map
 
 class Effect:
-    def __init__(self, ctrl, mapping, parent_prefix=""):
+    def __init__(self, ctrl, mapping, pprefx=""):
         super().__init__()
         self.ctrl = ctrl
         self.mry = ctrl.mry
         self.mapping = mapping
-        self.parent_prefix = parent_prefix
-        self.is_modfx = True if self.parent_prefix else False
+        self.parent_prefix = pprefx
+        self.is_modfx = True if pprefx else False
         # self.signal_name = self.get_signal_name()
         # self.set_mry_map()
         # self.banks=['G', 'R', 'Y']
@@ -45,13 +45,13 @@ class Effect:
 
     def on_ui_changed(self, obj, pspec):
         name = pspec.name.replace('-','_')
-        name = self.parent_prefix+name
+        # name = self.parent_prefix+name
+        if not name in self.mapping and not '_idx' in name:
+            return
         value = obj.get_property(name)
         # log.debug(f"{name}={value}")
         # value = self.type_val(name, value)
         current = None
-        if not name in self.mapping and not '_idx' in name:
-            return
         if not name.endswith('_idx'):
             addr = self.mapping[name]
         # val_type = pspec.value_type.name
@@ -87,7 +87,9 @@ class Effect:
             self.status_bind=True
 
     def direct_mry(self, addr, val):
-        # log.debug(f"{addr}={val}({type(val)})")
+        if self.parent_prefix == 'fx_':
+            addr += 256
+        # log.debug(f"{addr}={val}({type(val)}) {self.parent_prefix} {self.is_modfx}")
         self.mry.handler_block(self.mry_id)
         self.mry.set_value(addr, val)
         self.mry.handler_unblock(self.mry_id)

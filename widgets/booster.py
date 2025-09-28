@@ -15,6 +15,7 @@ import logging
 log = logging.getLogger(LOGGER_NAME)
 
 from lib.set_mapping import add_properties
+
 @add_properties()
 class Booster(Effect, Gtk.Box):
     booster_sw   = GObject.Property(type=bool, default=False)

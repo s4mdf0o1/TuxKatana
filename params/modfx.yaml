@@ -14,70 +14,9 @@ SEND:
   fx_bank_Y:    "60 00 06 2C"
   fx_bank_sel:  "60 00 06 3B"
   fx_vol_lvl:   "60 00 06 59"
-# Slow_Gear
-  sg_sens_lvl:  "60 00 01 3C" # Sens
-  sg_rise_lvl:  "60 00 01 3D" # Rise Time
-  sg_lev_lvl:   "60 00 01 3E" # Level
-# Wave Synth
-  ws_type_sw:   "60 00 01 3F" # Saw/Square WF
-  ws_cuto_lvl:  "60 00 01 40" # CutOff Freq
-  ws_reso_lvl:  "60 00 01 41" # Reson.
-  ws_flts_lvl:  "60 00 01 42" # FLT Sens
-  ws_fltd_lvl:  "60 00 01 43" # FLT Decay
-  ws_fltp_lvl:  "60 00 01 44" # FLT Depth
-  ws_eff_lvl:   "60 00 01 45" # Effect
-  ws_dmix_lvl:  "60 00 01 46" # Direct Mix
-# Octave
-  oc_type:      "60 00 01 47"
-  oc_eff_lvl:   "60 00 01 48" # Effect
-  of_dmix_lvl:  "60 00 01 49" # Direct Mix
-# Pitch Shifter
-  ps_type_sw:   "60 00 01 4A" # One/Two Voice.s Mono
-  ps_vode:      "60 00 01 4B"  ### ! diff vode/mode
-  ps_pred_lvl:  "60 00 01 4E" # Pre Delay
-  ps_pitch_lvl: "60 00 01 4C" # Pitch
-  ps_fine_lvl:  "60 00 01 4D" # Fine
-  ps_fb_lvl:    "60 00 01 57" # Feedback
-  ps_voc1_lvl:  "60 00 01 50" # Voice 1
-  ps_dirc_lvl:  "60 00 01 58" # Direct
+
 # Harmonist
   
-# Acu Processor
-  ap_type:      "60 00 01 7C"
-  ap_bass_lvl:  "60 00 01 7D" # Bass   -50>+50
-  ap_mid_lvl:   "60 00 01 7E" # Middle -50>+50
-  ap_mfrq_lvl:  "60 00 01 7F" # Middle Freq
-                # 00>1b=20Hz>10kHz
-  ap_treb_lvl:  "60 00 02 00" # Treble -50>+50
-  ap_pres_lvl:  "60 00 02 01" # Presence -50>+50
-  ap_eff_lvl:   "60 00 02 02" # Effect
-# Phaser
-  ph_type:      "60 00 02 03"
-  ph_rate_lvl:  "60 00 02 04" # Rate
-  ph_dept_lvl:  "60 00 02 05" # Depth
-  ph_man_lvl:   "60 00 02 06" # Manual
-  ph_reso_lvl:  "60 00 02 07" # Reson.
-  ph_stpr_lvl:  "60 00 02 08" # Step Rate
-  ph_eff_lvl:   "60 00 02 09" # Effect
-  ph_dmix_lvl:  "60 00 02 0A" # Direct Mix
-# Flanger
-  fl_rate_lvl:  "60 00 02 0B" # Rate
-  fl_dept_lvl:  "60 00 02 0C" # Depth
-  fl_man_lvl:   "60 00 02 0D" # Manual
-  fl_reso_lvl:  "60 00 02 0E" # Reson.
-  fl_lowc_lvl:  "60 00 02 10" # Low Cut
-                # 00>0a=0Hz>800Hz
-  fl_eff_lvl:   "60 00 02 11" # Effect
-  fl_dmix_lvl:  "60 00 02 12" # Direct Mix
-# Tremolo
-  tr_shap_lvl:  "60 00 02 13" # Shape
-  tr_rate_lvl:  "60 00 02 14" # Rate
-  tr_dept_lvl:  "60 00 02 15" # Deth
-  tr_levl_lvl:  "60 00 02 16" # Level
-# Rotary
-  ro_rate_lvl:  "60 00 02 19" # Rate
-  ro_dept_lvl:  "60 00 02 1C" # Depth
-  ro_levl_lvl:  "60 00 02 1D" # Level
 # Uni-V
   un_rate_lvl:  "60 00 02 1E" # Rate
   un_dept_lvl:  "60 00 02 1F" # Depth
@@ -156,70 +95,6 @@ SEND:
   pb_effl_lvl:  "60 00 02 5F" # Effect Level
   pb_dmix_lvl:  "60 00 02 60" # Direct Mix
   
-RECV:
-  "60 00 06 27":  "mo_return"    # Type Copy G
-  "60 00 06 2A":  "fx_return"     # Type Copy
-  "60 00 06 5E":  "mo_status"    # GRY +1
-  "60 00 06 5F":  "fx_status"     # GRY +1
-  # "60 00 06 58":  "mo_unknown_1"
-#  "60 00 06 59":  "fx_unknown_1"
-
-Types:
-  "Touch Wah":      '00'
-  "Auto Wah":       '01'
-  "Pedal Wah":      '02'
-  "Compressor":     '03'
-  "Limiter":        '04'
-  "Graphic EQ":     '06'
-  "Parametric EQ":  '07'
-  "Guitar Sim":     '09'
-  "Slow Gear":      '0A'
-  "Wave Synth":     '0C'
-  "Octave":         '0E'
-  "Pitch Shifter":  '0F'
-  "Harmonist":      '10'
-  "Acu Processor":  '12'
-  "Phaser":         '13'
-  "Flanger":        '14'
-  "Tremolo":        '15'
-  "Rotary":         '16'
-  "Uni-V":          '17'
-  "Slicer":         '19'
-  "Vibrato":        '1A'
-  "Ring Modulate":  '1B'
-  "Humanizer":      '1C'
-  "2x2 Chorus":     '1D'
-  "AC Guitar Sym":  '1F'
-  "Phaser 90E":     '23'
-  "Flanger 117E":   '24'
-  "Wah 95E":        '25'
-  "DC30":           '26'
-  "Heavy Octave":   '27'
-  "Pedal Bend":     '28'
-
-Octave:
-  "7th str B 2 1st 24fr E": '00'
-  "7th str B 2 1st 12fr E": '01'
-  "7th str B 2 1st open E": '02'
-  "7th str B 2 4th 2fr E":  '03'
-
-Pitch_Shifter:
-  "Fast":   '00'
-  "Medium": '01'
-  "Slow":   '02'
-  "Mono":   '03'
-
-Acu_Processor:
-  "Small":    '00'
-  "Medium":   '01'
-  "Bright":   '02'
-  "Power":    '03'
-
-Phaser:
-  "4 stage":    '00'
-  "8 stage":    '01'
-  "12 stage":   '02'
-  "bi-stage":   '03'
 
 Humanizer:
   "A":  '00'

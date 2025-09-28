@@ -1,0 +1,5 @@
+# Slow_Gear
+SEND:
+  sg_sens_lvl:  "60 00 01 3C" # Sens
+  sg_rise_lvl:  "60 00 01 3D" # Rise Time
+  sg_levl_lvl:   "60 00 01 3E" # Level

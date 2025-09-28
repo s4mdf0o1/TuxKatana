@@ -1,0 +1,7 @@
+# Tremolo
+SEND:
+  tr_shap_lvl:  "60 00 02 13" # Shape
+  tr_rate_lvl:  "60 00 02 14" # Rate
+  tr_dept_lvl:  "60 00 02 15" # Deth
+  tr_levl_lvl:  "60 00 02 16" # Level
+

@@ -1,0 +1,6 @@
+# Rotary
+SEND:
+  ro_rate_lvl:  "60 00 02 19" # Rate
+  ro_dept_lvl:  "60 00 02 1C" # Depth
+  ro_levl_lvl:  "60 00 02 1D" # Level
+

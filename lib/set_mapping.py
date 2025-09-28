@@ -3,6 +3,10 @@ yaml = YAML(typ="rt")
 import os
 from gi.repository import GObject
 
+import logging
+from lib.log_setup import LOGGER_NAME
+log = logging.getLogger(LOGGER_NAME)
+
 from bidict import bidict
 from .midi_bytes import Address, MIDIBytes
 
@@ -22,7 +26,7 @@ def add_properties():#, name, mapping):
         lower = cls.__name__.lower()
         setattr(cls, 'prefix', get_prefix(lower))
         snake = camel_to_snake(cls.__name__)
-        print(f"{lower=} {snake=}")
+        # print(f"{lower=} {snake=}")
 
         filename = f"params/{snake}.yaml"
         if not os.path.exists(filename):
@@ -41,6 +45,7 @@ def add_properties():#, name, mapping):
 
         for key in ['Types', 'Modes']:
             tmap = data.get(key, {})
+            # log.debug(tmap)
             if tmap:
                 # for name, val in tmap.items():
                     # tmap[name] = MIDIBytes(val).int

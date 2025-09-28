@@ -1,0 +1,18 @@
+# Phaser
+SEND:
+  ph_type:      "60 00 02 03"
+  ph_rate_lvl:  "60 00 02 04" # Rate
+  ph_dept_lvl:  "60 00 02 05" # Depth
+  ph_man_lvl:   "60 00 02 06" # Manual
+  ph_reso_lvl:  "60 00 02 07" # Reson.
+  ph_stpr_lvl:  "60 00 02 08" # Step Rate
+  ph_eff_lvl:   "60 00 02 09" # Effect
+  ph_dmix_lvl:  "60 00 02 0A" # Direct Mix
+
+Types:
+  "4 stage":    '00'
+  "8 stage":    '01'
+  "12 stage":   '02'
+  "bi-stage":   '03'
+
+

@@ -1,0 +1,11 @@
+# Flanger
+SEND:
+  fl_rate_lvl:  "60 00 02 0B" # Rate
+  fl_dept_lvl:  "60 00 02 0C" # Depth
+  fl_man_lvl:   "60 00 02 0D" # Manual
+  fl_reso_lvl:  "60 00 02 0E" # Reson.
+  fl_lowc_lvl:  "60 00 02 10" # Low Cut
+                # 00>0a=0Hz>800Hz
+  fl_eff_lvl:   "60 00 02 11" # Effect
+  fl_dmix_lvl:  "60 00 02 12" # Direct Mix
+

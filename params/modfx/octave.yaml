@@ -1,0 +1,13 @@
+# Octave
+SEND:
+  oc_type:      "60 00 01 47"
+  oc_eff_lvl:   "60 00 01 48" # Effect
+  oc_dmix_lvl:  "60 00 01 49" # Direct Mix
+
+Types:
+  "7th str B 2 1st 24fr E": '00'
+  "7th str B 2 1st 12fr E": '01'
+  "7th str B 2 1st open E": '02'
+  "7th str B 2 4th 2fr E":  '03'
+
+

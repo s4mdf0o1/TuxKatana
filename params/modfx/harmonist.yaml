@@ -1,0 +1,5 @@
+SEND:
+# Voice 1  
+  ha_harmony:   "60 00 01 5A"   # Harmony
+  ha_pred_lvl:  "60 00 01 5B"   # Pre Delay '00 00'>'02 2C'=0ms>200ms
+

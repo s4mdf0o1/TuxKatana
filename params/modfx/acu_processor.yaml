@@ -1,0 +1,18 @@
+# Acu Processor
+SEND:
+  ap_type:      "60 00 01 7C"
+  ap_bass_lvl:  "60 00 01 7D" # Bass   -50>+50
+  ap_mid_lvl:   "60 00 01 7E" # Middle -50>+50
+  ap_mfrq_lvl:  "60 00 01 7F" # Middle Freq
+                # 00>1b=20Hz>10kHz
+  ap_treb_lvl:  "60 00 02 00" # Treble -50>+50
+  ap_pres_lvl:  "60 00 02 01" # Presence -50>+50
+  ap_eff_lvl:   "60 00 02 02" # Effect
+
+Types:
+  "Small":    '00'
+  "Medium":   '01'
+  "Bright":   '02'
+  "Power":    '03'
+
+

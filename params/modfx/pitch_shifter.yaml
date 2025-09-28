@@ -1,0 +1,18 @@
+# Pitch Shifter
+SEND:
+  ps_type:      "60 00 01 4B"  ### ! diff vode/mode
+  ps_mode_sw:   "60 00 01 4A" # One/Two Voice.s Mono
+  ps_pred_lvl:  "60 00 01 4E" # Pre Delay
+  ps_pitch_lvl: "60 00 01 4C" # Pitch
+  ps_fine_lvl:  "60 00 01 4D" # Fine
+  ps_fb_lvl:    "60 00 01 57" # Feedback
+  ps_voc1_lvl:  "60 00 01 50" # Voice 1
+  ps_dirc_lvl:  "60 00 01 58" # Direct
+
+Types:
+  "Fast":   '00'
+  "Medium": '01'
+  "Slow":   '02'
+  "Mono":   '03'
+
+
