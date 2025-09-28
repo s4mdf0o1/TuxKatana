@@ -1,31 +1,31 @@
 SEND:
-  delay_sw:     "60 00 05 00"
-  de_bank_sel:  "60 00 06 3C"
-  de_type:   "60 00 05 01"
-  de_time_lvl:     "60 00 05 02" # '00 01' -> '0f 50'=1ms->2s
+  delay_sw:       "60 00 05 00"
+  de_type:        "60 00 05 01"
+  de_time_lvl:    "60 00 05 02" # '00 01' -> '0f 50'=1ms->2s
   de_feedback_lvl: "60 00 05 04" 
-  de_tap_time_lvl: "60 00 05 08" # 0% -> 100%
   de_high_cut_lvl: "60 00 05 05" # '00' -> '0e'=630Hz->12.5k
-  de_effect_lvl:   "60 00 05 06"
-  de_dmix_lvl:   "60 00 05 07"
-  d1_time_lvl:  "60 00 05 09" # '00 01' -> '0f 50'=1ms->2s
-  d1_fb_lvl:    "60 00 05 0B"
-  d1_h_cut_lvl: "60 00 05 0C"
-  d1_eff_lvl:   "60 00 05 0D"
-  d2_time_lvl:  "60 00 05 0E" # '00 01' -> '0f 50'=1ms->2s
-  d2_fb_lvl:    "60 00 05 10"
-  d2_h_cut_lvl: "60 00 05 11"
-  d2_eff_lvl:   "60 00 05 12"
+  de_effect_lvl:  "60 00 05 06"
+  de_dmix_lvl:    "60 00 05 07"
+  de_tap_time_lvl: "60 00 05 08" # 0% -> 100%
+  de_x_time_lvl:    "60 00 05 09" # '00 01' -> '0f 50'=1ms->2s
+  de_x_fb_lvl:      "60 00 05 0B"
+  de_x_h_cut_lvl:   "60 00 05 0C"
+  de_x_eff_lvl:     "60 00 05 0D"
+  de_y_time_lvl:    "60 00 05 0E" # '00 01' -> '0f 50'=1ms->2s
+  de_y_fb_lvl:      "60 00 05 10"
+  de_y_h_cut_lvl:   "60 00 05 11"
+  de_y_eff_lvl:     "60 00 05 12"
   de_mod_rate_lvl: "60 00 05 13"
   de_mod_depth_lvl: "60 00 05 14"
+  de_sde_vint_lpf_sw: "60 00 05 15" # Off|On
+  de_sde_filter_sw:  "60 00 05 16"  # 8kHz|17kHz
+  de_sde_fb_phase_sw: "60 00 05 17" # Normal|Inverse
+  de_sde_ef_phase_sw: "60 00 05 18" # Normal|Inverse
+  de_sde_modul_sw:   "60 00 05 19"  # Off|On
+  de_bank_sel:      "60 00 06 3C"
   de_bank_G:       "60 00 06 2D"
   de_bank_R:       "60 00 06 2E"
   de_bank_Y:       "60 00 06 2F"
-  sde_vint_lpf_sw: "60 00 05 15" # Off|On
-  sde_fb_phase_sw: "60 00 05 17" # Normal|Inverse
-  sde_ef_phase_sw: "60 00 05 18" # Normal|Inverse
-  sde_filter_sw:  "60 00 05 16"  # 8kHz|17kHz
-  sde_modul_sw:   "60 00 05 19"  # Off|On
   de_vol_lvl:  "60 00 06 5A"
 
 RECV:

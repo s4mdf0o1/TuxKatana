@@ -15,7 +15,7 @@ percent:
 
 long_time:
   vmin: 1
-  vmax: 10255   # '0f 50'
+  vmax: 2000   # '0f 50'
   valmin: 1
   valmax: 2000
   unit: "{time} ms"
@@ -38,7 +38,7 @@ time_40ms:
 
 time_500ms:
   vmin: 0
-  vmax: 14851   # '03 74'
+  vmax: 500     # '03 74'
   valmin:  0
   valmax: 500
   unit: "{time} ms"
@@ -88,8 +88,8 @@ density:
   vmax: 10      # '0a'
 
 repeat:
-  vmin: 5120    # '00 28'
-  vmax: 11268   # '04 58'
+  vmin: 40    # '00 28'
+  vmax: 600   # '04 58'
   valmin: 40
   valmax: 600
   unit: "{repeat:.0f}rpm"

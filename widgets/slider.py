@@ -11,6 +11,8 @@ import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
+import math
+
 class Slider(AntiFlood, Gtk.Box):
     __gsignals__ = {
         "delayed-value": (GObject.SignalFlags.RUN_LAST, None, (float,))
@@ -102,19 +104,32 @@ class Slider(AntiFlood, Gtk.Box):
             v_max = self.vals['vmax']
             if f_min ==0:
                 f_min = 1
-            freq = freq = f_min * ((f_max / f_min) ** (v / v_max))
+            freq = f_min * ((f_max / f_min) ** (v / v_max))
             freq = int(round(freq))
             if freq < 1000:
                 return self.vals['unit'].format(freq=freq)
             else:
                 return self.vals['kilo'].format(freq=freq/1000)
         elif 'time' in self.format_name:
-            x1, x2 = self.vals['vmin'], self.vals['vmax']
-            y1, y2 = self.vals['valmin'], self.vals['valmax']
-            a = (y2 - y1) / (x2 - x1)
-            b = y1 - a * x1
-            time = a * v + b
-            time = int(round(time))
+            # x1, x2 = self.vals['vmin'], self.vals['vmax']
+            # y1, y2 = self.vals['valmin'], self.vals['valmax']
+
+            # a = (y2 - y1) / (x2 - x1)
+            # b = y1 - a * x1
+            # time = a * v + b
+            # time = int(round(time))
+            vmin, vmax = self.vals['vmin'], self.vals['vmax']
+            valmin, valmax = self.vals['valmin'], self.vals['valmax']
+            time = v
+            if v > 0:
+                vmin = 1 if vmin == 0 else vmin
+                valmin = 1 if valmin == 0 else valmin
+                log_min = math.log(valmin)
+                log_max = math.log(valmax)
+                scale = (log_max - log_min) / (vmax - vmin)
+                time = round(math.exp(log_min + scale * (v - vmin)),1)
+
+
             #log.debug(time)
             if time < 1000:
                 return self.vals['unit'].format(time=time)

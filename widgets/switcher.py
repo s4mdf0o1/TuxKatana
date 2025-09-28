@@ -26,7 +26,7 @@ class Switcher(Gtk.Box):
         self.bank_a.f_bank = self.bank_b
         self.bank_b.f_bank = self.bank_a
 
-        self.effects = Bank("EFFECTS", config['EFFECTS'], True)
+        self.effects = Bank("EFFECTS", config['EFFECTS'], single=True)
 
         self.ctrl.connect("status-changed", self.on_status_changed)
         # self.ctrl.mry.connect("notify::re-status", self.on_status_changed)
@@ -39,8 +39,9 @@ class Switcher(Gtk.Box):
         self.append(self.bank_b)
         self.ctrl.connect("channel-changed", self.on_channel_changed)
 
-        # for bank in [self.bank_a, self.bank_b, self.effects]:
-        #     for but in bank.buttons:
+        for bank in [self.bank_a, self.bank_b]:
+            for but in bank.buttons:
+                but.toggled_id = but.connect("toggled", self.set_channel)
                 
                 #log.debug(but.name)
                 # if but.name == 'BOOSTER':
@@ -70,11 +71,10 @@ class Switcher(Gtk.Box):
                 #         GObject.BindingFlags.BIDIRECTIONAL |\
                 #         GObject.BindingFlags.SYNC_CREATE )
                 # else:
-                #     but.toggled_id = but.connect("toggled", self.callback_toggled)
             #self.ctrl.device.booster.connect("notify::booster_sw", lambda o,p: print("booster_sw changed:", o.booster_sw))
 
     def on_status_changed(self, ctrl, obj, bind_prop):
-        log.debug(f"{obj.name} {obj.get_property(bind_prop)=}")
+        # log.debug(f"{obj.name} {obj.get_property(bind_prop)=}")
         obj_name = obj.name.lower()
         # status = obj.get_property(bind_prop)
         # name = pspec.name.split('-')[0]
@@ -90,7 +90,7 @@ class Switcher(Gtk.Box):
                 but.disconnect(but.handler_id)
                 obj_sw = obj.find_property(obj_name+'_sw')
                 if obj_sw:
-                    log.debug(f"{obj_sw.name=}")
+                    # log.debug(f"{obj_sw.name=}")
                     but.bind_id = obj.bind_property(
                         obj_sw.name.replace('-', '_'), but, "active",
                         GObject.BindingFlags.BIDIRECTIONAL |\
@@ -98,19 +98,21 @@ class Switcher(Gtk.Box):
                 # status = obj.get_property(pspec.name)
                 # but.set_status_id(status)
 
-    # def callback_toggled( self, button):
-    #     log.debug(f"{button.name}: {button.path}")
-    #     if button.get_active():
-    #         if 'CH_' in button.name:
-    #             self.ctrl.device.set_midi_channel(button.path)
+    def set_channel( self, button):
+        log.debug(f"{button.name}: {button.data}")
+        if button.get_active():
+            if 'CH_' in button.name:
+                self.ctrl.set_midi_channel(button.data)
 
     def on_channel_changed(self, obj, ch_num):
         # log.debug(f"{obj} {ch_num=}")
         if ch_num <= 4:
             but = self.bank_a.buttons[ch_num-1]
-            but.handler_block(but.toggled_id)
+            if hasattr(but, 'toggled_id'):
+                but.handler_block(but.toggled_id)
             but.set_active(True)
-            but.handler_unblock(but.toggled_id)
+            if hasattr(but, 'toggled_id'):
+                but.handler_unblock(but.toggled_id)
         else:
             but = self.bank_b.buttons[ch_num-5]
             # but.handler_block(but.toggled_id)

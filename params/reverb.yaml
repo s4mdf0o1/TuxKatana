@@ -2,10 +2,10 @@ SEND:
   reverb_sw:      "60 00 05 40"
   re_type:        "60 00 05 41"
   re_bank_sel:    "60 00 06 3D"
-  re_bank_G:      "60 00 06 30"
-  re_bank_R:      "60 00 06 31"
-  re_bank_Y:      "60 00 06 32"
-  re_mode:        "00 00 00 00"
+  re_type_G:      "60 00 06 30"
+  re_type_R:      "60 00 06 31"
+  re_type_Y:      "60 00 06 32"
+  # re_mode:        "00 00 00 00"
   re_mode_G:      "60 00 06 36"
   re_mode_R:      "60 00 06 37"
   re_mode_Y:      "60 00 06 38"
@@ -31,9 +31,9 @@ Types:
     'Modulate': '06'
 
 Modes:
-  Delay:  '00'
-  Dual:   '01'
   Reverb: '02'
+  Dual:   '01'
+  Delay:  '00'
 
 Unimplemented: # Delay_2 < !!!
   "60 00 06 5b":  '2c|--|1e|2c'

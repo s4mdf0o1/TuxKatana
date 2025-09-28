@@ -12,8 +12,8 @@ class Limiter(Effect, GObject.GObject):
     __gsignals__ = {
         "limiter-map-ready": (GObject.SIGNAL_RUN_FIRST, None, ()),
     }
-    li_type         = GObject.Property(type=int, default=0)
     li_type_idx     = GObject.Property(type=int, default=0)
+    li_type         = GObject.Property(type=str)
     li_attak_lvl    = GObject.Property(type=float, default=0.0)
     li_thold_lvl    = GObject.Property(type=float, default=0.0)
     li_rate_lvl     = GObject.Property(type=float, default=0.0)

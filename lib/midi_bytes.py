@@ -104,7 +104,28 @@ class MIDIBytes:
     def bool(self) -> bool:
         if len(self.bytes) > 1:
             raise ValueError(f"Cannot convert multi-byte {self} to bool")
+        if len(self.bytes) == 0:
+            log.warning(f"midi_bytes.py:108- len(self.bytes) == 0")
+            return False
         return self.bytes[0] != 0
+
+    @property
+    def str(self) -> str:
+        return str(self)
+
+    def to_gtype(self, val_type: str):
+        # log.debug(f"{val_type=}")
+        if val_type == 'gboolean':
+            return self.bool
+        elif val_type == 'gint':
+            return self.int
+        elif val_type == 'gchararray':
+            return self.str
+        elif val_type == 'gdouble':
+            return float(self.int)
+        else:
+            log.warning(f"midi_bytes.py:127-Not recognized GType: {val_type}")
+            return self
 
     def to_int(self) -> int:
         value = 0

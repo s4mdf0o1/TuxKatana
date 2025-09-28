@@ -16,8 +16,8 @@ class Compressor(Effect, GObject.GObject):
     __gsignals__ = {
         "compressor-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
-    co_type         = GObject.Property(type=int, default=0)
     co_type_idx     = GObject.Property(type=int, default=0)
+    co_type         = GObject.Property(type=str)
     co_sus_lvl      = GObject.Property(type=float, default=0.0)
     co_att_lvl      = GObject.Property(type=float, default=0.0)
     co_tone_lvl      = GObject.Property(type=float, default=0.0)

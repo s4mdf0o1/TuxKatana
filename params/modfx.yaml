@@ -33,7 +33,7 @@ SEND:
   of_dmix_lvl:  "60 00 01 49" # Direct Mix
 # Pitch Shifter
   ps_type_sw:   "60 00 01 4A" # One/Two Voice.s Mono
-  ps_mode:      "60 00 01 4B"
+  ps_vode:      "60 00 01 4B"  ### ! diff vode/mode
   ps_pred_lvl:  "60 00 01 4E" # Pre Delay
   ps_pitch_lvl: "60 00 01 4C" # Pitch
   ps_fine_lvl:  "60 00 01 4D" # Fine

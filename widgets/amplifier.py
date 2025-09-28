@@ -21,7 +21,7 @@ from lib.set_mapping import add_properties
 class Amplifier(Effect, Gtk.Box):
     am_num         = GObject.Property(type=int, default=-1)        # Amp LEDs
     am_var_sw       = GObject.Property(type=bool, default=False)
-    am_type         = GObject.Property(type=int, default=0)         # Real Model Code
+    am_type         = GObject.Property(type=str)                    # Real Model Code
     am_type_idx     = GObject.Property(type=int, default=-1)        # Combo index
     am_gain_lvl     = GObject.Property(type=int, default=0)
     am_vol_lvl      = GObject.Property(type=int, default=0)
@@ -105,7 +105,7 @@ class Amplifier(Effect, Gtk.Box):
         if not name in self.mapping and not '_idx' in name:
             return
         # value = self.get_property(name)
-        log.debug(f"<<< {name} = {value}")
+        # log.debug(f"<<< {name} = {value}")
         # addr = self.mapping.get(name, None)
         if name == 'am_type_idx':
             model_val = list(self.types.inverse)[value]
@@ -123,7 +123,7 @@ class Amplifier(Effect, Gtk.Box):
             addr = self.mapping.get("am_type", None)
             am_type = MIDIBytes(am_type)
             current = self.am_type_idx
-            self.direct_set("am_type", am_type.int)
+            self.direct_set("am_type", am_type)
             if not self.switch_model:
                 # log.debug(f"{name=} {addr=} {index=} {current=}")
                 self.direct_mry(addr, am_type)
@@ -138,12 +138,12 @@ class Amplifier(Effect, Gtk.Box):
         num = list(self.types.values()).index(svalue)
         self.direct_set('am_type_idx', num)
 
-    def on_mry_loaded(self, mry):
-        log.debug("load mry")
-        for prop, addr in self.mapping.items():
-            val = mry.read(addr)
-            log.debug(f"{addr}: {prop}={val}")
-            # val = self.type_val(prop, val)
-            if val != None:
-                self.direct_set(prop, val)
+    # def on_mry_loaded(self, mry):
+    #     log.debug("load mry")
+    #     for prop, addr in self.mapping.items():
+    #         val = mry.read(addr)
+    #         log.debug(f"{addr}: {prop}={val}")
+    #         # val = self.type_val(prop, val)
+    #         if val != None:
+    #             self.direct_set(prop, val)
  

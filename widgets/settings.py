@@ -20,6 +20,7 @@ from .booster import Booster
 from .modfx_ui import ModFxUI
 from .reverb import Reverb
 from .delay import Delay
+from .delay_reverb import DelayReverb
 from .debug import Debug
 
 class KS_TabbedPanel(Gtk.Box):
@@ -68,6 +69,10 @@ class KS_Settings(Gtk.Box):
         elif name == "DELAY":
             self.delay = Delay(ctrl)
             self.append(self.delay)
+        elif name == "DELAY_R":
+            self.delay_r = DelayReverb(ctrl)
+            self.append(self.delay_r)
+
 
         else:
             label = Gtk.Label(label="WIP")
@@ -114,7 +119,7 @@ class Settings(Gtk.Box):
                 "label", GObject.BindingFlags.DEFAULT)
 
         tabs = KS_TabbedPanel()
-        for name in ["PRESETS","PRE-AMP", "BOOSTER", "MOD", "FX", "DELAY", "REVERB", "CHAIN", "DEBUG"]:
+        for name in ["PRESETS","PRE-AMP", "BOOSTER", "MOD", "FX", "DELAY", "REVERB","DELAY_R", "CHAIN", "DEBUG"]:
             page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
             tabs.add_tab(page, name.lower(), name)
             if name == "PRESETS":
@@ -124,7 +129,7 @@ class Settings(Gtk.Box):
                 ks_settings = KS_Settings( name, ctrl)
                 page.append(ks_settings)
 
-        tabs.set_active_tab("debug")
+        tabs.set_active_tab("presets")
         self.append(tabs)
         
     def toggle_edit_mode(self, button):

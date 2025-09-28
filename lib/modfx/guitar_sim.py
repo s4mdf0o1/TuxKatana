@@ -15,7 +15,7 @@ class GuitarSim(Effect, GObject.GObject):
     __gsignals__ = {
         "guitarsim-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
-    gs_type         = GObject.Property(type=int, default=0)
+    gs_type         = GObject.Property(type=str)
     gs_type_idx     = GObject.Property(type=int, default=0)
     gs_low_lvl      = GObject.Property(type=float, default=0.0)
     gs_high_lvl      = GObject.Property(type=float, default=0.0)

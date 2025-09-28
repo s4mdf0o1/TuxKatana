@@ -46,3 +46,12 @@ class Toggle(Gtk.ToggleButton):
         active = True if status_id else False
         self.set_active(active)
 
+    def set_color(self, color):
+        self.label_on = dots[color]+ "  " + self.name
+        # self.label_off = dots[color]+ "  " + self.name
+        if self.get_active():
+            self.set_label(self.label_on)
+        else:
+            self.set_label(self.label_off)
+
+

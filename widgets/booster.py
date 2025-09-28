@@ -18,7 +18,7 @@ from lib.set_mapping import add_properties
 @add_properties()
 class Booster(Effect, Gtk.Box):
     booster_sw   = GObject.Property(type=bool, default=False)
-    bo_type      = GObject.Property(type=int, default=0)
+    bo_type      = GObject.Property(type=str)
     bo_type_idx  = GObject.Property(type=int, default=0)
     bo_solo_sw   = GObject.Property(type=bool, default=False)
     bo_solo_lvl  = GObject.Property(type=int, default=0)

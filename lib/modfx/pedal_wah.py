@@ -12,8 +12,8 @@ class PedalWah(Effect, GObject.GObject):
     __gsignals__ = {
         "pedalwah-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,)),
     }
-    pw_type         = GObject.Property(type=int, default=0)
     pw_type_idx     = GObject.Property(type=int, default=0)
+    pw_type         = GObject.Property(type=str)
     pw_pos_lvl      = GObject.Property(type=float, default=0.0)
     pw_min_lvl      = GObject.Property(type=float, default=0.0)
     pw_max_lvl      = GObject.Property(type=float, default=0.0)

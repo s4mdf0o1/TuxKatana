@@ -12,6 +12,9 @@ class ComboStore(Gtk.ComboBox):
     def __init__(self, parent, store_list, bind_prop):#,direct_load=False):
         super().__init__()
         self.parent = parent
+        self.prop_idx = bind_prop.replace('_', '-')
+        self.prop = self.prop_idx.replace('-idx','')
+        self.list_store = list(store_list.inverse)
         # signal = parent.signal_name
         # prefix = parent.prefix
         # self.key = key
@@ -32,10 +35,62 @@ class ComboStore(Gtk.ComboBox):
             self.store.append([i, name, code])
 
         parent.bind_property(
-            bind_prop, self, "active",
+            self.prop_idx, self, "active",
             GObject.BindingFlags.SYNC_CREATE |
             GObject.BindingFlags.BIDIRECTIONAL)
-        log.debug(f"bind to: {bind_prop}")
+       
+        # log.debug(f"bind to: {bind_prop}")
+
+        # type_idx = bind_prop.replace('_', '-')
+        # type_name = type_idx.replace('-idx', '')
+
+        # log.debug(f"\033[33m{type_name=}\033[0m")
+        self.type_id = self.parent.connect("notify::" + self.prop,
+                           self.on_type_change)
+        # self.parent.connect("notify::" + type_idx,
+                            # self.on_idx_change)
+        # self.connect("changed", self.on_idx_change)
+
+    def on_type_change(self, obj, pspec):
+        name = pspec.name
+        prop = name.replace('-', '_')
+        val = obj.get_property(prop)
+        idx = self.list_store.index(val)
+        current = self.parent.get_property(self.prop_idx)
+        # log.debug(f"\033[32m{prop}={val}({idx}/{current})\033[0m")
+        if idx != current:
+            self.set_active(idx)
+        # if val.int != current:
+        # self.parent.direct_set(prop+'_idx', idx)
+
+    # def on_idx_change(self, obj, pspec):
+    def on_idx_change(self, combo):#obj, pspec):
+        idx = combo.get_active()
+        val = list(self.parent.types.inverse)[idx]
+        pprop = self.prop.replace('_idx', '')
+        current = str(MIDIBytes(self.parent.get_property(pprop)))
+        # log.debug(f"\033[35m{pprop}={val} / {current}\033[0m")
+        if val != current:
+            addr = self.parent.mapping[pprop]
+            # self.handler_block(self.type_id)
+            self.parent.direct_mry(addr, val)
+            # self.handler_unblock(self.type_id)
+
+            # if '_idx' in name:
+            #     if 'type' in name:
+            #         store = self.types
+            #         prop = name.replace('_idx', '')
+            #     if self.is_modfx:
+            #         prop = self.parent_prefix + prop
+            #     val = getattr(self, prop)
+            #     model_val = MIDIBytes(list(store.inverse)[value])
+            #     addr = self.mapping[prop]
+            #     current = self.mry.get_value(addr)
+            #     log.debug(f"{name}={value} {model_val=} / {addr=} {prop}={val}/{current}")
+            #     if current != value:
+            #         self.mry.set_value(addr, value)
+
+            
         # if direct_load:
             # self.types_load(parent, parent.map)
         # else:

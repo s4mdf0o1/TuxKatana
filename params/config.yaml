@@ -20,6 +20,7 @@ SWITCHER:
     MOD:      '60 00 01 00'   # "Control_Change:MOD_SWITCH"
     FX:       '60 00 03 00'   # "Control_Change:FX_SWITCH"
     DELAY:    '60 00 05 00'   # "Control_Change:DELAY_SWITCH"
+    DELAY_R:  '60 00 05 20'
     REVERB:   '60 00 05 40'   # "Control_Change:REVERB_SWITCH"
     
 SETTINGS:

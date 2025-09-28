@@ -66,10 +66,15 @@ class SysEx(MIDIBytes):
     def __str__(self):
         if hasattr(self, "addr"):
             saddr = " ".join(f"{b:02X}" for b in self.addr)
+            saddr = '\033[33m' + saddr + '\033[0m'
+            sg = '\033[32m>▷▶\033[0m' if self.received \
+                    else '\033[31m<◁◀\033[0m'
             if hasattr(self, "data"):
                 sdata = " ".join(f"{b:02X}" for b in self.data)
-                rec = "◁" if self.received else "▷"
-                return f"[{saddr}]{rec} _{sdata}_ ({len(self.data)})"
+                sdata = '\033[36m' + sdata + '\033[0m'
+                rec = "\033[32m▶\033[0m" if self.received \
+                        else "\033[31m◀\033[0m"
+                return f"{sg}[{saddr}]{rec} _{sdata}_ ({len(self.data)})"
         elif hasattr(self, "header"):
             s_head = " ".join(f"{b:02X}" for b in self.header.bytes)
             return f"<{s_head}>"

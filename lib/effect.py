@@ -5,7 +5,7 @@ log = logging.getLogger(LOGGER_NAME)
 
 from .midi_bytes import Address, MIDIBytes
 
-from .map import Map
+# from .map import Map
 
 class Effect:
     def __init__(self, ctrl, mapping, parent_prefix=""):
@@ -30,67 +30,64 @@ class Effect:
             return
         # log.debug(f"{addr=} {val=} {prop=}")
         current = getattr(self, prop, None)
-        # log.debug(f"{addr=} {prop} {current=} {val=}")
+        # log.debug(f"{addr=} {prop} {current=} new val:{self.type_val(prop,val)}")
         if current != val:
             self.direct_set(prop, val)
+        # if 'type' in prop:
+        #     # val = type_val(prop, val)
+        #     if not isinstance(val, MIDIBytes):
+        #         val = MIDIBytes(val)
+        #     log.debug(f"{self.types}")
+        #     log.debug(f"{val=} {str(val)=}")
+        #     idx = int(list(self.types.inverse).index(str(val)))
+#     self.direct_set(prop+'_idx', idx)
+            # self.types_store.set_active(idx)
 
     def on_ui_changed(self, obj, pspec):
         name = pspec.name.replace('-','_')
-        log.debug(name)
-        value = obj.get_property(pspec.name)
-        # log.debug(f"{type(self.get_property(name))=}")
-        # addr = Address()
-        value = self.type_val(name, value)
-        current = None
-        if not name in self.mapping:
-            # log.warning(f"{name} not in mapping")
-            if '_idx' in name:
-                store = self.types if 'type' in name else self.modes
-                prop = name.replace('_idx', '')
-                if self.is_modfx:
-                    prop = self.parent_prefix + prop
-                value = getattr(self, prop)
-                model_val = list(store.inverse)[value]
-                addr = self.mapping[prop]
-                current = self.mry.get_value(addr)
-                log.debug(f"{name=} {prop=} {addr=} {value=} {current=}")
-                if current != value:
-                    return
-                    self.mry.set_value(addr, value)
-
-                return
-        else:
-            addr = self.mapping[name]
-            val_type = pspec.value_type.name
-            current = self.mry.get_value(addr)
-            cur_type = type(current)
-            log.debug(f"{name}={value}({val_type})/{current}({cur_type})")
-        if '_status' in name and not self.status_bind:
-            self.ctrl.emit('status-changed')
-        value = self.get_property(name)
-        # log.debug(f"{name}={value} {self.prefix=}")
         name = self.parent_prefix+name
-        if name in self.mapping:
+        value = obj.get_property(name)
+        # log.debug(f"{name}={value}")
+        # value = self.type_val(name, value)
+        current = None
+        if not name in self.mapping and not '_idx' in name:
+            return
+        if not name.endswith('_idx'):
             addr = self.mapping[name]
-            val = MIDIBytes(getattr(self, name))
-            current = self.mry.get_value(addr)
-            # log.debug(f"{name=} {addr=} {val=} {current=}")
-            if current != val:
-                self.direct_mry(addr, val.int)
+        # val_type = pspec.value_type.name
+            current = self.type_val(name, self.mry.get_value(addr))
+        
+        # cur_type = type(current)
+        # log.debug(f"{name}={value}/{current}")
+        if name.endswith('_status') and not self.status_bind:
+            self.ctrl.emit('status-changed', self, name)
+        if name.endswith('_idx') and 'type' in name:
+            name = name.replace('_idx', '')
+            value = list(self.types.inverse)[value]
+            current = self.get_property(name)
+            addr = self.mapping.get(name, None)
+        # value = self.get_property(name)
+        # log.debug(f"{name}={value} {self.prefix=}")
+        # addr = self.mapping[name]
+        # val = MIDIBytes(getattr(self, name))
+        # current = self.mry.get_value(addr)
+        # log.debug(f"{name=} {addr=} {value=}:{type(value)} {current=}:{type(current)}")
+        if current != value:
+            self.direct_mry(addr, value)
 
     def direct_set(self, prop, value):
-        # log.debug(f"{prop}={value}")
-        if '_status' in prop and not self.status_bind:
-            log.debug(f"{prop}={value}")
-            self.ctrl.emit('status-changed', self, prop)
-            self.status_bind=True
         value = self.type_val(prop, value)
+        # log.debug(f"{prop}={value}:{type(value)}")
         self.handler_block(self.notify_id)
         self.set_property(prop, value)
         self.handler_unblock(self.notify_id)
+        if '_status' in prop and not self.status_bind:
+            # log.debug(f"{prop}={value}/{self.get_property(prop)}")
+            self.ctrl.emit('status-changed', self, prop)
+            self.status_bind=True
 
     def direct_mry(self, addr, val):
-        # log.debug(f"{addr}={val}")
+        # log.debug(f"{addr}={val}({type(val)})")
         self.mry.handler_block(self.mry_id)
         self.mry.set_value(addr, val)
         self.mry.handler_unblock(self.mry_id)
@@ -99,22 +96,40 @@ class Effect:
         # log.debug("load mry")
         for prop, addr in self.mapping.items():
             val = mry.read(addr)
-            # log.debug(f"{addr}: {prop}={val}")
+            # log.debug(f"{addr}: {prop}={val}:{type(val)}")
             # val = self.type_val(prop, val)
             if val != None:
+                # self.set_property(prop, self.type_val(prop,val))
                 self.direct_set(prop, val)
+            else:
+                log.warning("{prop}: {val=}")
+
+            # if 'type' in prop and hasattr(self, prop+'_idx'):
+            #     bank = 
+            #     idx = list(self.types.inverse).index(val)
+            #     self.types_store.set_active(idx)
+
             # else:
                 # log.debug(f"{prop}: val is None")
+        
 
     def type_val(self, prop, val):
         val_type = self.find_property(prop).value_type.name
-        if val is None:
-            return val
-        if val_type == 'gboolean' and type(val)!=bool:
-            val = val.bool
-        elif val_type == 'gint' and type(val) != int:
-            val = val.int
+        # log.debug(val_type)
+        if isinstance(val, MIDIBytes):
+            return val.to_gtype(val_type)
         return val
+        # if val is None or type(val)==int:
+        #     return val
+        #     if val_type == 'gboolean':# and type(val)!=bool:
+        #         val = val.bool
+        #     elif val_type == 'gint':# and type(val) != int:
+        #         val = val.int
+        #     elif val_type == 'gchararray':# and type(val) != str:
+        #         val = val.str
+        # else:
+        #     log.warning(f"Unrecognized format : {prop}={val}:{val_type}/{type(val)}")
+        # return val
 
     # def on_ui_change(self, obj, pspec):
     #     prop = pspec.name.replace('-', '_')

@@ -75,11 +75,12 @@ class Controller(GObject.GObject):
         self.emit("load-maps")
 
     def _on_mry_changed(self, mry, addr, value):
-        log.debug(f"{addr}: {value}")
+        # log.debug(f"{addr}: {value}")
         self.send(addr, value, True)
 
     def on_received_msg(self, addr, data):
-        log.debug(f"<<<{addr} {data}")
+        log.debug(f"{self.sysex}")
+        # log.debug(f"\033[31m◀◁<\033[0m[\033[33m{addr}\033[0m]◁ _\033[34m{data}\033[0m_")
         if len(data) > 63:
             self.set_charging(2, 500)
             self.mry.add_block(addr, data)
@@ -139,7 +140,7 @@ class Controller(GObject.GObject):
         self.pause_queue = True
         log.debug("TODO: yaml datas")
         saddr = self.addrs['MEMORY']
-        sdata = '00 00 0f 48'
+        sdata = '00 00 0f 00'
         self.send(saddr, sdata)
         msgs = []
         while True:

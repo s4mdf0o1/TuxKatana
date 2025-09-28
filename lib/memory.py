@@ -23,12 +23,18 @@ class Memory(GObject.GObject):
         self._values = {}
 
     def set_value(self, addr, val):
-        log.debug(f"{addr=} {val=}")
-        self._values[addr] = val
-        self.emit("address-changed", addr, val)
+        # log.debug(f"{addr=}:{type(addr)} {val=}:{type(val)}/{self.get_value(addr)}")
+        if not isinstance(val, MIDIBytes):
+            if type(val) == float:
+                val = MIDIBytes(int(val), 2)
+            else:
+                val = MIDIBytes(val)
+        if self.get_value(addr) != val:
+            self._values[addr] = val
+            self.emit("address-changed", addr, val)
 
     def get_value(self, addr):
-        log.debug(addr-self.Addr_start)
+        # log.debug(addr-self.Addr_start)
         return self._values.get(addr)
 
     def add_block(self, Addr_start, data):
@@ -60,7 +66,7 @@ class Memory(GObject.GObject):
             self.memory += data
         else:
             raise ValueError(f"Mry calculation Error: {Addr_start=} {Addr_next=}")
-        log.debug(f"End Addr: {self.Addr_start+len(self.memory)}")
+        # log.debug(f"End Addr: {self.Addr_start+len(self.memory)}")
 
     def read(self, Addr, size=1, dump = False):
         if not len(self.memory):

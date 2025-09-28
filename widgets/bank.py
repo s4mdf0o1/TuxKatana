@@ -18,19 +18,21 @@ class Bank(Gtk.Box):
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         self.single = single
         #grid = Gtk.Grid()
-        label = Gtk.Label(label=label)
-        self.append(label)
+        if label:
+            label = Gtk.Label(label=label)
+            self.append(label)
         self.append(box)
         #self.append(grid)
         #self.ctrl = ctrl
         self.buttons = []
         for i, b in enumerate(buttons):
-            button = Toggle( b, buttons[b] )
-            button.handler_id = button.connect("toggled", self.on_toggled,i)
-            button.set_hexpand(True)
-            button.set_halign(Gtk.Align.FILL)
-            self.buttons.append(button)
-            box.append( button )
+            if b != 'DELAY_R':
+                button = Toggle( b, buttons[b] )
+                button.handler_id = button.connect("toggled", self.on_toggled,i)
+                button.set_hexpand(True)
+                button.set_halign(Gtk.Align.FILL)
+                self.buttons.append(button)
+                box.append( button )
             #grid.attach( button, i, 0,1,1 )
         if not self.single:
             self.connect("notify::selected", self.on_selected)
@@ -45,7 +47,7 @@ class Bank(Gtk.Box):
 
            
     def on_toggled(self, widget, idx):
-        log.debug(f"{widget.name}: {widget.get_active()}" )
+        # log.debug(f"{widget.name}: {widget.get_active()}" )
         if not self.single or hasattr(self, "f_bank"):
             self.selected = idx
             self.set_inactives( widget )

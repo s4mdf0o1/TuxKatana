@@ -9,6 +9,7 @@ from .toggle import Toggle
 from .combo_store import ComboStore
 from .box_inner import BoxInner
 from lib.effect import Effect
+from lib.midi_bytes import MIDIBytes
 
 import logging
 from lib.log_setup import LOGGER_NAME
@@ -19,24 +20,24 @@ from lib.set_mapping import add_properties
 @add_properties()
 class Reverb(Effect, Gtk.Box):
     reverb_sw       = GObject.Property(type=bool, default=False)
-    re_type         = GObject.Property(type=int, default=0)
+    re_type         = GObject.Property(type=str)
     re_type_idx     = GObject.Property(type=int, default=0)
     re_status       = GObject.Property(type=int, default=0)
-    re_bank_sel        = GObject.Property(type=int, default=0)
-    re_bank_G          = GObject.Property(type=int, default=0)
-    re_bank_R          = GObject.Property(type=int, default=0)
-    re_bank_Y          = GObject.Property(type=int, default=0)
+    re_bank_sel     = GObject.Property(type=int, default=0)
+    re_type_G       = GObject.Property(type=str)
+    re_type_R       = GObject.Property(type=str)
+    re_type_Y       = GObject.Property(type=str)
     re_mode_idx     = GObject.Property(type=int, default=0)
-    re_mode         = GObject.Property(type=int, default=0)
-    re_mode_G          = GObject.Property(type=int, default=0)
-    re_mode_R          = GObject.Property(type=int, default=0)
-    re_mode_Y          = GObject.Property(type=int, default=0)
-    re_pre_delay_lvl   = GObject.Property(type=int, default=0)
-    re_time_lvl        = GObject.Property(type=int, default=0)
-    re_density_lvl     = GObject.Property(type=int, default=0)
-    re_low_cut_lvl     = GObject.Property(type=int, default=0)
-    re_high_cut_lvl    = GObject.Property(type=int, default=0)
-    re_effect_lvl      = GObject.Property(type=int, default=0)
+    re_mode         = GObject.Property(type=str)
+    re_mode_G       = GObject.Property(type=str)
+    re_mode_R       = GObject.Property(type=str)
+    re_mode_Y       = GObject.Property(type=str)
+    re_pre_delay_lvl= GObject.Property(type=float, default=0.0)
+    re_time_lvl     = GObject.Property(type=int, default=0)
+    re_density_lvl  = GObject.Property(type=int, default=0)
+    re_low_cut_lvl  = GObject.Property(type=int, default=0)
+    re_high_cut_lvl = GObject.Property(type=int, default=0)
+    re_effect_lvl   = GObject.Property(type=int, default=0)
     re_dmix_lvl     = GObject.Property(type=int, default=0)
     re_vol_lvl      = GObject.Property(type=int, default=0)
 
@@ -54,7 +55,7 @@ class Reverb(Effect, Gtk.Box):
         self.append(self.bank)
 
         self.bind_property(
-            "re_bank_sel", self.bank, "selected",
+            "re-bank-sel", self.bank, "selected",
             GObject.BindingFlags.BIDIRECTIONAL |\
             GObject.BindingFlags.SYNC_CREATE )
 
@@ -63,8 +64,11 @@ class Reverb(Effect, Gtk.Box):
         self.types_store = ComboStore( self, self.types, 're_type_idx')
         box_sel.append(self.types_store)
 
-        self.modes_store = ComboStore( self, self.modes, 're_mode_idx')
-        box_sel.append(self.modes_store)
+        banks = {"REVERB":'02', "DUAL  ⚫": '01', "DELAY 2": '00'}
+        self.mode_sel = Bank("", banks)
+        self.mode_sel.connect("notify::selected", self.on_mode_changed)
+        self.connect("notify::re-mode", self.on_mode_sel)
+        self.connect("notify::re-status", self.on_status_changed)
 
         self.volume = Slider( 
                 "Volume", "normal", self, "re_vol_lvl" )
@@ -72,6 +76,7 @@ class Reverb(Effect, Gtk.Box):
         box_sel.append(self.volume)
 
         self.append(box_sel)
+        self.append(self.mode_sel)
 
         box_revb = BoxInner("Reverb")
         self.pre_delay = Slider(
@@ -110,4 +115,65 @@ class Reverb(Effect, Gtk.Box):
 
         self.append(box_lvl)
 
+    def on_ui_changed(self, obj, pspec):
+        name = pspec.name.replace('-','_')
+        # log.debug(name)
+        if not name in self.mapping and not name.endswith('_idx'):
+            return
+        # value = obj.get_property(pspec.name)
+        # value = self.type_val(name, value)
+        # log.debug(f"{name}={value}")
+        # if name == 're_type':
+        #     if self.re_status != 0:
+        #         prop = name+['_G', '_R', '_Y'][self.re_status-1]
+        #     else:
+        #         log.warning(f"Reverb is OFF")
+        #     val = str(MIDIBytes(self.get_property(prop)))
+        #     addr = self.mapping[prop]
+        #     log.debug(f"{addr} {prop}={val}")
+        # if name == 're_pre_delay_lvl':
+            # value = MIDIBytes(value, 2)
+        super().on_ui_changed(obj, pspec)
+
+
+    def on_mode_changed(self, bank, pspec):
+        selected = bank.get_property(pspec.name.replace('-','_'))
+        prop = 're_mode_'+['G','R','Y'][self.re_status-1]
+        addr = self.mapping[prop]
+        mode = MIDIBytes(bank.buttons[selected].data)
+
+        # log.debug(f"{addr}: {prop} = {mode}")
+        self.mry.set_value(addr, mode)
+        # log.debug(f"\033[33m{self.re_status} {prop=}\033[0m")
+        # return
+    def on_mode_sel(self, obj, pspec):
+        name = pspec.name.replace('-','_')
+        sel = obj.get_property(name)
+        idx = list(self.modes.inverse).index(sel)
+        # log.debug(f"self.mode_sel.buttons[{sel}].set_active(True)")
+        self.mode_sel.buttons[idx].set_active(True)
+
+    def on_status_changed(self, obj, pspec):
+        val = self.re_status
+        # log.debug(f"re_status={val}")
+        mode_name = 're_mode_'+['G','R','Y'][val-1]
+        bank = 're_type_'+['G','R','Y'][val-1]
+        mode_val= self.get_property(mode_name)
+        # self.direct_set('re_mode', self.get_property(mode))
+        # log.debug(f"{mode_name=} {mode_val=}")
+        self.set_property('re_mode', mode_val)
+        # log.debug(f"{self.re_type_idx=}")
+        # log.debug(f"{self.re_type=}")
+        # log.debug(f"{self.re_mode=}")
+        # log.debug(f"{mode_name}={mode_val}")
+        # log.debug(f"{self.re_bank_sel=}")
+        # log.debug(f"{bank}={self.get_property(bank)}")
+        # active = self.get_property(prop)
+        # self.direct_set('re_mode', self.get_property(prop))
+        # self.mode_sel.buttons[active].set_active(True)
+        for but in self.mode_sel.buttons:
+            if val == 0:
+                log.warning("re_status should not be 0")
+            else:
+                but.set_color(val)
 

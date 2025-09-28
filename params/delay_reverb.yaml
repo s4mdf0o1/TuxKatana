@@ -1,0 +1,48 @@
+SEND:
+  delrev_sw:       "60 00 05 20"
+  dr_type:        "60 00 05 21"
+  dr_time_lvl:    "60 00 05 22" # '00 01' -> '0f 50'=1ms->2s
+  dr_feedback_lvl: "60 00 05 24" 
+  dr_high_cut_lvl: "60 00 05 25" # '00' -> '0e'=630Hz->12.5k
+  dr_effect_lvl:  "60 00 05 26"
+  dr_dmix_lvl:    "60 00 05 27"
+  dr_tap_time_lvl: "60 00 05 28" # 0% -> 100%
+  dr_x_time_lvl:    "60 00 05 29" # '00 01' -> '0f 50'=1ms->2s
+  dr_x_fb_lvl:      "60 00 05 2B"
+  dr_x_h_cut_lvl:   "60 00 05 2C"
+  dr_x_eff_lvl:     "60 00 05 2D"
+  dr_y_time_lvl:    "60 00 05 2E" # '00 01' -> '0f 50'=1ms->2s
+  dr_y_fb_lvl:      "60 00 05 30"
+  dr_y_h_cut_lvl:   "60 00 05 31"
+  dr_y_eff_lvl:     "60 00 05 32"
+  dr_mod_rate_lvl: "60 00 05 33"
+  dr_mod_depth_lvl: "60 00 05 34"
+  dr_sde_vint_lpf_sw: "60 00 05 35" # Off|On
+  dr_sde_filter_sw:  "60 00 05 36"  # 8kHz|17kHz
+  dr_sde_fb_phase_sw: "60 00 05 37" # Normal|Inverse
+  dr_sde_ef_phase_sw: "60 00 05 38" # Normal|Inverse
+  dr_sde_modul_sw:   "60 00 05 39"  # Off|On
+  dr_bank_sel:    "60 00 06 3D"
+  dr_bank_G:       "60 00 06 33"
+  dr_bank_R:       "60 00 06 34"
+  dr_bank_Y:       "60 00 06 35"
+  dr_vol_lvl:  "60 00 06 5B"
+
+RECV:
+  # "60 00 06 2D":  dr_return
+  "60 00 06 61":  dr_status
+  # "60 00 06 5A":  glob_mix_lvl
+
+Types:
+  "Digital":      '00'
+  "Pan":          '01'
+  "Stereo":       '02'
+  "Dual series":  '03'
+  "Dual parallel": '04'
+  "Dual L/R":     '05'
+  "Reverse":      '06'
+  "Analog":       '07'
+  "Tap Echo":     '08'
+  "Modulate":     '09'
+  "SDE-3000":     '0A'
+
