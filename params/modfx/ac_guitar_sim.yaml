@@ -1,0 +1,8 @@
+# AC Guitar Sim
+SEND:
+  ag_top_lvl:  "60 00 02 41" # Top -50>+50
+  ag_body_lvl: "60 00 02 42" # Body
+  ag_low_lvl:  "60 00 02 43" # Low -50>+50
+  ag_high_lvl: "60 00 02 44" # High -50>+50
+  ag_levl_lvl: "60 00 02 45" # Level
+

@@ -29,6 +29,13 @@ time_10s:
   unit: "{time} ms"
   kilo: "{time:.1f} s"
 
+time_300ms:
+  vmin: 0
+  vmax: 300     # '02 2C'
+  valmin:  0
+  valmax: 300
+  unit: "{time} ms"
+
 time_40ms:
   vmin: 0
   vmax: 80      # '50'
@@ -42,6 +49,14 @@ time_500ms:
   valmin:  0
   valmax: 500
   unit: "{time} ms"
+
+xover_freq:
+  vmin: 0
+  vmax: 10      # '1b'
+  valmin: 100
+  valmax: 4000
+  unit: "{freq} Hz"
+  kilo: "{freq:.1f} kHz"
 
 low_freq:
   vmin: 0

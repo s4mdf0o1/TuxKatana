@@ -1,0 +1,6 @@
+ # Heavy Octave
+ SEND:
+  ho_oct1_lvl:  "60 00 02 5A" # Octave 1
+  ho_oct2_lvl:  "60 00 02 5B" # Octave 2
+  ho_dmix_lvl:  "60 00 02 5C" # Direct Mix
+  

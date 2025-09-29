@@ -1,0 +1,8 @@
+# Slicer
+SEND:
+  sl_pattern:      "60 00 02 21" # Pattern 00>13=0>20
+  sl_rate_lvl:  "60 00 02 22" # Rate
+  sl_trig_lvl:  "60 00 02 23" # Trig Sens
+  sl_eff_lvl:   "60 00 02 24" # Effect
+  sl_dmix_lvl:  "60 00 02 25" # Direct Mix
+

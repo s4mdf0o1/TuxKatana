@@ -1,0 +1,7 @@
+# Phaser 90E
+SEND:
+  p9_script_sw: "60 00 02 46" # Script Off/On
+  p9_speed_lvl: "60 00 02 47" # Speed
+  p9_levl_lvl:  "60 00 02 48" # ?? TODO
+    ### Missing: "60 00 02 48" > 4b ###
+

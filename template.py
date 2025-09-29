@@ -17,6 +17,7 @@ from lib.set_mapping import add_properties
 @add_properties()
 class Tmp(Effect, Gtk.Box):
     tmp_lvl     = GObject.Property(type=int, default=0)
+    tmp_lvl     = GObject.Property(type=float, default=0.0)
     tmp_sw       = GObject.Property(type=bool, default=False)
     pw_type         = GObject.Property(type=str)
     pw_type_idx     = GObject.Property(type=int, default=0)
@@ -39,4 +40,6 @@ class Tmp(Effect, Gtk.Box):
             GObject.BindingFlags.BIDIRECTIONAL )
         box_eff.append(self.filter_sw)
 
+        self.types_list = ComboStore( self, self.types, self.prefix + "type_idx")
+        box_sel.append(self.types_list)
 

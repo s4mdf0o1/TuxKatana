@@ -14,10 +14,10 @@ from lib.effect import Effect
 from lib.set_mapping import add_properties
 
 @add_properties()
-class Rotary(Effect, Gtk.Box):
-    ro_rate_lvl     = GObject.Property(type=int, default=0)
-    ro_dept_lvl     = GObject.Property(type=int, default=0)
-    ro_levl_lvl     = GObject.Property(type=int, default=0)
+class UniV(Effect, Gtk.Box):
+    uv_rate_lvl     = GObject.Property(type=int, default=0)
+    uv_dept_lvl     = GObject.Property(type=int, default=0)
+    uv_levl_lvl     = GObject.Property(type=int, default=0)
 
     def __init__(self, ctrl, pprefx=""):
         super().__init__(ctrl, self.mapping, pprefx)
@@ -25,18 +25,18 @@ class Rotary(Effect, Gtk.Box):
         self.set_spacing(6)
         self.parent_prefix = pprefx
     
-        box = BoxInner("Rotary")
+        box = BoxInner("Uni-V")
         self.append(box)
 
-        self.ro_rate = Slider( "Rate", "normal", self, "ro_rate_lvl" )
-        box.append(self.ro_rate)
+        self.uv_rate = Slider( "Rate", "normal", self, "uv_rate_lvl" )
+        box.append(self.uv_rate)
 
-        self.ro_dept = Slider( "Depth", "normal", self, "ro_dept_lvl" )
-        box.append(self.ro_dept)
+        self.uv_dept = Slider( "Depth", "normal", self, "uv_dept_lvl" )
+        box.append(self.uv_dept)
 
         box = BoxInner("Level")
         self.append(box)
 
-        self.ro_levl = Slider( "Level", "normal", self, "ro_levl_lvl" )
-        box.append(self.ro_levl)
+        self.uv_levl = Slider( "Level", "normal", self, "uv_levl_lvl" )
+        box.append(self.uv_levl)
 

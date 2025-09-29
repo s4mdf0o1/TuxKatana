@@ -1,0 +1,8 @@
+# Wah 95E
+SEND:
+  w9_ppos_lvl:  "60 00 02 4C" # Pedal Pos
+  w9_min_lvl:   "60 00 02 4D"
+  w9_max_lvl:   "60 00 02 4E"
+  w9_eff_lvl:   "60 00 02 4F"
+  w9_dmix_lvl:  "60 00 02 50"
+

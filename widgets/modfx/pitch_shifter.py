@@ -19,7 +19,7 @@ class PitchShifter(Effect, Gtk.Box):
     ps_type         = GObject.Property(type=str)
     ps_type_idx     = GObject.Property(type=int, default=0)
     ps_mode_sw      = GObject.Property(type=bool, default=False)
-    ps_pred_lvl     = GObject.Property(type=int, default=0)
+    ps_pred_lvl     = GObject.Property(type=float, default=0.0)
     ps_pitch_lvl    = GObject.Property(type=int, default=0)
     ps_fine_lvl     = GObject.Property(type=int, default=0)
     ps_fb_lvl       = GObject.Property(type=int, default=0)
@@ -31,13 +31,14 @@ class PitchShifter(Effect, Gtk.Box):
         self.set_spacing(6)
         self.parent_prefix = pprefx
 
-        box_ps = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
+        # box_ps = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
 
-        # box_ps = BoxInner("Mode")
+        box = BoxInner("Pitch Shifter", h_box=True)
+        self.append(box)
+
         self.types_list = ComboStore( self, self.types, "ps_type_idx")
         self.types_list.set_hexpand(True)
-        box_ps.append(self.types_list)
-        self.append(box_ps)
+        box.h_box.append(self.types_list)
 
         self.ps_mode = Toggle("One/Two Voice.s Mono")
         self.ps_mode.set_hexpand(False)
@@ -45,13 +46,12 @@ class PitchShifter(Effect, Gtk.Box):
             "ps_mode_sw", self.ps_mode,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
-        box_ps.append(self.ps_mode)
-        # self.append(box_ps)
+        box.h_box.append(self.ps_mode)
 
         box_lv = BoxInner("Levels")
         self.append(box_lv)
 
-        self.pred = Slider( "Pre Delay", "normal", self, "ps_pred_lvl" )
+        self.pred = Slider( "Pre Delay", "time_300ms", self, "ps_pred_lvl" )
         box_lv.append(self.pred)
 
         self.pitch = Slider( "Pitch", "normal", self, "ps_pitch_lvl" )

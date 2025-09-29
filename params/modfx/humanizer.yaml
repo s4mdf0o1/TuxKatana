@@ -1,0 +1,18 @@
+# Humanizer
+SEND:
+  hu_auto_sw:   "60 00 02 2F" # Picking/Auto
+  hu_vow1_type: "60 00 02 30" # Vowel 1
+  hu_vow2_type: "60 00 02 31" # Vowel 2
+  hu_sens_lvl:  "60 00 02 32"
+  hu_rate_lvl:  "60 00 02 33" # Rate
+  hu_dept_lvl:  "60 00 02 34" # Depth
+  hu_effc_lvl:   "60 00 02 35" # Effect
+  hu_dmix_lvl:  "60 00 02 36"
+
+Types:
+  "A":  '00'
+  "E":  '01'
+  "I":  '02'
+  "O":  '03'
+  "U":  '04'
+

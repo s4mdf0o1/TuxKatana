@@ -100,6 +100,7 @@ class ModFx(Effect, Gtk.Box):
         i = 0
         for name, code in self.types.items():
             # log.debug(name)
+            # if self.types_list.store.index([i,name, code]) != i:
             self.types_list.store.append([i,name, code])
             i += 1
             box = self.make_ui(name)

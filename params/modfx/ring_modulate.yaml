@@ -1,0 +1,7 @@
+# Ring Modulate
+SEND:
+  rm_norm_sw:   "60 00 02 2B" # Normal/Intelligent
+  rm_freq_lvl:  "60 00 02 2C" # Freq
+  rm_effc_lvl:   "60 00 02 2D" # Effect
+  rm_dmix_lvl:  "60 00 02 2E" # Direct Mix
+

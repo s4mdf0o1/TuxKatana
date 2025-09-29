@@ -32,7 +32,9 @@ class ComboStore(Gtk.ComboBox):
         self.add_attribute(renderer, "text", 1)
 
         for i, (name, code) in enumerate(store_list.items()):
-            self.store.append([i, name, code])
+            if not any(row[1] == name \
+                    and row[2] == code for row in self.store):
+                self.store.append([i, name, code])
 
         parent.bind_property(
             self.prop_idx, self, "active",

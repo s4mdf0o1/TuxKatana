@@ -1,0 +1,5 @@
+# Uni V
+SEND:
+  uv_rate_lvl:  "60 00 02 1E"
+  uv_dept_lvl:  "60 00 02 1F"
+  uv_levl_lvl:  "60 00 02 20"

@@ -11,13 +11,18 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 class BoxInner(Gtk.Box):
-    def __init__(self, label=""):
+    def __init__(self, label="", h_box=False):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         self.get_style_context().add_class('inner')
         label=Gtk.Label(label=label)
+        label.get_style_context().add_class('label-box')
         label.set_xalign(1.0)
-        label.set_margin_end(20)
-        # label.get_style_context().add_class('small-txt')
+        # label.set_margin_end(20)
         self.append(label)
+
+        if h_box:
+            self.h_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+            self.append(self.h_box)
+
 

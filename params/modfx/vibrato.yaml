@@ -1,0 +1,7 @@
+# Vibrato
+SEND:
+  vi_rate_lvl:  "60 00 02 26" # Rate
+  vi_dept_lvl:  "60 00 02 27" # Depth
+    ### Missing "60 00 02 28" > 29 ###
+  vi_levl_lvl:  "60 00 02 2A" # Level
+

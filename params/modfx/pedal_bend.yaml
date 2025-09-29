@@ -1,0 +1,7 @@
+# Pedal Bend
+SEND:
+  pb_pitc_lvl: "60 00 02 5D" # Pitch
+  pb_ppos_lvl:  "60 00 02 5E" # Pedal Pos
+  pb_effl_lvl:  "60 00 02 5F" # Effect Level
+  pb_dmix_lvl:  "60 00 02 60" # Direct Mix
+ 

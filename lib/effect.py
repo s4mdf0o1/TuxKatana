@@ -45,37 +45,26 @@ class Effect:
 
     def on_ui_changed(self, obj, pspec):
         name = pspec.name.replace('-','_')
-        # name = self.parent_prefix+name
         if not name in self.mapping and not '_idx' in name:
             return
         value = obj.get_property(name)
-        # log.debug(f"{name}={value}")
-        # value = self.type_val(name, value)
+        log.debug(f"{name}={value}")
         current = None
-        if not name.endswith('_idx'):
-            addr = self.mapping[name]
-        # val_type = pspec.value_type.name
-            current = self.type_val(name, self.mry.get_value(addr))
-        
-        # cur_type = type(current)
-        # log.debug(f"{name}={value}/{current}")
         if name.endswith('_status') and not self.status_bind:
             self.ctrl.emit('status-changed', self, name)
-        if name.endswith('_idx') and 'type' in name:
+        elif name.endswith('_idx') and 'type' in name:
             name = name.replace('_idx', '')
             value = list(self.types.inverse)[value]
             current = self.get_property(name)
             addr = self.mapping.get(name, None)
-        # value = self.get_property(name)
         # log.debug(f"{name}={value} {self.prefix=}")
-        # addr = self.mapping[name]
-        # val = MIDIBytes(getattr(self, name))
-        # current = self.mry.get_value(addr)
-        # log.debug(f"{name=} {addr=} {value=}:{type(value)} {current=}:{type(current)}")
-        if current != value:
-            self.direct_mry(addr, value)
+            # log.debug(f"{name=} {addr=} {value=}:{type(value)} {current=}:{type(current)}")
+            if current != value:
+                self.direct_mry(addr, value)
 
     def direct_set(self, prop, value):
+        # log.debug(f"{prop}={value}:{type(value)}")
+
         value = self.type_val(prop, value)
         # log.debug(f"{prop}={value}:{type(value)}")
         self.handler_block(self.notify_id)
@@ -116,6 +105,7 @@ class Effect:
         
 
     def type_val(self, prop, val):
+        # log.debug(f"{prop=} {val=}")
         val_type = self.find_property(prop).value_type.name
         # log.debug(val_type)
         if isinstance(val, MIDIBytes):

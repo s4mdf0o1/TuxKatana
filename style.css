@@ -20,6 +20,9 @@ button.toggle:not(:checked) {
 /*   padding: 5 0 5 0;*/
 
 }
+.label-box {
+   margin: 1px 20px 1px 20px;
+}
 .inner {
   /*border: 1px solid black;
   border-radius: 6px;*/

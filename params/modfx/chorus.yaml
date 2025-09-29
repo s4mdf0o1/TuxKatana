@@ -1,0 +1,16 @@
+# 2x2 Chorus
+SEND:
+  ch_x_pred_lvl: "60 00 02 3E" # Pre Delay
+                # 00>50=0ms>40ms
+  ch_x_rate_lvl: "60 00 02 3C" # Rate
+  ch_x_dept_lvl: "60 00 02 3D" # Depth
+
+  ch_y_pred_lvl: "60 00 02 3A" # Pre Delay
+                # 00>50=0ms>40ms
+  ch_y_rate_lvl: "60 00 02 38" # Rate
+  ch_y_dept_lvl: "60 00 02 39" # Depth
+  ch_xover_lvl: "60 00 02 37" # 00>10=100Hz>4kHz
+  ch_low_lvl:   "60 00 02 3B" # Low
+  ch_high_lvl:  "60 00 02 3F" # High
+  ch_dmix_lvl:  "60 00 02 40" # Direct
+

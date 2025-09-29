@@ -1,0 +1,7 @@
+# Flanger 117E
+SEND:
+  f1_manu_lvl:  "60 00 02 48" # Pedal Pos
+  f1_widt_lvl:   "60 00 02 49"
+  f1_spee_lvl:   "60 00 02 4A"
+  f1_regn_lvl:   "60 00 02 4B"
+

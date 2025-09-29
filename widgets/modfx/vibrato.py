@@ -14,29 +14,30 @@ from lib.effect import Effect
 from lib.set_mapping import add_properties
 
 @add_properties()
-class Rotary(Effect, Gtk.Box):
-    ro_rate_lvl     = GObject.Property(type=int, default=0)
-    ro_dept_lvl     = GObject.Property(type=int, default=0)
-    ro_levl_lvl     = GObject.Property(type=int, default=0)
+class Vibrato(Effect, Gtk.Box):
+    vi_rate_lvl     = GObject.Property(type=int, default=0)
+    vi_dept_lvl     = GObject.Property(type=int, default=0)
+    vi_levl_lvl     = GObject.Property(type=int, default=0)
 
     def __init__(self, ctrl, pprefx=""):
         super().__init__(ctrl, self.mapping, pprefx)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_spacing(6)
         self.parent_prefix = pprefx
-    
-        box = BoxInner("Rotary")
+
+        box = BoxInner("Vibrato")
         self.append(box)
 
-        self.ro_rate = Slider( "Rate", "normal", self, "ro_rate_lvl" )
-        box.append(self.ro_rate)
+        self.vi_rate = Slider( "Rate", "normal", self, "vi_rate_lvl" )
+        box.append(self.vi_rate)
 
-        self.ro_dept = Slider( "Depth", "normal", self, "ro_dept_lvl" )
-        box.append(self.ro_dept)
+        self.vi_dept = Slider( "Depth", "normal", self, "vi_dept_lvl" )
+        box.append(self.vi_dept)
 
         box = BoxInner("Level")
         self.append(box)
 
-        self.ro_levl = Slider( "Level", "normal", self, "ro_levl_lvl" )
-        box.append(self.ro_levl)
+        self.vi_levl = Slider( "Level", "normal", self, "vi_levl_lvl" )
+        box.append(self.vi_levl)
+
 

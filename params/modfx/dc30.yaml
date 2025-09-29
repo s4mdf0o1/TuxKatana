@@ -1,0 +1,12 @@
+# DC30
+SEND:
+  dc_selc_sw:   "60 00 02 51" # Chorus / Echo
+  dc_cint_lvl: "60 00 02 53" # Chorus Intensity
+  dc_inpt_lvl:   "60 00 02 52" # Input
+  dc_tone_lvl:  "60 00 02 58" # Tone
+  dc_outd_sw:    "60 00 02 59" # Output D+E>D/E
+  dc_rept_lvl:   "60 00 02 54" # Repeat Rate
+          # 00 28>04 58=40rpm>600rpm
+  dc_ints_lvl:  "60 00 02 56" # Intensity
+  dc_volm_lvl:   "60 00 02 57" # Volume
+
