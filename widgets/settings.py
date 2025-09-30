@@ -11,7 +11,8 @@ dots = config['DOTS']
 
 import logging
 dbg=logging.getLogger("debug")
-from .tuner_dialog import *
+
+from widgets.tuner_dialog import * #s tun_dial
 
 from .slider import Slider
 
@@ -146,27 +147,29 @@ class Settings(Gtk.Box):
         self.ctrl.set_edit_mode(edit)
 
     def open_tuner(self, btn):
+        # import threading
+        # import sounddevice as sd
         # log.debug(btn)
         self.ctrl.parent.win.set_sensitive(False)
-        global stop_flag; stop_flag=False
-        dialog=TunerDialog(self, btn.get_root())
-        dialog.connect("response", lambda d,r: self.stop_tuner(d))
-        dialog.present()
-        threading.Thread(target=processing_thread, args=(dialog,), daemon=True).start()
-        device_index = find_katana_device()
+        # global stop_flag; stop_flag=False
+        self.tuner=TunerDialog(self, btn.get_root())
+        self.tuner.connect("response", lambda d,r: self.stop_tuner(d))
+        self.tuner.present()
+        threading.Thread(target=self.tuner.processing_thread, args=(self.tuner,), daemon=True).start()
+        device_index = self.tuner.find_katana_device()
         self.stream = sd.InputStream(
                 device=device_index, 
                 channels=1, 
                 samplerate=FS, 
                 blocksize=BLOCKSIZE, 
-                callback=audio_callback
+                callback=self.tuner.audio_callback
             )
         self.stream.start()
 
     def stop_tuner(self, dialog):
-        global stop_flag; stop_flag=True
+        # global stop_flag; stop_flag=True
         self.stream.stop(); self.stream.close()
-        dialog.close()
+        self.tuner.close()
         self.ctrl.parent.win.set_sensitive(True)
 
 
