@@ -11,6 +11,12 @@
     >>> Save your presets first
     PS: switching off/on the amp makes it reload its old config
 
+## Demo
+
+    (made with bad resolution and sound level, need to retry ^^')
+
+    > https://www.youtube.com/watch?v=bfD31DUedUE
+
 ## Missing
 
   > Presets Save/Load
@@ -51,5 +57,7 @@ Types:
 
    * same name as type plus '_idx' -> helps connecting to ComboBox class named ComboStore
 
+    > template.py has some examples
 
-    
+
+ 
