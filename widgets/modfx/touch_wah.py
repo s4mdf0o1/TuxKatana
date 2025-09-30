@@ -31,7 +31,6 @@ class TouchWah(Effect, Gtk.Box):
         
         box_eff = BoxInner("Effect")
         self.filter_sw = Toggle("Low/Pass Band")
-        # self.filter_sw.name = "tw_filt_sw"
         self.bind_property(
             "tw_filt_sw", self.filter_sw,
             "active", GObject.BindingFlags.SYNC_CREATE |\

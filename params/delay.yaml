@@ -23,9 +23,9 @@ SEND:
   de_sde_ef_phase_sw: "60 00 05 18" # Normal|Inverse
   de_sde_modul_sw:   "60 00 05 19"  # Off|On
   de_bank_sel:      "60 00 06 3C"
-  de_bank_G:       "60 00 06 2D"
-  de_bank_R:       "60 00 06 2E"
-  de_bank_Y:       "60 00 06 2F"
+  de_type_G:       "60 00 06 2D"
+  de_type_R:       "60 00 06 2E"
+  de_type_Y:       "60 00 06 2F"
   de_vol_lvl:  "60 00 06 5A"
 
 RECV:

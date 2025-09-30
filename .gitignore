@@ -10,4 +10,4 @@ grep
 mry_dump/
 presets/
 back/
-
+.venv/

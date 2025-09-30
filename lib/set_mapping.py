@@ -20,13 +20,12 @@ def get_prefix(lower):
     return lower[:2]+'_' if len(lower.split())==1 \
             else ''.join(v[:1] for v in lower.split())+'_'
 
-def add_properties():#, name, mapping):
+def add_properties():
     def decorator(cls):
         setattr(cls, 'name', cls.__name__)
         lower = cls.__name__.lower()
         setattr(cls, 'prefix', get_prefix(lower))
         snake = camel_to_snake(cls.__name__)
-        # print(f"{lower=} {snake=}")
 
         filename = f"params/{snake}.yaml"
         if not os.path.exists(filename):
@@ -47,8 +46,6 @@ def add_properties():#, name, mapping):
             tmap = data.get(key, {})
             # log.debug(tmap)
             if tmap:
-                # for name, val in tmap.items():
-                    # tmap[name] = MIDIBytes(val).int
                 setattr(cls, key.lower(), bidict(tmap))
 
         return cls

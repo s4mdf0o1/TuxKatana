@@ -10,7 +10,7 @@ dots = [ "⚫", "🟢", "🔴", "🟡" ]
 
 class Toggle(Gtk.ToggleButton):
     status = GObject.Property(type=int, default=0)
-    def __init__(self, label, data=None, status_id=2):#, status_bind=()):
+    def __init__(self, label, data=None, status_id=2):
         super().__init__()
         self.name = label
         self.label_on = dots[status_id] + "  " + label
@@ -18,7 +18,7 @@ class Toggle(Gtk.ToggleButton):
         self.status_id = status_id
         self.set_label(self.label_off)
         self.bind_property(
-            "active",   # propriété du toggle
+            "active",
             self, "label",
             GObject.BindingFlags.SYNC_CREATE,
             transform_to=self._active_to_label,
@@ -48,7 +48,6 @@ class Toggle(Gtk.ToggleButton):
 
     def set_color(self, color):
         self.label_on = dots[color]+ "  " + self.name
-        # self.label_off = dots[color]+ "  " + self.name
         if self.get_active():
             self.set_label(self.label_on)
         else:

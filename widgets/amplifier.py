@@ -104,9 +104,6 @@ class Amplifier(Effect, Gtk.Box):
         value = obj.get_property(pspec.name)
         if not name in self.mapping and not '_idx' in name:
             return
-        # value = self.get_property(name)
-        # log.debug(f"<<< {name} = {value}")
-        # addr = self.mapping.get(name, None)
         if name == 'am_type_idx':
             model_val = list(self.types.inverse)[value]
             addr  = self.mapping.get("am_type", None)
@@ -138,12 +135,4 @@ class Amplifier(Effect, Gtk.Box):
         num = list(self.types.values()).index(svalue)
         self.direct_set('am_type_idx', num)
 
-    # def on_mry_loaded(self, mry):
-    #     log.debug("load mry")
-    #     for prop, addr in self.mapping.items():
-    #         val = mry.read(addr)
-    #         log.debug(f"{addr}: {prop}={val}")
-    #         # val = self.type_val(prop, val)
-    #         if val != None:
-    #             self.direct_set(prop, val)
  

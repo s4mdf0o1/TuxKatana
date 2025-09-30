@@ -6,11 +6,8 @@ import os
 class FileChooser(Gtk.FileChooserDialog):
     def __init__(self, win, parent, title="Choose Preset file",
                  action=Gtk.FileChooserAction.OPEN):#,
-                 #accept_label="Ouvrir", cancel_label="Annuler"):
         self.parent= parent
         super().__init__(title=title, transient_for=win, action=action)
-                         #accept_label=accept_label,
-                         #cancel_label=cancel_label)
 
         self.set_modal(True)
         cwd = os.getcwd()
@@ -22,7 +19,6 @@ class FileChooser(Gtk.FileChooserDialog):
         for p in patterns:
             f.add_pattern(p)
         Gtk.FileChooserNative.add_filter(self, f)
-        #self.add_filter(f)
 
     def choose(self):
         def on_response(dialog, response):

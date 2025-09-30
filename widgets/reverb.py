@@ -46,8 +46,6 @@ class Reverb(Effect, Gtk.Box):
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_spacing(6)
 
-        # self.stores = {'Types': [], 'Modes': []}
-        
         banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
         self.bank = Bank("REVERB", banks)
         self.bank.buttons[0].set_status_id(1)
@@ -115,25 +113,12 @@ class Reverb(Effect, Gtk.Box):
 
         self.append(box_lvl)
 
-    def on_ui_changed(self, obj, pspec):
-        name = pspec.name.replace('-','_')
-        # log.debug(name)
-        if not name in self.mapping and not name.endswith('_idx'):
-            return
-        # value = obj.get_property(pspec.name)
-        # value = self.type_val(name, value)
-        # log.debug(f"{name}={value}")
-        # if name == 're_type':
-        #     if self.re_status != 0:
-        #         prop = name+['_G', '_R', '_Y'][self.re_status-1]
-        #     else:
-        #         log.warning(f"Reverb is OFF")
-        #     val = str(MIDIBytes(self.get_property(prop)))
-        #     addr = self.mapping[prop]
-        #     log.debug(f"{addr} {prop}={val}")
-        # if name == 're_pre_delay_lvl':
-            # value = MIDIBytes(value, 2)
-        super().on_ui_changed(obj, pspec)
+    # def on_ui_changed(self, obj, pspec):
+    #     name = pspec.name.replace('-','_')
+    #     # log.debug(name)
+    #     if not name in self.mapping and not name.endswith('_idx'):
+    #         return
+    #     super().on_ui_changed(obj, pspec)
 
 
     def on_mode_changed(self, bank, pspec):
@@ -144,8 +129,7 @@ class Reverb(Effect, Gtk.Box):
 
         # log.debug(f"{addr}: {prop} = {mode}")
         self.mry.set_value(addr, mode)
-        # log.debug(f"\033[33m{self.re_status} {prop=}\033[0m")
-        # return
+
     def on_mode_sel(self, obj, pspec):
         name = pspec.name.replace('-','_')
         sel = obj.get_property(name)
@@ -159,18 +143,7 @@ class Reverb(Effect, Gtk.Box):
         mode_name = 're_mode_'+['G','R','Y'][val-1]
         bank = 're_type_'+['G','R','Y'][val-1]
         mode_val= self.get_property(mode_name)
-        # self.direct_set('re_mode', self.get_property(mode))
-        # log.debug(f"{mode_name=} {mode_val=}")
         self.set_property('re_mode', mode_val)
-        # log.debug(f"{self.re_type_idx=}")
-        # log.debug(f"{self.re_type=}")
-        # log.debug(f"{self.re_mode=}")
-        # log.debug(f"{mode_name}={mode_val}")
-        # log.debug(f"{self.re_bank_sel=}")
-        # log.debug(f"{bank}={self.get_property(bank)}")
-        # active = self.get_property(prop)
-        # self.direct_set('re_mode', self.get_property(prop))
-        # self.mode_sel.buttons[active].set_active(True)
         for but in self.mode_sel.buttons:
             if val == 0:
                 log.warning("re_status should not be 0")

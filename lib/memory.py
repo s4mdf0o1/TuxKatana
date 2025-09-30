@@ -34,7 +34,8 @@ class Memory(GObject.GObject):
             self.emit("address-changed", addr, val)
 
     def get_value(self, addr):
-        # log.debug(addr-self.Addr_start)
+        # log.debug(self._values)
+        # log.debug(addr)
         return self._values.get(addr)
 
     def add_block(self, Addr_start, data):

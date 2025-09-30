@@ -22,9 +22,9 @@ class Delay(Effect, Gtk.Box):
     de_type_idx     = GObject.Property(type=int, default=0)
     de_status       = GObject.Property(type=int, default=0)
     de_bank_sel     = GObject.Property(type=int, default=0)
-    de_bank_G       = GObject.Property(type=int, default=0)
-    de_bank_R       = GObject.Property(type=int, default=0)
-    de_bank_Y       = GObject.Property(type=int, default=0)
+    de_type_G       = GObject.Property(type=int, default=0)
+    de_type_R       = GObject.Property(type=int, default=0)
+    de_type_Y       = GObject.Property(type=int, default=0)
     de_time_lvl     = GObject.Property(type=float, default=0.0)
     de_feedback_lvl = GObject.Property(type=int, default=0)
     de_tap_time_lvl = GObject.Property(type=int, default=0)
@@ -91,7 +91,6 @@ class Delay(Effect, Gtk.Box):
         self.box_dly.append(self.time)
 
         self.feedback = Slider("Feeback", "normal", self, "de_feedback_lvl" )
-        # self.feedback_lvl.name = "feedback_lvl"
         self.feedback.show()
         self.box_dly.append(self.feedback)
 
@@ -148,21 +147,18 @@ class Delay(Effect, Gtk.Box):
         self.box_sde.hide()
         box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
         self.de_sde_vint_lpf = Toggle("Vintage LPF")
-        # self.de_sde_vint_lpf_sw.name = "sde_vint_lpf_sw"
         self.bind_property(
             "de_sde_vint_lpf_sw", self.de_sde_vint_lpf,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
         box_h.append(self.de_sde_vint_lpf)
         self.de_sde_fb_phase = Toggle("Feedback Phase")
-        # self.de_sde_fb_phase_sw.name = "sde_fb_phase_sw"
         self.bind_property(
             "de_sde_fb_phase_sw", self.de_sde_fb_phase,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
         box_h.append(self.de_sde_fb_phase)
         self.de_sde_ef_phase = Toggle("Effect Phase")
-        # self.de_sde_ef_phase_sw.name = "sde_ef_phase_sw"
         self.bind_property(
             "de_sde_ef_phase_sw", self.de_sde_ef_phase,
             "active", GObject.BindingFlags.SYNC_CREATE |\
@@ -171,14 +167,12 @@ class Delay(Effect, Gtk.Box):
         self.box_sde.append(box_h)
         box_h2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
         self.de_sde_filter= Toggle("Filter")
-        # self.de_sde_filter_sw.name = "sde_filter_sw"
         self.bind_property(
             "de_sde_filter_sw", self.de_sde_filter,
             "active", GObject.BindingFlags.SYNC_CREATE |\
             GObject.BindingFlags.BIDIRECTIONAL )
         box_h2.append(self.de_sde_filter)
         self.de_sde_modul= Toggle("Modulation")
-        # self.de_sde_modul_sw.name = "sde_modul_sw"
         self.bind_property(
             "de_sde_modul_sw", self.de_sde_modul,
             "active", GObject.BindingFlags.SYNC_CREATE |\

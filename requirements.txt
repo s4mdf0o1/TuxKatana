@@ -1,0 +1,4 @@
+pip==25.2
+setuptools==80.9.0
+sounddevice==0.5.2
+wheel==0.45.1

@@ -1,89 +1,18 @@
 SEND:
   mo_sw:       "60 00 01 00"
   mo_type:     "60 00 01 01"
-  mo_bank_G:   "60 00 06 27"
-  mo_bank_R:   "60 00 06 28"
-  mo_bank_Y:   "60 00 06 29"
   mo_bank_sel: "60 00 06 3A"
+  mo_type_G:   "60 00 06 27"
+  mo_type_R:   "60 00 06 28"
+  mo_type_Y:   "60 00 06 29"
   mo_vol_lvl:  "60 00 06 58"
   
   fx_sw:        "60 00 03 00"
   fx_type:      "60 00 03 01"
-  fx_bank_G:    "60 00 06 2A"
-  fx_bank_R:    "60 00 06 2B"
-  fx_bank_Y:    "60 00 06 2C"
   fx_bank_sel:  "60 00 06 3B"
+  fx_type_G:    "60 00 06 2A"
+  fx_type_R:    "60 00 06 2B"
+  fx_type_Y:    "60 00 06 2C"
   fx_vol_lvl:   "60 00 06 59"
-
-# Harmonist
-  
-# # Vibrato
-#   vi_rate_lvl:  "60 00 02 26" # Rate
-#   vi_dept_lvl:  "60 00 02 27" # Depth
-#     ### Missing "60 00 02 28" > 29 ###
-#   vi_levl_lvl:  "60 00 02 2A" # Level
-# # Ring Modulate
-#   rm_type_sw:   "60 00 02 2B" # Normal/Intelligent
-#   rm_freq_lvl:  "60 00 02 2C" # Freq
-#   rm_eff_lvl:   "60 00 02 2D" # Effect
-#   rm_dmix_lvl:  "60 00 02 2E" # Direct Mix
-# # Humanizer
-#   hu_type_sw:   "60 00 02 2F" # Picking/Auto
-#   hu_vow1_type: "60 00 02 30" # Vowel 1
-#   hu_vow2_type: "60 00 02 31" # Vowel 2
-#   hu_sens_lvl:  "60 00 02 32"
-#   hu_rate_lvl:  "60 00 02 33" # Rate
-#   hu_dept_lvl:  "60 00 02 34" # Depth
-#   hu_eff_lvl:   "60 00 02 35" # Effect
-#   hu_dmix_lvl:  "60 00 02 36"
-# # 2x2 Chorus
-#   2c1_pred_lvl: "60 00 02 3E" # Pre Delay
-#                 # 00>50=0ms>40ms
-#   2c1_rate_lvl: "60 00 02 3C" # Rate
-#   2c1_dept_lvl: "60 00 02 3D" # Depth
-#   2c2_pred_lvl: "60 00 02 3A" # Pre Delay
-#                 # 00>50=0ms>40ms
-#   2c2_rate_lvl: "60 00 02 38" # Rate
-#   2c2_dept_lvl: "60 00 02 39" # Depth
-#   2c_xover_lvl: "60 00 02 37" # 00>10=100Hz>4kHz
-#   2c_low_lvl:   "60 00 02 3B" # Low
-#   2c_high_lvl:  "60 00 02 3F" # High
-#   2c_dirc_lvl:  "60 00 02 40" # Direct
-# # AC Guitar Sim
-#   ags_top_lvl:  "60 00 02 41" # Top -50>+50
-#   ags_body_lvl: "60 00 02 42" # Body
-#   ags_low_lvl:  "60 00 02 43" # Low -50>+50
-#   ags_high_lvl: "60 00 02 44" # High -50>+50
-#   ags_levl_lvl: "60 00 02 45" # Level
-# Phaser 90E
-  # p9_script_sw: "60 00 02 46" # Script Off/On
-  # p9_speed_lvl: "60 00 02 47" # Speed
-    ### Missing: "60 00 02 48" > 4b ###
-# Wah 95E
-  # w9_ppos_lvl:  "60 00 02 4C" # Pedal Pos
-  # w9_min_lvl:   "60 00 02 4D"
-  # w9_max_lvl:   "60 00 02 4E"
-  # w9_eff_lvl:   "60 00 02 4F"
-  # w9_dmix_lvl:  "60 00 02 50"
-# # DC30
-#   dc_sel_sw:   "60 00 02 51" # Chorus / Echo
-#   dc_chint_lvl: "60 00 02 53" # Chorus Intensity
-#   dc_inp_lvl:   "60 00 02 52" # Input
-#   dc_tone_lvl:  "60 00 02 58" # Tone
-#   dc_out_sw:    "60 00 02 59" # Output D+E>D/E
-#   dc_rep_lvl:   "60 00 02 54" # Repeat Rate
-#           # 00 28>04 58=40rpm>600rpm
-#   dc_ints_lvl:  "60 00 02 56" # Intensity
-#   dc_vol_lvl:   "60 00 02 57" # Volume
-# # Heavy Octave
-#   ho_oct1_lvl:  "60 00 02 5A" # Octave 1
-#   ho_oct2_lvl:  "60 00 02 5B" # Octave 2
-#   ho_dmix_lvl:  "60 00 02 5C" # Direct Mix
-# # Pedal Bend
-#   pb_pitch_lvl: "60 00 02 5D" # Pitch
-#   pb_ppos_lvl:  "60 00 02 5E" # Pedal Pos
-#   pb_effl_lvl:  "60 00 02 5F" # Effect Level
-#   pb_dmix_lvl:  "60 00 02 60" # Direct Mix
-  
 
 

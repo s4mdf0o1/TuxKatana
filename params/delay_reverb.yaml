@@ -23,9 +23,9 @@ SEND:
   dr_sde_ef_phase_sw: "60 00 05 38" # Normal|Inverse
   dr_sde_modul_sw:   "60 00 05 39"  # Off|On
   dr_bank_sel:    "60 00 06 3D"
-  dr_bank_G:       "60 00 06 33"
-  dr_bank_R:       "60 00 06 34"
-  dr_bank_Y:       "60 00 06 35"
+  dr_type_G:       "60 00 06 33"
+  dr_type_R:       "60 00 06 34"
+  dr_type_Y:       "60 00 06 35"
   dr_vol_lvl:  "60 00 06 5B"
 
 RECV:

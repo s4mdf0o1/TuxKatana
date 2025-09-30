@@ -29,9 +29,9 @@ class Booster(Effect, Gtk.Box):
     bo_eff_lvl   = GObject.Property(type=int, default=0)
     bo_dmix_lvl  = GObject.Property(type=int, default=0)
     bo_bank_sel  = GObject.Property(type=int, default=0)
-    bo_bank_G    = GObject.Property(type=int, default=0)
-    bo_bank_R    = GObject.Property(type=int, default=0)
-    bo_bank_Y    = GObject.Property(type=int, default=0)
+    bo_type_G    = GObject.Property(type=int, default=0)
+    bo_type_R    = GObject.Property(type=int, default=0)
+    bo_type_Y    = GObject.Property(type=int, default=0)
     bo_status    = GObject.Property(type=int, default=0)
     bo_vol_lvl   = GObject.Property(type=int, default=0)
 
@@ -39,7 +39,6 @@ class Booster(Effect, Gtk.Box):
         super().__init__(ctrl, self.mapping)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_spacing(6)
-        # self.stores = {'Types': []}
         
         banks = {"GREEN":'1', "RED":'2', "YELLOW":'3'}
         self.bank_select = Bank("BOOSTER", banks)
@@ -54,7 +53,6 @@ class Booster(Effect, Gtk.Box):
 
         box_sel = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
         
-        # self.bo_store = ComboStore( own_ctrl, 'Types' )
         self.store = ComboStore( self, self.types, 'bo_type_idx')
         box_sel.append(self.store)
 
@@ -97,19 +95,4 @@ class Booster(Effect, Gtk.Box):
             GObject.BindingFlags.BIDIRECTIONAL )
         box_solo.append(self.solo_sw)
 
-    # def on_ui_changed(self, obj, pspec):
-    #     name = pspec.name.replace('-', '_')
-    #     value = obj.get_property(pspec.name)
-    #     if not name in self.mapping and not '_idx' in name:
-    #         return
-    #     # value = self.get_property(name)
-    #     log.debug(f"<<< {name} = {value}")
-    #     # addr = self.mapping.get(name, None)
-    #     if name == 'bo_type_idx':
-    #         model_val = list(self.types.inverse)[value]
-    #         addr  = self.mapping.get("bo_type", None)
-    #         current = self.mry.get_value(addr)
-    #         # log.debug(f"{name=} {addr=} {model_val=} {current=} {self.mry.get_value(addr)=}")
-    #         if current != model_val:
-    #             self.direct_mry(addr, model_val)
 

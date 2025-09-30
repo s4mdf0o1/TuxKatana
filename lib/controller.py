@@ -31,6 +31,8 @@ class Controller(GObject.GObject):
         "preset-changed": (GObject.SIGNAL_RUN_FIRST, None, (str,)),
         "load-maps": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "status-changed": (GObject.SignalFlags.RUN_FIRST, None, (object, str)),
+        # "switch-effect": (GObject.SignalFlags.RUN_FIRST, None, (str,bool,)),
+        "load-maps": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
     name = GObject.Property(type=str, default="SETTINGS")
     edit_mode = GObject.Property(type=bool, default=False)

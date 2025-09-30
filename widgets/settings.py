@@ -11,6 +11,7 @@ dots = config['DOTS']
 
 import logging
 dbg=logging.getLogger("debug")
+from .tuner_dialog import *
 
 from .slider import Slider
 
@@ -100,6 +101,13 @@ class Settings(Gtk.Box):
         self.ctrl = ctrl
         h_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=2)
         self.comm = CommLabel(ctrl)
+
+        self.tuner_b= Gtk.Button(label=">🎸<")
+        self.tuner_b.set_halign(Gtk.Align.START)
+        self.tuner_b.get_style_context().add_class('edit-mode')
+        self.tuner_b.set_tooltip_text("Tuner Dialog")
+        self.tuner_b.connect("clicked", self.open_tuner)
+       
         self.title = Gtk.Label(label=label)
         self.title.set_halign(Gtk.Align.CENTER)
         self.title.set_hexpand(True)
@@ -112,6 +120,7 @@ class Settings(Gtk.Box):
                 "active", GObject.BindingFlags.SYNC_CREATE | \
                 GObject.BindingFlags.BIDIRECTIONAL)
         h_box.append(self.comm)
+        h_box.append(self.tuner_b)
         h_box.append(self.title)
         h_box.append(self.edit_tog)
         self.append(h_box)
@@ -135,4 +144,29 @@ class Settings(Gtk.Box):
     def toggle_edit_mode(self, button):
         edit = self.edit_tog.get_active()
         self.ctrl.set_edit_mode(edit)
+
+    def open_tuner(self, btn):
+        # log.debug(btn)
+        self.ctrl.parent.win.set_sensitive(False)
+        global stop_flag; stop_flag=False
+        dialog=TunerDialog(self, btn.get_root())
+        dialog.connect("response", lambda d,r: self.stop_tuner(d))
+        dialog.present()
+        threading.Thread(target=processing_thread, args=(dialog,), daemon=True).start()
+        device_index = find_katana_device()
+        self.stream = sd.InputStream(
+                device=device_index, 
+                channels=1, 
+                samplerate=FS, 
+                blocksize=BLOCKSIZE, 
+                callback=audio_callback
+            )
+        self.stream.start()
+
+    def stop_tuner(self, dialog):
+        global stop_flag; stop_flag=True
+        self.stream.stop(); self.stream.close()
+        dialog.close()
+        self.ctrl.parent.win.set_sensitive(True)
+
 
