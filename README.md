@@ -51,6 +51,8 @@ Python Requirements:
 
 ### params/your_interface.yaml
 
+see: [HOW](./HOW.md)
+
 format :
 ```yaml
     SEND:

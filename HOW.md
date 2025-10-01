@@ -44,7 +44,7 @@ The following is Ok:
    * ◀ F0 41 00 00 00 00 33 11 10 00 00 00 00 00 00 10 60 F7    # Ask device name
       * '41 00 00 00 00 33': Header (for all following messages)
       * '11': Get
-      * '10 00 00 00': [Address](./lib/midi_bytes.py)
+      * '10 00 00 00': [Address](./lib/midi_bytes.py#L164)
       * '00 00 00 10': size - AKA: nb bytes
       * '60': checksum (idem for all following messages)
    * ▶ F0 41 00 00 00 00 33 12 10 00 00 00 4B 41 54 41 4E 41 20 4D 6B 32 20 20 20 20 20 20 76 F7
