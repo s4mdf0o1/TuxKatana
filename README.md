@@ -45,6 +45,19 @@ Python Requirements:
 
 	gtk4 mido bidict collections sounddevice (for Tuner)
 
+
+## Tuner
+
+The USB system brings Katana Pulseaudio sources/sinks :
+```bash
+$ pactl list short sources | grep KATANA
+21	alsa_output.usb-BOSS_KATANA-01.HiFi__Line2__sink.monitor	module-alsa-card.c	s32le 2ch 44100Hz	RUNNING
+22	alsa_output.usb-BOSS_KATANA-01.HiFi__Line1__sink.monitor	module-alsa-card.c	s32le 2ch 44100Hz	RUNNING
+23	alsa_input.usb-BOSS_KATANA-01.HiFi__Line4__source	module-alsa-card.c	s32le 2ch 44100Hz	RUNNING
+24	alsa_input.usb-BOSS_KATANA-01.HiFi__Line3__source	module-alsa-card.c	s32le 2ch 44100Hz	RUNNING
+```
+> For a better 'Tuner' experience: __boost__ the 'KATANA DI Capture' in _pavucontrol_ (here : Line4)
+
 ## Adding Interface
 
    2 files to create:
