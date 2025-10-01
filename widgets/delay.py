@@ -220,10 +220,9 @@ class Delay(Effect, Gtk.Box):
         self.append(self.dirmix)
 
     def on_delay_toggled(self, button):
-        self.on_type_changed(self.types)
+        self.on_type_changed(self.types) # Bug TODO
 
     def on_type_changed(self, types):
-        log.debug(f"{types} {types.store}")
         idx = types.get_active()
         base_widgets = [
             self.box_dly,       # 0

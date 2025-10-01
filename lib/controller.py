@@ -199,7 +199,7 @@ class Controller(GObject.GObject):
     def wait_msg(self, timeout=0.1):
         msg = self.msg_queue.get(timeout=timeout)
         self.sysex.recvd(msg.data)
-        log.sysex(f"{self.sysex.mido.hex()}")
+        log.sysex(f"{msg.hex()}")
         return self.sysex
 
     def queue_watcher(self):

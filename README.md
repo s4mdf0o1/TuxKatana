@@ -2,16 +2,20 @@
 
 > Gtk4 Python3 interface to communicate and configure Boss Katana Mk2 Amp 
 
+
 ## Disclaimer
 
-	⚠️  WARNING : this app is a work in progress
+	⚠️  WARNING : this app is a work in progress  
+	✅ But is working enough
 	
     ⚠️  WARNING-2 : this app works in "Edit Mode" all the time :
     the reason is : 
     without it the Katana is not sending back other parameters 
-    changing with that one you changed
+    changing with that one you changed  
+    ✅ But gives a better experience
+    for example, you'll see 'Rate' scale moving with 'Volume' for Flanger
     
-    You can switch OFF Edit Mode by clicking on ⚠️  in the up-right corner
+    You can switch OFF Edit Mode by clicking on [⚠️]  in the up-right corner
     
     >>> Save your presets first
     
@@ -45,7 +49,7 @@ Python Requirements:
 
    2 files to create:
 
-### params/you_interface.yaml
+### params/your_interface.yaml
 
 format :
 ```yaml
