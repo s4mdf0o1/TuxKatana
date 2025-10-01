@@ -2,7 +2,7 @@
 
    * All hexa bytes are MIDI (base 128) : 0x7F +1 = 0x00 
    
-   > see: (MIDIBytes)[./s4mdf0o1/TuxKatana/blob/master/lib/midi_bytes.py] )
+   > see: (MIDIBytes)[./lib/midi_bytes.py] )
    * All messages are F0 ... F7 enclosed (added by mido)
    * Scan device request by sending  '7F 00 06 01'
    * Ask device name at '10 00 00 00'
