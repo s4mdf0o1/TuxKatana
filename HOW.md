@@ -29,7 +29,7 @@ ModFx Example : ['Touch Wah'](./widgets/modfx/touch_wah.py)
    * prefix : 'tw_'
 
 ## Init order
-Mido Message constructed with [SysEx](./s4mdf0o1/TuxKatana/blob/master/lib/sysex.py)
+Mido Message constructed with [SysEx](./lib/sysex.py)
 
     Katana ◀ SEND  |  RECV ▶ TuxKatana
 Approximately interpreted:
@@ -44,7 +44,7 @@ The following is Ok:
    * ◀ F0 41 00 00 00 00 33 11 10 00 00 00 00 00 00 10 60 F7    # Ask device name
       * '41 00 00 00 00 33': Header (for all following messages)
       * '11': Get
-      * '10 00 00 00': [Address](./s4mdf0o1/TuxKatana/blob/master/lib/midi_bytes.py)
+      * '10 00 00 00': [Address](./lib/midi_bytes.py)
       * '00 00 00 10': size - AKA: nb bytes
       * '60': checksum (idem for all following messages)
    * ▶ F0 41 00 00 00 00 33 12 10 00 00 00 4B 41 54 41 4E 41 20 4D 6B 32 20 20 20 20 20 20 76 F7
@@ -73,7 +73,7 @@ Address('60 00 01 71')
 Address('60 00 03 62')
 ...
 ```
-   * ▶ a final message with a size of 139 bytes whose address is offset, I don't know why, I fill it with zeros for a consistent size of [Memory](./s4mdf0o1/TuxKatana/blob/master/lib/memory.py)
+   * ▶ a final message with a size of 139 bytes whose address is offset, I don't know why, I fill it with zeros for a consistent size of [Memory](./lib/memory.py)
 ## Special
 ### Edit Mode
 
@@ -82,6 +82,6 @@ Address('60 00 03 62')
 
 ### Channel Change
     
- Send 3 MIDIBytes at Address('00 01 00 00'): see 'SWITCHER' in [config.yaml](./s4mdf0o1/TuxKatana/blob/master/params/config.yaml)
+ Send 3 MIDIBytes at Address('00 01 00 00'): see 'SWITCHER' in [config.yaml](./params/config.yaml)
 
 
