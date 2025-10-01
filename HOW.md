@@ -12,7 +12,7 @@
 
 ## Naming convention
  Each effect must be named precisely, with its corresponding YAML file name determines its properties based on a prefix.  
- (ModFx)[./s4mdf0o1/TuxKatana/blob/master/widgets/mod_fx.py] Effects are added in the modfx folder
+ (ModFx)[./widgets/mod_fx.py] Effects are added in the modfx folder
 
 Example : ('Booster')[./s4mdf0o1/TuxKatana/blob/master/widgets/booster.py]
  
