@@ -11,20 +11,20 @@
    * Each address corresponding to one (or more) bytes of each setting is stored as a variable in the YAML files named according to each effect.
 
 ## Naming convention
- Each effect must be named precisely, with its corresponding YAML file name determines its properties based on a prefix.  
- [ModFx](./widgets/mod_fx.py) Effects are added in the modfx folder
+ Each effect must be named precisely ([@add_property decorator](./lib/set_mapping.py)), with its corresponding YAML file name determines its properties based on a prefix.  
+ [ModFx](./widgets/mod_fx.py) Effects are added in the respective modfx folder
 
-Example : ['Booster'](./widgets/booster.py)
+Example : 'Booster'
  
-   * py_file : 'widgets/booster.py'
-   * yaml_file : 'params/booster.yaml'
+   * py_file : [widgets/booster.py](./widgets/booster.py)
+   * yaml_file : [params/booster.yaml](./params/booster.yaml)
    * class_name: 'Booster'
    * prefix : 'bo_'
 
-ModFx Example : ['Touch Wah'](./widgets/modfx/touch_wah.py)
+ModFx Example : 'Touch Wah'
 
-   * py_file : 'widgets/modfx/touch_wah.py'
-   * yaml_file : 'params/modfx/touch_wah.yaml'
+   * py_file : [widgets/modfx/touch_wah.py](./widgets/modfx/touch_wah.py)
+   * yaml_file : [params/modfx/touch_wah.yaml](./params/modfx/touch_wah.yaml)
    * class_name: 'TouchWah'
    * prefix : 'tw_'
 
