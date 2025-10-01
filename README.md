@@ -58,6 +58,7 @@ $ pactl list short sources | grep KATANA
 ```
 > For a better 'Tuner' experience: __boost__ the 'KATANA DI Capture' in _pavucontrol_ (here : Line4)
 
+
 ## Adding Interface
 
    2 files to create:
