@@ -178,22 +178,9 @@ class TunerDialog(Tuner, Gtk.Dialog):
         self.bar_label.set_markup(bar_markup)
 
     def find_katana_device(self):
-        # devices = sd.query_devices()
-        # for idx, dev in enumerate(devices):
-        #     if "katana_mirror.monitor" in dev['name'].lower() and dev['max_input_channels']>0:
-        #         return idx
-        # raise RuntimeError("Katana monitor not found")
-        # devices = sd.query_devices()
-        # for idx, dev in enumerate(devices):
-        #     name = dev['name'].lower()
-        #     if "katana" in name and "line4" in name and dev['max_input_channels'] > 0:
-        #         return idx
-        # raise RuntimeError("Katana DI Capture not found")
-
         devices = sd.query_devices()
         for idx, dev in enumerate(devices):
             if "pulse" in dev['name'] and dev['max_input_channels']>0:
-                # log.debug(idx)
                 time.sleep(0.05)
                 return idx
         raise RuntimeError("Katana sound device not found")
